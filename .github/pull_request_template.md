@@ -1,4 +1,3 @@
-
 # Pull Request - Set up GitHub repository (doc: RSS-ECOMM-1_01)
 
 ## Overview
