@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
   import { defineProps, defineAsyncComponent } from 'vue'
 
@@ -6,7 +7,6 @@
       type: String
     }
   })
-  ф
   const icon = defineAsyncComponent(() => import(`@assets/svg/${props.name}.svg`))
 </script>
 

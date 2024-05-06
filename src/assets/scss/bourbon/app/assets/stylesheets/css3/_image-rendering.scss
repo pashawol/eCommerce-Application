@@ -1,5 +1,5 @@
-@mixin image-rendering ($mode:auto) {
-  @include _bourbon-deprecate-for-prefixing("image-rendering");
+@mixin image-rendering($mode: auto) {
+  @include _bourbon-deprecate-for-prefixing('image-rendering');
 
   @if ($mode == crisp-edges) {
     -ms-interpolation-mode: nearest-neighbor; // IE8+
@@ -7,9 +7,7 @@
     image-rendering: -o-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-  }
-
-  @else {
+  } @else {
     image-rendering: $mode;
   }
 }

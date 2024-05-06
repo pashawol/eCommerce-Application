@@ -4,8 +4,8 @@
   $weight: normal,
   $style: normal,
   $asset-pipeline: $asset-pipeline,
-  $file-formats: eot woff2 woff ttf svg) {
-
+  $file-formats: eot woff2 woff ttf svg
+) {
   $user-deprecation-warnings-setting: $output-bourbon-deprecation-warnings;
   $output-bourbon-deprecation-warnings: false !global;
 
