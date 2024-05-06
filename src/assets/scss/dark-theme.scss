@@ -19,14 +19,6 @@
   --light-yellow-pale: var(--dark-yellow-pale);
   // }
 
-  @for $n from 1 through 5 {
-    .star[data-star="$n]{
-      div:nth-child(-n + $n) star{
-        fill: var(--body-color) !important;
-      }
-    }
-  }
-
   .check-view {
     [stroke='#091A32'] {
       stroke: var(--body-color) !important;
