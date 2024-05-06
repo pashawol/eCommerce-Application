@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test:unit": "vitest && node -e \"process.exit(0)\"",
+    "test:unit": "vitest run",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
@@ -17,7 +17,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run format && npm run lint",
-      "pre-push": "npm run test:unit"
+      "pre-push": "npm run test:unit --watchAll=false"
     }
   },
   "dependencies": {
