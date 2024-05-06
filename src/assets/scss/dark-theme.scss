@@ -1,0 +1,64 @@
+// @media (prefers-color-scheme: light) {
+@mixin dark-theme() {
+  // :root {
+  --body-color: var(--dark-color-1);
+  --body-bg: var(--dark-color-7);
+
+  --light-color-1: var(--dark-color-1);
+  --light-color-1-84: var(--dark-color-1-84);
+  --light-color-1-24: var(--dark-color-1-24);
+  --light-color-2: var(--dark-color-2);
+  --light-color-3: var(--dark-color-3);
+  --light-color-4: var(--dark-color-4);
+  --light-color-5: var(--dark-color-5);
+  --light-color-6: var(--dark-color-6);
+  --light-color-7: var(--dark-color-7);
+  --light-green-pale: var(--dark-green-pale);
+  --light-blue-pale: var(--dark-blue-pale);
+  --light-red-pale: var(--dark-red-pale);
+  --light-yellow-pale: var(--dark-yellow-pale);
+  // }
+
+  @for $n from 1 through 5 {
+    .star[data-star="$n]{
+      div:nth-child(-n + $n) star{
+        fill: var(--body-color) !important;
+      }
+    }
+  }
+
+  .check-view {
+    [stroke='#091A32'] {
+      stroke: var(--body-color) !important;
+    }
+  }
+  .p-button-secondary.p-button-text,
+  .btn-filter,
+  .logo-link,
+  .p-menuitem-content,
+  .panel__header .p-button {
+    [fill='#000'],
+    [fill='#fff'],
+    [fill='#091A32'] {
+      fill: var(--body-color) !important;
+    }
+    [stroke='#091A32'] {
+      stroke: var(--body-color) !important;
+    }
+  }
+  .empty-block {
+    [fill='#D2D6E1'] {
+      fill: var(--dark-color-3) !important;
+    }
+  }
+}
+
+// @media (prefers-color-scheme: dark) {
+//   :root {
+//     @include dark-theme;
+//   }
+// }
+
+[data-theme='dark-theme'] {
+  @include dark-theme;
+}
