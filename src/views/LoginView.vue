@@ -9,7 +9,7 @@
           aria-describedby="email-help"
           @input="validateEmail"
         />
-        <small class="invalid-text" id="email-help">{{ emailErrorMessage }}</small>
+        <small class="p-error" id="email-help">{{ emailErrorMessage }}</small>
       </div>
 
       <div class="flex flex-column gap-2 mb-4">
@@ -22,15 +22,7 @@
           toggleMask
           @input="validatePassword"
         />
-        <small class="invalid-text" id="password-help">{{ passwordErrorMessage }}</small>
-      </div>
-
-      <div class="mb-4">
-        <Button type="submit" :label="params.btnName" />
-      </div>
-      <div class="mb-3 text-center">
-        Don’t have an account?
-        <router-link to="/registration" class="text-primary">Registration</router-link>
+        <small class="p-error" id="password-help">{{ passwordErrorMessage }}</small>
       </div>
     </form>
   </FormPage>
@@ -44,7 +36,10 @@
 
   const params = {
     title: 'Login',
-    btnName: 'Submit'
+    btnName: 'Submit',
+    linkName: 'Registration',
+    linkUrl: '/registration',
+    linkText: 'Don’t have an account?'
   }
 
   const email = ref('')
