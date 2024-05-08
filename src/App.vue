@@ -14,6 +14,13 @@
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/catalog">Catalog</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/registration">Registration</RouterLink>
+        <RouterLink to="/basket">Basket</RouterLink>
+        <RouterLink to="/product">Product</RouterLink>
+        <RouterLink to="/user-profile">User profile</RouterLink>
+        <RouterLink to="/404">404</RouterLink>
       </nav>
     </div>
   </header>
