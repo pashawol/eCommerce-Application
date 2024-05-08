@@ -1,24 +1,49 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from 'vue-router'
-  import HelloWorld from './components/HelloWorld.vue'
-  import HeaderBlock from '@layouts/HeaderBlock/HeaderBlock.vue'
+  import { RouterView } from 'vue-router'
+  import Header from '@layouts/Header/HeaderApp.vue'
+  import { ref } from 'vue'
+
+  // const pagesWithOutHeader = ['404']
+
+  const params = ref({
+    menuItems: [
+      {
+        label: 'about',
+        route: '/about'
+      },
+      {
+        label: 'catalog',
+        route: '/catalog'
+      },
+      {
+        label: 'user-profile',
+        route: '/user-profile'
+      },
+      {
+        label: 'basket',
+        route: '/basket'
+      },
+      {
+        label: '404',
+        route: '/404'
+      },
+      {
+        label: 'product',
+        route: '/product'
+      }
+    ]
+  })
 </script>
+
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="/img/logo.svg" width="125" height="125" />
+  <div class="main-wrapper">
+    <Header v-bind="params" />
+    <router-view v-slot="{ Component }">
+      <component :is="Component" v-bind="params" />
+    </router-view>
+  </div>
 
-    <div class="wrapper">
-      <HeaderBlock />
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <!-- <RouterView /> -->
 </template>
 
 <style lang="scss">
