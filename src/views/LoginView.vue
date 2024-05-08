@@ -3,14 +3,26 @@
     <form action="">
       <div class="flex flex-column gap-2 mb-4">
         <label for="username">Email</label>
-        <InputText id="email" v-model="value" aria-describedby="email-help" />
+        <InputText
+          id="email"
+          v-model="email"
+          aria-describedby="email-help"
+          @input="validateEmail"
+        />
+        <small class="invalid-text" id="email-help">{{ emailErrorMessage }}</small>
       </div>
 
       <div class="flex flex-column gap-2 mb-4">
-        <div class="flex">
-          <label for="password">Password</label>
-        </div>
-        <Password id="password" v-model="password" aria-describedby="password-help" toggleMask />
+        <label for="password">Password</label>
+        <Password
+          id="password"
+          v-model="password"
+          aria-describedby="password-help"
+          :feedback="false"
+          toggleMask
+          @input="validatePassword"
+        />
+        <small class="invalid-text" id="password-help">{{ passwordErrorMessage }}</small>
       </div>
 
       <div class="mb-4">
@@ -24,20 +36,63 @@
   </FormPage>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue'
   import FormPage from '@/components/layouts/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
+
   const params = {
     title: 'Login',
     btnName: 'Submit'
   }
 
-  // const value = ref('')
-  const password = ref()
-</script>
+  const email = ref('')
+  const password = ref('')
+  const emailErrorMessage = ref('')
+  const passwordErrorMessage = ref('')
 
-<style lang="scss">
-  /* Your component's styles go here */
-</style>
+  const validateEmail = () => {
+    const trimmedEmail: string = email.value.trim()
+
+    const validationRules = {
+      format: {
+        rule: !/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedEmail)
+      },
+      spaces: {
+        rule: trimmedEmail !== email.value
+      },
+      domain: {
+        rule: !/\.[a-zA-Z]{2,}$/.test(trimmedEmail.split('@')[1])
+      },
+      atSymbol: {
+        rule: !/@/.test(trimmedEmail)
+      }
+    }
+  }
+
+  const validatePassword = () => {
+    const trimmedPassword: string = password.value.trim()
+
+    const validationRules = {
+      spaces: {
+        rule: trimmedPassword !== password.value
+      },
+      special: {
+        rule: !/[\W_]/.test(trimmedPassword)
+      },
+      digit: {
+        rule: !/\d/.test(trimmedPassword)
+      },
+      uppercase: {
+        rule: !/[A-Z]/.test(trimmedPassword)
+      },
+      lowercase: {
+        rule: !/[a-z]/.test(trimmedPassword)
+      },
+      length: {
+        rule: trimmedPassword.length < 8
+      }
+    }
+  }
+</script>
