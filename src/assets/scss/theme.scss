@@ -48,7 +48,7 @@
   --highlight-bg: var(--light-color-6);
   --highlight-text-color: var(--body-color);
   color-scheme: light;
-  --border-radius: 4px;
+  --border-radius: 10px;
 }
 
 @font-face {
@@ -2116,8 +2116,8 @@ a {
     font-family: var(--font-family);
     font-feature-settings: var(--font-feature-settings, normal);
     font-size: 1rem;
-    color: var(--body-color);
-    background: var(--body-bg);
+    color: var(--color-text);
+    background: var(--color-background);
     padding: rem(9) rem(12);
     border: 1px solid var(--light-color-4);
     transition:
