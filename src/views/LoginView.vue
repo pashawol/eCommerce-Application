@@ -33,6 +33,7 @@
   import FormPage from '@/components/layouts/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
+  import { validateEmailErrors, validatePasswordErrors } from '@/components/utils/validation'
 
   const params = {
     title: 'Login',
@@ -48,96 +49,21 @@
   const passwordErrorMessage = ref('')
 
   const validateEmail = () => {
-    const trimmedEmail: string = email.value.trim()
-    const emailValidations = [
-      {
-        condition: email.value === '',
-        errorMessage: ''
-      },
-      {
-        condition: trimmedEmail !== email.value,
-        errorMessage: 'Remove spaces'
-      },
-      {
-        condition: /^[а-яА-Я]*$/.test(trimmedEmail),
-        errorMessage: 'Use Latin characters'
-      },
-      {
-        condition: !/@/.test(trimmedEmail),
-        errorMessage: 'Add @ to correct email format'
-      },
-      {
-        condition: !/\.[a-zA-Z]{2,}$/.test(trimmedEmail.split('@')[1]),
-        errorMessage: 'Add domain name after @, e.g., gmail.com'
-      },
-      {
-        condition: !/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedEmail),
-        errorMessage: 'Please enter correct email format'
-      },
-      {
-        condition: true,
-        errorMessage: ''
-      }
-    ]
+    const emailValue: string = email.value
 
     emailErrorMessage.value = ''
 
-    for (const validation of emailValidations) {
-      if (validation.condition) {
-        emailErrorMessage.value = validation.errorMessage
-        break
-      }
-    }
+    const errors = validateEmailErrors(emailValue)
+    emailErrorMessage.value = errors
   }
 
   const validatePassword = () => {
-    const trimmedPassword: string = password.value.trim()
-    const passwordValidations = [
-      {
-        condition: password.value === '',
-        errorMessage: ''
-      },
-      {
-        condition: trimmedPassword !== password.value,
-        errorMessage: 'Remove spaces'
-      },
-      {
-        condition: /^[а-яА-Я]*$/.test(trimmedPassword),
-        errorMessage: 'Use Latin characters'
-      },
-      {
-        condition: trimmedPassword.length < 8,
-        errorMessage: 'Password must be at least 8 characters long'
-      },
-      {
-        condition: !/[a-z]/.test(trimmedPassword),
-        errorMessage: 'Password must contain at least one lowercase letter'
-      },
-      {
-        condition: !/[A-Z]/.test(trimmedPassword),
-        errorMessage: 'Password must contain at least one uppercase letter'
-      },
-      {
-        condition: !/\d/.test(trimmedPassword),
-        errorMessage: 'Password must contain at least one digit'
-      },
-      {
-        condition: !/[\W_]/.test(trimmedPassword),
-        errorMessage: 'Password must contain at least one special character (!@#$%^&*)'
-      },
-      {
-        condition: true,
-        errorMessage: ''
-      }
-    ]
+    const passwordValue: string = password.value
 
     passwordErrorMessage.value = ''
 
-    for (const validation of passwordValidations) {
-      if (validation.condition) {
-        passwordErrorMessage.value = validation.errorMessage
-        break
-      }
-    }
+    const errors = validatePasswordErrors(passwordValue)
+    passwordErrorMessage.value = errors
   }
+
 </script>

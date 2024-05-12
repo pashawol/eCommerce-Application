@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 
 interface Country {
-  name: string;
-  code: string;
+  name: string
+  code: string
 }
 
 export const countries = ref<Country[]>([
@@ -11,5 +11,5 @@ export const countries = ref<Country[]>([
   { name: 'Russian Federation', code: 'RU' },
   { name: 'Ukraine', code: 'UA' },
   { name: 'United Kingdom', code: 'UK' },
-  { name: 'United States', code: 'US' },
-]);
+  { name: 'United States', code: 'US' }
+])
