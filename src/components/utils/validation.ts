@@ -1,19 +1,20 @@
-const validateFieldErrors = (value: string, validations: { condition: boolean; errorMessage: string }[]) => {
+// import { Country } from "./countryService";
+
+const validateFieldErrors = (
+  value: string,
+  validations: { condition: boolean; errorMessage: string }[]
+) => {
   for (const validation of validations) {
     if (validation.condition) {
-      return validation.errorMessage;
+      return validation.errorMessage
     }
   }
-  return '';
-};
+  return ''
+}
 
 export const validateEmailErrors = (value: string) => {
-  return validateFieldErrors(value, emailValidations(value));
-};
-
-export const validatePasswordErrors = (value: string) => {
-  return validateFieldErrors(value, passwordValidations(value));
-};
+  return validateFieldErrors(value, emailValidations(value))
+}
 
 const emailValidations = (emailValue: string) => {
   const trimmedEmail: string = emailValue.trim()
@@ -50,6 +51,9 @@ const emailValidations = (emailValue: string) => {
   ]
 }
 
+export const validatePasswordErrors = (value: string) => {
+  return validateFieldErrors(value, passwordValidations(value))
+}
 
 const passwordValidations = (passwordValue: string) => {
   const trimmedPassword: string = passwordValue.trim()
@@ -92,3 +96,85 @@ const passwordValidations = (passwordValue: string) => {
     }
   ]
 }
+
+export const validateNameErrors = (value: string) => {
+  return validateFieldErrors(value, nameValidations(value))
+};
+
+const nameValidations = (nameValue: string) => {
+  const trimmedName: string = nameValue.trim()
+
+  return [
+    {
+      condition: trimmedName.length < 1,
+      errorMessage: 'Name must be at least 1 character long'
+    },
+    {
+      condition: /[\d!@#$%^&*()_+=[\]{};':"\\|,.<>?]/.test(trimmedName),
+      errorMessage: 'Name should not contain numbers or special characters'
+    }
+  ]
+}
+
+export const validateStreetErrors = (value: string) => {
+  return validateFieldErrors(value, streetValidations(value));
+};
+
+const streetValidations = (streetValue: string) => {
+  const trimmedStreet: string = streetValue.trim();
+
+  return [
+    {
+      condition: trimmedStreet.length === 0,
+      errorMessage: 'Street must contain at least one character'
+    }
+  ];
+};
+
+export const validateCityErrors = (value: string) => {
+  return validateFieldErrors(value, cityValidations(value));
+};
+
+const cityValidations = (cityValue: string) => {
+  const trimmedCity: string = cityValue.trim();
+
+  return [
+    {
+      condition: trimmedCity.length === 0,
+      errorMessage: 'City must contain at least one character'
+    },
+    {
+      condition: /[\d!@#$%^&*()_+=[\]{};':"\\|,.<>?]/.test(trimmedCity),
+      errorMessage: 'City should not contain numbers or special characters'
+    }
+  ];
+};
+
+const validatePostalCodeCanada = (postalCode: string): boolean => {
+  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+  return postalCodeRegex.test(postalCode);
+};
+
+const validatePostalCodeUSA = (postalCode: string): boolean => {
+  const postalCodeRegex = /^\d{5}(?:-\d{4})?$/;
+  return postalCodeRegex.test(postalCode);
+};
+
+
+export const validatePostalCodeErrors = (value: string, countryValue: string) => {
+    console.log('check something');
+  if (countryValue === "Canada") {
+    if (!validatePostalCodeCanada(value)) {
+      return "Invalid postal code format for Canada (e.g. A1B 2C3)";
+    }
+  }
+  else if (countryValue === "United States") {
+    console.log(countryValue);
+    if (!validatePostalCodeUSA(value)) {
+      return "Invalid postal code format for the United States (e.g. 12345)";
+    }
+  }
+
+  return "";
+};
+

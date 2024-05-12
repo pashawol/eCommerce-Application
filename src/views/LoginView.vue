@@ -8,6 +8,7 @@
           v-model="email"
           aria-describedby="email-help"
           @input="validateEmail"
+    required
         />
         <small class="p-error" id="email-help">{{ emailErrorMessage }}</small>
       </div>
@@ -21,6 +22,7 @@
           :feedback="false"
           toggleMask
           @input="validatePassword"
+    required
         />
         <small class="p-error" id="password-help">{{ passwordErrorMessage }}</small>
       </div>
