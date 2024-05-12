@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FetchView from '../views/FetchView.vue'
+import CheckAuthenticated from '@services/checkAuthentificated'
+import { ref } from 'vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,7 +25,8 @@ const router = createRouter({
     {
       path: '/user-profile',
       name: 'user-profile',
-      component: () => import('../views/UserProfileView.vue')
+      component: () => import('../views/UserProfileView.vue'),
+      children: [] // Add an empty array for children
     },
     {
       path: '/basket',
@@ -54,8 +57,27 @@ const router = createRouter({
       path: '/example',
       name: 'example',
       component: FetchView
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: { name: '404' }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (CheckAuthenticated.isAuthenticated) {
+    if (to.name === 'login' || to.name === 'registration') {
+      next({ name: 'home' })
+    }
+    next()
+  } else {
+    if (to.name == 'user-profile') {
+      next({ name: 'login' })
+    }
+    next()
+  }
+  next()
 })
 
 export default router
