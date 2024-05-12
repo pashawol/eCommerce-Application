@@ -3,8 +3,12 @@
     <form action="" class="mb-3">
       <div class="flex flex-column gap-2 mb-1">
         <label for="username">Email</label>
-        <InputText id="email" v-model="email" aria-describedby="email-help"
-          @input="validateEmail"/>
+        <InputText
+          id="email"
+          v-model="email"
+          aria-describedby="email-help"
+          @input="validateEmail"
+        />
         <small class="p-error" id="email-help">{{ emailErrorMessage }}</small>
       </div>
 
@@ -16,6 +20,7 @@
           aria-describedby="password-help"
           :feedback="false"
           toggleMask
+          @input="validatePassword"
         />
         <small class="p-error" id="password-help">{{ passwordErrorMessage }}</small>
       </div>
@@ -124,7 +129,7 @@
     const errors = validateEmailErrors(emailValue)
     emailErrorMessage.value = errors
   }
-  
+
   const validatePassword = () => {
     const passwordValue: string = password.value
 

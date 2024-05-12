@@ -65,5 +65,4 @@
     const errors = validatePasswordErrors(passwordValue)
     passwordErrorMessage.value = errors
   }
-
 </script>

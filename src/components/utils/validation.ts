@@ -1,20 +1,25 @@
-export const validateEmailErrors = (value: string) => {
-  const errors = emailValidations(value)
-
-  for (const validation of errors) {
+const validateFieldErrors = (value: string, validations: { condition: boolean; errorMessage: string }[]) => {
+  for (const validation of validations) {
     if (validation.condition) {
-      return validation.errorMessage
+      return validation.errorMessage;
     }
   }
+  return '';
+};
 
-  return ''
-}
+export const validateEmailErrors = (value: string) => {
+  return validateFieldErrors(value, emailValidations(value));
+};
+
+export const validatePasswordErrors = (value: string) => {
+  return validateFieldErrors(value, passwordValidations(value));
+};
 
 const emailValidations = (emailValue: string) => {
-
   const trimmedEmail: string = emailValue.trim()
 
-  return [{
+  return [
+    {
       condition: emailValue === '',
       errorMessage: ''
     },
@@ -45,19 +50,8 @@ const emailValidations = (emailValue: string) => {
   ]
 }
 
-export const validatePasswordErrors = (value: string) => {
-  const errors = passwordValidations(value)
 
-  for (const validation of errors) {
-    if (validation.condition) {
-      return validation.errorMessage
-    }
-  }
-
-  return ''
-}
-
-export const passwordValidations = (passwordValue: string) => {
+const passwordValidations = (passwordValue: string) => {
   const trimmedPassword: string = passwordValue.trim()
   return [
     {
