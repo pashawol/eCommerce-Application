@@ -24,6 +24,9 @@
   .p-password {
     position: relative;
   }
+  .p-dropdown {
+    background: var(--color-background);
+  }
 
   svg {
     position: absolute;
@@ -31,5 +34,20 @@
     top: 50%;
     transform: translateY(-50%);
     stroke: var(--color-text);
+  }
+
+  // .group-wrapper {
+  //   display: grid;
+  //   grid-template-columns: repeat(2, 1fr);
+  //   gap: 0 rem(12);
+  //   .flex {
+  //     max-width: 50%;
+  //     flex: 0 0 50%;
+  //     width: 100%;
+  //   }
+  // }
+
+  .h6 {
+    color: var(--primary-white);
   }
 }

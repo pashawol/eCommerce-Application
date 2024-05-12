@@ -1,7 +1,7 @@
 <template>
   <FormPage v-bind="params">
-    <form action="">
-      <div class="flex flex-column gap-2 mb-4">
+    <form action="" class="mb-3">
+      <div class="flex flex-column gap-2 mb-1">
         <label for="username">Email</label>
         <InputText
           id="email"
@@ -12,7 +12,7 @@
         <small class="p-error" id="email-help">{{ emailErrorMessage }}</small>
       </div>
 
-      <div class="flex flex-column gap-2 mb-4">
+      <div class="flex flex-column gap-2 mb-1">
         <label for="password">Password</label>
         <Password
           id="password"
