@@ -28,22 +28,29 @@
       <div class="group-wrapper">
         <div class="flex flex-column gap-2 mb-1">
           <label for="first-name">First Name</label>
-          <InputText id="first-name" v-model="firstName" aria-describedby="first-name-help" 
-          @input="validateFirstName"/>
+          <InputText
+            id="first-name"
+            v-model="firstName"
+            aria-describedby="first-name-help"
+            @input="validateFirstName"
+          />
           <small class="p-error" id="first-name-help">{{ firstNameErrorMessage }}</small>
         </div>
         <div class="flex flex-column gap-2 mb-1">
           <label for="last-name">Last Name</label>
-          <InputText id="last-name" v-model="lastName" aria-describedby="last-name-help"
-          @input="validateLastName" />
+          <InputText
+            id="last-name"
+            v-model="lastName"
+            aria-describedby="last-name-help"
+            @input="validateLastName"
+          />
           <small class="p-error" id="last-name-help">{{ lastNameErrorMessage }}</small>
         </div>
       </div>
 
       <div class="flex flex-column gap-2 mb-1">
         <label for="date">Date of Birth</label>
-        <Calendar id="date" v-model="date" :dateFormat="dateFormat"
-        @selected="validateDOB" />
+        <Calendar id="date" v-model="date" :dateFormat="dateFormat" @date-select="validateDOB" />
         <small class="p-error" id="date-help">{{ dobErrorMessage }}</small>
       </div>
 
@@ -63,23 +70,29 @@
         </div>
         <div class="flex flex-column gap-2">
           <label for="postal-code">Postal Code</label>
-          <InputText id="postal-code" v-model="postalCode" aria-describedby="postal-code-help" 
-          @input="validatePostalCode"/>
+          <InputText
+            id="postal-code"
+            v-model="postalCode"
+            aria-describedby="postal-code-help"
+            @input="validatePostalCode"
+          />
           <small class="p-error" id="postal-code-help">{{ postalCodeErrorMessage }}</small>
         </div>
 
         <div class="flex flex-column gap-2">
           <label for="city">City</label>
-          <InputText id="city" v-model="city" aria-describedby="city-help" 
-          @input="validateCity" />
+          <InputText id="city" v-model="city" aria-describedby="city-help" @input="validateCity" />
           <small class="p-error" id="city-help">{{ cityErrorMessage }}</small>
         </div>
 
-
         <div class="flex flex-column gap-2 mb-1">
           <label for="street">Street</label>
-          <InputText id="street" v-model="street" aria-describedby="street-help" 
-          @input="validateStreet" />
+          <InputText
+            id="street"
+            v-model="street"
+            aria-describedby="street-help"
+            @input="validateStreet"
+          />
           <small class="p-error" id="street-help">{{ streetErrorMessage }}</small>
         </div>
       </div>
@@ -95,7 +108,14 @@
   import Calendar from 'primevue/calendar'
   import Dropdown from 'primevue/dropdown'
   import { countries } from '@/components/utils/countryService'
-  import { validateEmailErrors, validatePasswordErrors, validateNameErrors, validateStreetErrors, validateCityErrors, validatePostalCodeErrors } from '@/components/utils/validation'
+  import {
+    validateEmailErrors,
+    validatePasswordErrors,
+    validateNameErrors,
+    validateStreetErrors,
+    validateCityErrors,
+    validatePostalCodeErrors
+  } from '@/components/utils/validation'
   import type { Country } from '@/components/utils/countryService'
 
   const params = {
@@ -126,8 +146,6 @@
   const cityErrorMessage = ref('')
   const countryErrorMessage = ref('')
   const streetErrorMessage = ref('')
-
-  // const inputStyleClass = 'p-inputtext-sm';
 
   const validateEmail = () => {
     const emailValue: string = email.value
@@ -164,56 +182,56 @@
     lastNameErrorMessage.value = errors
   }
   const validateCity = () => {
-    const cityValue: string = city.value;
+    const cityValue: string = city.value
 
-    cityErrorMessage.value = '';
+    cityErrorMessage.value = ''
 
-    const errors = validateCityErrors(cityValue);
-    cityErrorMessage.value = errors;
-  };
+    const errors = validateCityErrors(cityValue)
+    cityErrorMessage.value = errors
+  }
 
   const validateStreet = () => {
-    const streetValue: string = street.value;
+    const streetValue: string = street.value
 
-    streetErrorMessage.value = '';
+    streetErrorMessage.value = ''
 
-    const errors = validateStreetErrors(streetValue);
-    streetErrorMessage.value = errors;
-  };
+    const errors = validateStreetErrors(streetValue)
+    streetErrorMessage.value = errors
+  }
 
   const validateDOB = () => {
-    console.log('1');
-    const dobValue: Date | null = date.value;
-    if (!dobValue) return;
+    const dobValue = date.value
+    if (!dobValue) return
 
-    dobErrorMessage.value = '';
+    dobErrorMessage.value = ''
 
-    const errors = validateDOBErros(dobValue);
-    dobErrorMessage.value = errors;
-  };
+    const errors = validateDOBErros(dobValue)
+    dobErrorMessage.value = errors
+  }
 
   const validateDOBErros = (dob: Date) => {
-    console.log('2');
-    const currentDate = new Date();
-    const thirteenYearsAgo = new Date(currentDate.getFullYear() - 13, currentDate.getMonth(), currentDate.getDate());
+    const currentDate = new Date()
+    const thirteenYearsAgo = new Date(
+      currentDate.getFullYear() - 13,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    )
 
-    return dob > thirteenYearsAgo ? 'User must be older than 13' : '';
-  };
+    return dob > thirteenYearsAgo ? 'User must be older than 13' : ''
+  }
 
   const validatePostalCode = () => {
-    const postalCodeValue: string = postalCode.value;
-    const country = selectedCountry.value;
+    const postalCodeValue: string = postalCode.value
+    const country = selectedCountry.value
 
-    if ( country !== null ) {
+    if (country !== null) {
       const countryValue = country.name
-      postalCodeErrorMessage.value = '';
+      postalCodeErrorMessage.value = ''
 
-      const errors = validatePostalCodeErrors(postalCodeValue, countryValue);
-      postalCodeErrorMessage.value = errors;
+      const errors = validatePostalCodeErrors(postalCodeValue, countryValue)
+      postalCodeErrorMessage.value = errors
     }
-  };
-
-
+  }
 </script>
 
 <style></style>

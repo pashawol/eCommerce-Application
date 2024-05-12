@@ -1,5 +1,3 @@
-// import { Country } from "./countryService";
-
 const validateFieldErrors = (
   value: string,
   validations: { condition: boolean; errorMessage: string }[]
@@ -99,7 +97,7 @@ const passwordValidations = (passwordValue: string) => {
 
 export const validateNameErrors = (value: string) => {
   return validateFieldErrors(value, nameValidations(value))
-};
+}
 
 const nameValidations = (nameValue: string) => {
   const trimmedName: string = nameValue.trim()
@@ -117,26 +115,26 @@ const nameValidations = (nameValue: string) => {
 }
 
 export const validateStreetErrors = (value: string) => {
-  return validateFieldErrors(value, streetValidations(value));
-};
+  return validateFieldErrors(value, streetValidations(value))
+}
 
 const streetValidations = (streetValue: string) => {
-  const trimmedStreet: string = streetValue.trim();
+  const trimmedStreet: string = streetValue.trim()
 
   return [
     {
       condition: trimmedStreet.length === 0,
       errorMessage: 'Street must contain at least one character'
     }
-  ];
-};
+  ]
+}
 
 export const validateCityErrors = (value: string) => {
-  return validateFieldErrors(value, cityValidations(value));
-};
+  return validateFieldErrors(value, cityValidations(value))
+}
 
 const cityValidations = (cityValue: string) => {
-  const trimmedCity: string = cityValue.trim();
+  const trimmedCity: string = cityValue.trim()
 
   return [
     {
@@ -147,34 +145,29 @@ const cityValidations = (cityValue: string) => {
       condition: /[\d!@#$%^&*()_+=[\]{};':"\\|,.<>?]/.test(trimmedCity),
       errorMessage: 'City should not contain numbers or special characters'
     }
-  ];
-};
+  ]
+}
 
 const validatePostalCodeCanada = (postalCode: string): boolean => {
-  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-  return postalCodeRegex.test(postalCode);
-};
+  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/
+  return postalCodeRegex.test(postalCode)
+}
 
 const validatePostalCodeUSA = (postalCode: string): boolean => {
-  const postalCodeRegex = /^\d{5}(?:-\d{4})?$/;
-  return postalCodeRegex.test(postalCode);
-};
-
+  const postalCodeRegex = /^\d{5}(?:-\d{4})?$/
+  return postalCodeRegex.test(postalCode)
+}
 
 export const validatePostalCodeErrors = (value: string, countryValue: string) => {
-    console.log('check something');
-  if (countryValue === "Canada") {
+  if (countryValue === 'Canada') {
     if (!validatePostalCodeCanada(value)) {
-      return "Invalid postal code format for Canada (e.g. A1B 2C3)";
+      return 'Invalid postal code format for Canada (e.g. A1B 2C3)'
     }
-  }
-  else if (countryValue === "United States") {
-    console.log(countryValue);
+  } else if (countryValue === 'United States') {
     if (!validatePostalCodeUSA(value)) {
-      return "Invalid postal code format for the United States (e.g. 12345)";
+      return 'Invalid postal code format for the United States (e.g. 12345)'
     }
   }
 
-  return "";
-};
-
+  return ''
+}
