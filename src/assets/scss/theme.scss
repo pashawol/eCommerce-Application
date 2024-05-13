@@ -200,6 +200,7 @@ a {
 }
 .p-menuitem-link {
   color: inherit;
+  background: none !important;
   &:focus,
   &:hover {
     color: inherit;
@@ -8784,10 +8785,11 @@ a {
   }
 
   .p-menubar {
-    padding: 0 rem(24);
+    padding: rem(12) 0;
+
     background: var(--body-bg);
     // color: var(--body-color);
-    border-bottom: 3px solid var(--light-color-5);
+    // border-bottom: 3px solid var(--light-color-5);
     border-radius: 0;
   }
   .p-menubar .p-menubar-root-list {
@@ -11613,4 +11615,15 @@ a {
 
 .p-component-overlay {
   background: var(--primary-cover);
+}
+
+.p-menuitem {
+  &:hover {
+    * {
+      color: #fff !important;
+    }
+  }
+  * {
+    background: none !important;
+  }
 }
