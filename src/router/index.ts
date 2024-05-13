@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FetchView from '../views/FetchView.vue'
-import CheckAuthenticated from '@services/checkAuthentificated'
+import Authenticated from '@/services/authentificated'
 import { ref } from 'vue'
 
 const router = createRouter({
@@ -64,20 +64,18 @@ const router = createRouter({
     }
   ]
 })
+router.beforeEach((to) => {
+  const isAuth = Authenticated.get()
 
-router.beforeEach((to, from, next) => {
-  if (CheckAuthenticated.isAuthenticated) {
+  if (isAuth) {
     if (to.name === 'login' || to.name === 'registration') {
-      next({ name: 'home' })
+      return '/'
     }
-    next()
   } else {
     if (to.name == 'user-profile') {
-      next({ name: 'login' })
+      return '/login'
     }
-    next()
   }
-  next()
 })
 
 export default router

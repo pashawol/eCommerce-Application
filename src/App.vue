@@ -28,10 +28,6 @@
         route: '/basket'
       },
       {
-        label: '404',
-        route: '/404'
-      },
-      {
         label: 'Product',
         route: '/product'
       }
