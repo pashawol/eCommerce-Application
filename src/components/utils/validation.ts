@@ -1,5 +1,45 @@
+export default class Validation {
+  public static email(value: string) {
+    return validateFieldErrors(value, emailValidations(value))
+  }
+
+  public static password(value: string) {
+    return validateFieldErrors(value, passwordValidations(value))
+  }
+
+  public static name = (value: string) => {
+    return validateFieldErrors(value, nameValidations(value))
+  }
+
+  public static street = (value: string) => {
+    return validateFieldErrors(value, streetValidations(value))
+  }
+
+  public static city = (value: string) => {
+    return validateFieldErrors(value, cityValidations(value))
+  }
+
+  public static postalCode = (value: string, countryValue: string) => {
+    if (countryValue === 'Canada') {
+      if (!validatePostalCodeCanada(value)) {
+        return 'Invalid postal code format for Canada (e.g. A1B 2C3)'
+      }
+    } else if (countryValue === 'United States') {
+      if (!validatePostalCodeUSA(value)) {
+        return 'Invalid postal code format for the United States (e.g. 12345)'
+      }
+    }
+
+    return ''
+  }
+
+  public static date = (value: Date) => {
+    return validateFieldErrors(value, validateDOBErros(value))
+  }
+}
+
 const validateFieldErrors = (
-  value: string,
+  value: string | Date,
   validations: { condition: boolean; errorMessage: string }[]
 ) => {
   for (const validation of validations) {
@@ -8,10 +48,6 @@ const validateFieldErrors = (
     }
   }
   return ''
-}
-
-export const validateEmailErrors = (value: string) => {
-  return validateFieldErrors(value, emailValidations(value))
 }
 
 const emailValidations = (emailValue: string) => {
@@ -47,10 +83,6 @@ const emailValidations = (emailValue: string) => {
       errorMessage: ''
     }
   ]
-}
-
-export const validatePasswordErrors = (value: string) => {
-  return validateFieldErrors(value, passwordValidations(value))
 }
 
 const passwordValidations = (passwordValue: string) => {
@@ -95,10 +127,6 @@ const passwordValidations = (passwordValue: string) => {
   ]
 }
 
-export const validateNameErrors = (value: string) => {
-  return validateFieldErrors(value, nameValidations(value))
-}
-
 const nameValidations = (nameValue: string) => {
   const trimmedName: string = nameValue.trim()
 
@@ -114,10 +142,6 @@ const nameValidations = (nameValue: string) => {
   ]
 }
 
-export const validateStreetErrors = (value: string) => {
-  return validateFieldErrors(value, streetValidations(value))
-}
-
 const streetValidations = (streetValue: string) => {
   const trimmedStreet: string = streetValue.trim()
 
@@ -127,10 +151,6 @@ const streetValidations = (streetValue: string) => {
       errorMessage: 'Street must contain at least one character'
     }
   ]
-}
-
-export const validateCityErrors = (value: string) => {
-  return validateFieldErrors(value, cityValidations(value))
 }
 
 const cityValidations = (cityValue: string) => {
@@ -158,16 +178,18 @@ const validatePostalCodeUSA = (postalCode: string): boolean => {
   return postalCodeRegex.test(postalCode)
 }
 
-export const validatePostalCodeErrors = (value: string, countryValue: string) => {
-  if (countryValue === 'Canada') {
-    if (!validatePostalCodeCanada(value)) {
-      return 'Invalid postal code format for Canada (e.g. A1B 2C3)'
-    }
-  } else if (countryValue === 'United States') {
-    if (!validatePostalCodeUSA(value)) {
-      return 'Invalid postal code format for the United States (e.g. 12345)'
-    }
-  }
+const validateDOBErros = (dob: Date) => {
+  const currentDate = new Date()
+  const thirteenYearsAgo = new Date(
+    currentDate.getFullYear() - 13,
+    currentDate.getMonth(),
+    currentDate.getDate()
+  )
 
-  return ''
+  return [
+    {
+      condition: dob > thirteenYearsAgo,
+      errorMessage: 'User must be older than 13'
+    }
+  ]
 }

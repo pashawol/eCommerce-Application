@@ -5,24 +5,24 @@
         <label for="username">Email</label>
         <InputText
           id="email"
-          v-model="email"
+          v-model="dataForm.email"
           aria-describedby="email-help"
           @input="validateEmail"
         />
-        <small class="p-error" id="email-help">{{ emailErrorMessage }}</small>
+        <small class="p-error" id="email-help">{{ errorsForm.email }}</small>
       </div>
 
       <div class="flex flex-column gap-2 mb-1">
         <label for="password">Password</label>
         <Password
           id="password"
-          v-model="password"
+          v-model="dataForm.password"
           aria-describedby="password-help"
           :feedback="false"
           toggleMask
           @input="validatePassword"
         />
-        <small class="p-error" id="password-help">{{ passwordErrorMessage }}</small>
+        <small class="p-error" id="password-help">{{ errorsForm.password }}</small>
       </div>
 
       <div class="group-wrapper">
@@ -30,28 +30,33 @@
           <label for="first-name">First Name</label>
           <InputText
             id="first-name"
-            v-model="firstName"
+            v-model="dataForm.firstName"
             aria-describedby="first-name-help"
             @input="validateFirstName"
           />
-          <small class="p-error" id="first-name-help">{{ firstNameErrorMessage }}</small>
+          <small class="p-error" id="first-name-help">{{ errorsForm.firstName }}</small>
         </div>
         <div class="flex flex-column gap-2 mb-1">
           <label for="last-name">Last Name</label>
           <InputText
             id="last-name"
-            v-model="lastName"
+            v-model="dataForm.lastName"
             aria-describedby="last-name-help"
             @input="validateLastName"
           />
-          <small class="p-error" id="last-name-help">{{ lastNameErrorMessage }}</small>
+          <small class="p-error" id="last-name-help">{{ errorsForm.lastName }}</small>
         </div>
       </div>
 
       <div class="flex flex-column gap-2 mb-1">
         <label for="date">Date of Birth</label>
-        <Calendar id="date" v-model="date" :dateFormat="dateFormat" @date-select="validateDOB" />
-        <small class="p-error" id="date-help">{{ dobErrorMessage }}</small>
+        <Calendar
+          id="date"
+          v-model="dataForm.date"
+          :dateFormat="dateFormat"
+          @date-select="validateDOB"
+        />
+        <small class="p-error" id="date-help">{{ errorsForm.date }}</small>
       </div>
 
       <div class="h6 text-center">Shipping address</div>
@@ -60,40 +65,48 @@
           <label for="country">Country</label>
           <Dropdown
             id="country"
-            v-model="selectedCountry"
+            v-model="dataForm.selectedCountry"
             aria-describedby="country-help"
             :options="countries"
             optionLabel="name"
             @change="validatePostalCode"
           />
-          <small class="p-error" id="country-help">{{ countryErrorMessage }}</small>
+          <small class="p-error" id="country-help">{{ errorsForm.selectedCountry }}</small>
         </div>
         <div class="flex flex-column gap-2">
           <label for="postal-code">Postal Code</label>
           <InputText
             id="postal-code"
-            v-model="postalCode"
+            v-model="dataForm.postalCode"
             aria-describedby="postal-code-help"
             @input="validatePostalCode"
           />
-          <small class="p-error" id="postal-code-help">{{ postalCodeErrorMessage }}</small>
+          <small class="p-error" id="postal-code-help">{{ errorsForm.postalCode }}</small>
         </div>
 
         <div class="flex flex-column gap-2">
           <label for="city">City</label>
-          <InputText id="city" v-model="city" aria-describedby="city-help" @input="validateCity" />
-          <small class="p-error" id="city-help">{{ cityErrorMessage }}</small>
+          <InputText
+            id="city"
+            v-model="dataForm.city"
+            aria-describedby="city-help"
+            @input="validateCity"
+          />
+          <small class="p-error" id="city-help">{{ errorsForm.city }}</small>
         </div>
 
         <div class="flex flex-column gap-2 mb-1">
           <label for="street">Street</label>
           <InputText
             id="street"
-            v-model="street"
+            v-model="dataForm.street"
             aria-describedby="street-help"
             @input="validateStreet"
           />
-          <small class="p-error" id="street-help">{{ streetErrorMessage }}</small>
+          <small class="p-error" id="street-help">{{ errorsForm.street }}</small>
+        </div>
+        <div class="mb-4">
+          <Button type="submit" :disabled="!isFilledForm()" label="Submit" />
         </div>
       </div>
     </form>
@@ -108,129 +121,123 @@
   import Calendar from 'primevue/calendar'
   import Dropdown from 'primevue/dropdown'
   import { countries } from '@/components/utils/countryService'
-  import {
-    validateEmailErrors,
-    validatePasswordErrors,
-    validateNameErrors,
-    validateStreetErrors,
-    validateCityErrors,
-    validatePostalCodeErrors
-  } from '@/components/utils/validation'
+  import Validation from '@/components/utils/validation'
   import type { Country } from '@/components/utils/countryService'
 
-  const params = {
+  const params = ref({
     title: 'Registration',
     btnName: 'Submit',
     linkName: 'Login',
     linkUrl: '/login',
     linkText: 'Already have an account?'
-  }
+  })
 
-  const email = ref('')
-  const password = ref('')
-  const emailErrorMessage = ref('')
-  const passwordErrorMessage = ref('')
-  const firstName = ref('')
-  const lastName = ref('')
-  const date = ref<Date | null>(null)
-  const firstNameErrorMessage = ref('')
-  const lastNameErrorMessage = ref('')
-  const dobErrorMessage = ref('')
+  const dataForm = ref({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    date: ref<Date | null>(null),
+    postalCode: '',
+    city: '',
+    selectedCountry: ref<Country | null>(null),
+    street: ''
+  })
+
+  const errorsForm = ref({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    date: '',
+    postalCode: '',
+    city: '',
+    selectedCountry: '',
+    street: ''
+  })
+
   const dateFormat = 'dd-mm-yy'
 
-  const postalCode = ref('')
-  const city = ref('')
-  const selectedCountry = ref<Country | null>(null)
-  const street = ref('')
-  const postalCodeErrorMessage = ref('')
-  const cityErrorMessage = ref('')
-  const countryErrorMessage = ref('')
-  const streetErrorMessage = ref('')
-
   const validateEmail = () => {
-    const emailValue: string = email.value
+    const emailValue: string = dataForm.value.email
 
-    emailErrorMessage.value = ''
+    errorsForm.value.email = ''
 
-    const errors = validateEmailErrors(emailValue)
-    emailErrorMessage.value = errors
+    const errors = Validation.email(emailValue)
+    errorsForm.value.email = errors
   }
 
   const validatePassword = () => {
-    const passwordValue: string = password.value
+    const passwordValue: string = dataForm.value.password
 
-    passwordErrorMessage.value = ''
+    errorsForm.value.password = ''
 
-    const errors = validatePasswordErrors(passwordValue)
-    passwordErrorMessage.value = errors
+    const errors = Validation.password(passwordValue)
+    errorsForm.value.password = errors
   }
 
   const validateFirstName = () => {
-    const firstNameValue: string = firstName.value
+    const firstNameValue: string = dataForm.value.firstName
 
-    firstNameErrorMessage.value = ''
+    errorsForm.value.firstName = ''
 
-    const errors = validateNameErrors(firstNameValue)
-    firstNameErrorMessage.value = errors
+    const errors = Validation.name(firstNameValue)
+    errorsForm.value.firstName = errors
   }
   const validateLastName = () => {
-    const lastNameValue: string = lastName.value
+    const lastNameValue: string = dataForm.value.lastName
 
-    lastNameErrorMessage.value = ''
+    errorsForm.value.lastName = ''
 
-    const errors = validateNameErrors(lastNameValue)
-    lastNameErrorMessage.value = errors
+    const errors = Validation.name(lastNameValue)
+    errorsForm.value.lastName = errors
   }
   const validateCity = () => {
-    const cityValue: string = city.value
+    const cityValue: string = dataForm.value.city
 
-    cityErrorMessage.value = ''
+    errorsForm.value.city = ''
 
-    const errors = validateCityErrors(cityValue)
-    cityErrorMessage.value = errors
+    const errors = Validation.city(cityValue)
+    errorsForm.value.city = errors
   }
 
   const validateStreet = () => {
-    const streetValue: string = street.value
+    const streetValue: string = dataForm.value.street
 
-    streetErrorMessage.value = ''
+    errorsForm.value.street = ''
 
-    const errors = validateStreetErrors(streetValue)
-    streetErrorMessage.value = errors
+    const errors = Validation.street(streetValue)
+    errorsForm.value.street = errors
   }
 
   const validateDOB = () => {
-    const dobValue = date.value
+    const dobValue = dataForm.value.date
     if (!dobValue) return
 
-    dobErrorMessage.value = ''
+    errorsForm.value.date = ''
 
-    const errors = validateDOBErros(dobValue)
-    dobErrorMessage.value = errors
-  }
-
-  const validateDOBErros = (dob: Date) => {
-    const currentDate = new Date()
-    const thirteenYearsAgo = new Date(
-      currentDate.getFullYear() - 13,
-      currentDate.getMonth(),
-      currentDate.getDate()
-    )
-
-    return dob > thirteenYearsAgo ? 'User must be older than 13' : ''
+    const errors = Validation.date(dobValue)
+    errorsForm.value.date = errors
   }
 
   const validatePostalCode = () => {
-    const postalCodeValue: string = postalCode.value
-    const country = selectedCountry.value
+    const postalCodeValue: string = dataForm.value.postalCode
+    const country = dataForm.value.selectedCountry
 
     if (country !== null) {
       const countryValue = country.name
-      postalCodeErrorMessage.value = ''
+      errorsForm.value.postalCode = ''
 
-      const errors = validatePostalCodeErrors(postalCodeValue, countryValue)
-      postalCodeErrorMessage.value = errors
+      const errors = Validation.postalCode(postalCodeValue, countryValue)
+      errorsForm.value.postalCode = errors
     }
+  }
+
+  const isFilledForm = (data = dataForm.value, errors = errorsForm.value) => {
+    const isEmptyErrors = Object.values(errors).every((item) => item === '')
+    const isNotEmptyData = Object.values(data).every((item) => item !== '')
+
+    return isEmptyErrors && isNotEmptyData
   }
 </script>
 
