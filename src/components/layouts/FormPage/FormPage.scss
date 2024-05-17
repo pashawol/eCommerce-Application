@@ -28,7 +28,7 @@
     background: var(--color-background);
   }
 
-  svg {
+  .p-password svg {
     position: absolute;
     right: rem(10);
     top: 50%;
@@ -49,5 +49,11 @@
 
   .h6 {
     color: var(--primary-white);
+  }
+
+  .p-checkbox .p-checkbox-box {
+    --body-bg: #{transparent};
+    --border-radius: #{rem(4)};
+    border-width: rem(1);
   }
 }

@@ -105,6 +105,10 @@
           />
           <small class="p-error" id="street-help">{{ errorsForm.street }}</small>
         </div>
+        <div class="flex align-items-center mb-4">
+          <Checkbox v-model="pizza" inputId="shippingAddress" name="pizza" value="Cheese" />
+          <label for="shippingAddress" class="ml-2"> Set as default shipping address </label>
+        </div>
         <div class="mb-4">
           <Button type="submit" :disabled="!isFilledForm()" label="Submit" />
         </div>
@@ -123,6 +127,9 @@
   import { countries } from '@/components/utils/countryService'
   import Validation from '@/components/utils/validation'
   import type { Country } from '@/components/utils/countryService'
+  import Checkbox from 'primevue/checkbox'
+
+  const pizza = ref(false)
 
   const params = ref({
     title: 'Registration',
