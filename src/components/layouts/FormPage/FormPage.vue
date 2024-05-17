@@ -6,9 +6,7 @@
           <h1 class="FormPage__title">{{ title }}</h1>
         </div>
         <slot></slot>
-        <div class="mb-4">
-          <Button type="submit" :label="btnName" />
-        </div>
+
         <div class="mb-3 text-center" v-if="linkText">
           {{ linkText }}
           <router-link :to="linkUrl" class="text-primary">{{ linkName }}</router-link>
@@ -21,10 +19,6 @@
 <script setup lang="ts">
   const props = defineProps({
     title: {
-      type: String,
-      default: ''
-    },
-    btnName: {
       type: String,
       default: ''
     },
