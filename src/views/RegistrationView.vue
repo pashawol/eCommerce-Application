@@ -120,9 +120,9 @@
   import Password from 'primevue/password'
   import Calendar from 'primevue/calendar'
   import Dropdown from 'primevue/dropdown'
-  import { countries } from '@/components/utils/countryService'
+  import { countries } from '@/components/utils/countryList'
   import Validation from '@/components/utils/validation'
-  import type { Country } from '@/components/utils/countryService'
+  import type { Country } from '@/components/utils/countryList'
 
   const params = ref({
     title: 'Registration',
