@@ -2,7 +2,7 @@
   <div class="404-page">
     <div class="row">
       <div>
-        <img src="../../img/404.gif" alt="404 page" />
+        <img src="/img/404.gif" alt="404 page" />
       </div>
       <div>
         <h1 class="mb-1">404 Error: Page Not Found</h1>
