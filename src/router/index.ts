@@ -36,12 +36,12 @@ const router = createRouter({
     {
       path: '/registration',
       name: 'registration',
-      component: () => import('../views/RegistrationView.vue')
+      component: () => import('../modules/auth/views/RegistrationView.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue')
+      component: () => import('../modules/auth/views/LoginView.vue')
     },
     {
       path: '/404',
@@ -60,7 +60,8 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: { name: '404' }
+      name: '404',
+      component: () => import('../views/404View.vue')
     }
   ]
 })

@@ -35,7 +35,11 @@ export default defineConfig({
       '@common': fileURLToPath(new URL('./src/components/common', import.meta.url)),
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
       '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
-      '@img': fileURLToPath(new URL('./src/img', import.meta.url))
+      '@img': fileURLToPath(new URL('./src/img', import.meta.url)),
+      'node-fetch': 'isomorphic-fetch'
     }
+  },
+  define: {
+    global: 'window'
   }
 })
