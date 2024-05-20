@@ -60,54 +60,129 @@
       </div>
 
       <div class="h6 text-center">Shipping address</div>
-      <div class="group-wrapper">
+      <div class="flex flex-column gap-2 mb-1">
+        <label for="country">Country</label>
+        <Dropdown
+          id="country"
+          v-model="dataForm.selectedCountryShippingAddress"
+          aria-describedby="country-help"
+          :options="countries"
+          optionLabel="name"
+          @change="validatePostalCodeShipping"
+        />
+        <small class="p-error" id="country-help">{{
+          errorsForm.selectedCountryShippingAddress
+        }}</small>
+      </div>
+      <div class="flex flex-column gap-2">
+        <label for="postal-code-shipping">Postal Code</label>
+        <InputText
+          id="postal-code-shipping"
+          v-model="dataForm.postalCodeShippingAddress"
+          aria-describedby="postal-code-help"
+          @input="validatePostalCodeShipping"
+        />
+        <small class="p-error" id="postal-code-help">{{
+          errorsForm.postalCodeShippingAddress
+        }}</small>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label for="city-shipping">City</label>
+        <InputText
+          id="city-shipping"
+          v-model="dataForm.cityShippingAddress"
+          aria-describedby="city-help"
+          @input="validateCityShipping"
+        />
+        <small class="p-error" id="city-help">{{ errorsForm.cityShippingAddress }}</small>
+      </div>
+
+      <div class="flex flex-column gap-2 mb-1">
+        <label for="street-shipping">Street</label>
+        <InputText
+          id="street-shipping"
+          v-model="dataForm.streetShippingAddress"
+          aria-describedby="street-help"
+          @input="validateStreetShipping"
+        />
+        <small class="p-error" id="street-help">{{ errorsForm.streetShippingAddress }}</small>
+      </div>
+      <div class="flex align-items-center mb-4">
+        <Checkbox
+          v-model="shippingAddress"
+          inputId="shippingAddress"
+          name="shipping-address"
+          value="Cheese"
+        />
+        <label for="shipping-address" class="ml-2"> Set as default shipping address </label>
+      </div>
+      <div class="h6 text-center">Billing address</div>
+      <div class="flex align-items-center mb-1">
+        <Checkbox v-model="sameAddress" inputId="sameAddress" name="sameAddress" value="Cheese" />
+        <label for="sameAddress" class="ml-2"> The same as shipping address </label>
+      </div>
+      <div class="group-wrapper billing-inputs">
         <div class="flex flex-column gap-2 mb-1">
           <label for="country">Country</label>
           <Dropdown
             id="country"
-            v-model="dataForm.selectedCountry"
+            v-model="dataForm.selectedCountryBillingAddress"
             aria-describedby="country-help"
             :options="countries"
             optionLabel="name"
-            @change="validatePostalCode"
+            @change="validatePostalCodeBilling"
           />
-          <small class="p-error" id="country-help">{{ errorsForm.selectedCountry }}</small>
+          <small class="p-error" id="country-help">{{
+            errorsForm.selectedCountryBillingAddress
+          }}</small>
         </div>
         <div class="flex flex-column gap-2">
           <label for="postal-code">Postal Code</label>
           <InputText
             id="postal-code"
-            v-model="dataForm.postalCode"
+            v-model="dataForm.postalCodeBillingAddress"
             aria-describedby="postal-code-help"
-            @input="validatePostalCode"
+            @input="validatePostalCodeBilling"
           />
-          <small class="p-error" id="postal-code-help">{{ errorsForm.postalCode }}</small>
+          <small class="p-error" id="postal-code-help">{{
+            errorsForm.postalCodeBillingAddress
+          }}</small>
         </div>
 
         <div class="flex flex-column gap-2">
           <label for="city">City</label>
           <InputText
             id="city"
-            v-model="dataForm.city"
+            v-model="dataForm.cityBillingAddress"
             aria-describedby="city-help"
-            @input="validateCity"
+            @input="validateCityBilling"
           />
-          <small class="p-error" id="city-help">{{ errorsForm.city }}</small>
+          <small class="p-error" id="city-help">{{ errorsForm.cityBillingAddress }}</small>
         </div>
 
         <div class="flex flex-column gap-2 mb-1">
           <label for="street">Street</label>
           <InputText
             id="street"
-            v-model="dataForm.street"
+            v-model="dataForm.streetBillingAddress"
             aria-describedby="street-help"
-            @input="validateStreet"
+            @input="validateStreetBilling"
           />
-          <small class="p-error" id="street-help">{{ errorsForm.street }}</small>
+          <small class="p-error" id="street-help">{{ errorsForm.streetBillingAddress }}</small>
         </div>
-        <div class="mb-4">
-          <Button type="submit" :disabled="!isFilledForm()" label="Submit" />
-        </div>
+      </div>
+      <div class="flex align-items-center mb-4">
+        <Checkbox
+          v-model="billingAddress"
+          inputId="billingAddress"
+          name="billingAddress"
+          value="Cheese"
+        />
+        <label for="billingAddress" class="ml-2"> Set as default billing address </label>
+      </div>
+      <div class="mb-4">
+        <Button type="submit" :disabled="!isFilledForm()" label="Submit" />
       </div>
     </form>
   </FormPage>
@@ -124,6 +199,12 @@
   import Validation from '@/components/utils/validation'
   import type { Country } from '@/components/utils/countryList'
 
+  import Checkbox from 'primevue/checkbox'
+
+  const shippingAddress = ref(false)
+  const billingAddress = ref(false)
+  const sameAddress = ref(false)
+
   const params = ref({
     title: 'Registration',
     btnName: 'Submit',
@@ -138,10 +219,14 @@
     firstName: '',
     lastName: '',
     date: ref<Date | null>(null),
-    postalCode: '',
-    city: '',
-    selectedCountry: ref<Country | null>(null),
-    street: ''
+    postalCodeShippingAddress: '',
+    cityShippingAddress: '',
+    selectedCountryShippingAddress: ref<Country | null>(null),
+    streetShippingAddress: '',
+    postalCodeBillingAddress: '',
+    cityBillingAddress: '',
+    selectedCountryBillingAddress: ref<Country | null>(null),
+    streetBillingAddress: ''
   })
 
   const errorsForm = ref({
@@ -150,10 +235,14 @@
     firstName: '',
     lastName: '',
     date: '',
-    postalCode: '',
-    city: '',
-    selectedCountry: '',
-    street: ''
+    postalCodeShippingAddress: '',
+    cityShippingAddress: '',
+    selectedCountryShippingAddress: '',
+    streetShippingAddress: '',
+    postalCodeBillingAddress: '',
+    cityBillingAddress: '',
+    selectedCountryBillingAddress: '',
+    streetBillingAddress: ''
   })
 
   const dateFormat = 'dd-mm-yy'
@@ -192,24 +281,6 @@
     const errors = Validation.name(lastNameValue)
     errorsForm.value.lastName = errors
   }
-  const validateCity = () => {
-    const cityValue: string = dataForm.value.city
-
-    errorsForm.value.city = ''
-
-    const errors = Validation.city(cityValue)
-    errorsForm.value.city = errors
-  }
-
-  const validateStreet = () => {
-    const streetValue: string = dataForm.value.street
-
-    errorsForm.value.street = ''
-
-    const errors = Validation.street(streetValue)
-    errorsForm.value.street = errors
-  }
-
   const validateDOB = () => {
     const dobValue = dataForm.value.date
     if (!dobValue) return
@@ -220,16 +291,64 @@
     errorsForm.value.date = errors
   }
 
-  const validatePostalCode = () => {
-    const postalCodeValue: string = dataForm.value.postalCode
-    const country = dataForm.value.selectedCountry
+  const validateCityShipping = () => {
+    const cityValue: string = dataForm.value.cityShippingAddress
+
+    errorsForm.value.cityShippingAddress = ''
+
+    const errors = Validation.city(cityValue)
+    errorsForm.value.cityShippingAddress = errors
+  }
+
+  const validateStreetShipping = () => {
+    const streetValue: string = dataForm.value.streetShippingAddress
+
+    errorsForm.value.streetShippingAddress = ''
+
+    const errors = Validation.street(streetValue)
+    errorsForm.value.streetShippingAddress = errors
+  }
+
+  const validatePostalCodeShipping = () => {
+    const postalCodeValue: string = dataForm.value.postalCodeShippingAddress
+    const country = dataForm.value.selectedCountryShippingAddress
 
     if (country !== null) {
       const countryValue = country.name
-      errorsForm.value.postalCode = ''
+      errorsForm.value.postalCodeShippingAddress = ''
 
       const errors = Validation.postalCode(postalCodeValue, countryValue)
-      errorsForm.value.postalCode = errors
+      errorsForm.value.postalCodeShippingAddress = errors
+    }
+  }
+
+  const validateCityBilling = () => {
+    const cityValue: string = dataForm.value.cityBillingAddress
+
+    errorsForm.value.cityBillingAddress = ''
+
+    const errors = Validation.city(cityValue)
+    errorsForm.value.cityBillingAddress = errors
+  }
+
+  const validateStreetBilling = () => {
+    const streetValue: string = dataForm.value.streetBillingAddress
+
+    errorsForm.value.streetBillingAddress = ''
+
+    const errors = Validation.street(streetValue)
+    errorsForm.value.streetBillingAddress = errors
+  }
+
+  const validatePostalCodeBilling = () => {
+    const postalCodeValue: string = dataForm.value.postalCodeBillingAddress
+    const country = dataForm.value.selectedCountryBillingAddress
+    if (country !== null) {
+      const countryValue = country.name
+      errorsForm.value.postalCodeBillingAddress = ''
+
+      const errors = Validation.postalCode(postalCodeValue, countryValue)
+      errorsForm.value.postalCodeBillingAddress = errors
     }
   }
 
@@ -239,6 +358,10 @@
 
     return isEmptyErrors && isNotEmptyData
   }
+
+  // const changeFieldsVisibility = () => {
+  //   sameAddress.value = !sameAddress.value
+  // }
 </script>
 
 <style></style>
