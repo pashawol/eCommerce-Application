@@ -115,7 +115,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import FormPage from '@/components/layouts/FormPage/FormPage.vue'
+  import FormPage from '../components/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
   import Calendar from 'primevue/calendar'

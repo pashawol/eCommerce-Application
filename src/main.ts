@@ -9,6 +9,8 @@ import PrimeVue from 'primevue/config'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Icon from '@/components/common/Icon.vue'
+import store from './store'
+// import 'dotenv/config'
 
 const app = createApp(App)
 
@@ -18,4 +20,5 @@ app.component('Icon', Icon)
 
 app.use(router)
 app.use(PrimeVue)
+app.use(store)
 app.mount('#app')
