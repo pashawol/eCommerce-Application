@@ -7,10 +7,10 @@
           id="email"
           v-model="authStore.dataForm.email"
           aria-describedby="email-help"
-          @input="validateEmail"
+          @input="authStore.validateEmail"
           required
         />
-        <small class="p-error" id="email-help">{{ errorsForm.email }}</small>
+        <small class="p-error" id="email-help">{{ authStore.errorsForm.email }}</small>
       </div>
 
       <div class="flex flex-column gap-2 mb-1">
@@ -21,13 +21,13 @@
           aria-describedby="password-help"
           :feedback="false"
           toggleMask
-          @input="validatePassword"
+          @input="authStore.validatePassword"
           required
         />
-        <small class="p-error" id="password-help">{{ errorsForm.password }}</small>
+        <small class="p-error" id="password-help">{{ authStore.errorsForm.password }}</small>
       </div>
       <div class="mb-4">
-        <Button type="submit" :disabled="!isFilledForm()" label="Submit" />
+        <Button type="submit" :disabled="!authStore.isFilledForm()" label="Submit" />
       </div>
     </form>
   </FormPage>
@@ -45,15 +45,15 @@
 
   console.log(authStore.dataForm)
 
-  const dataForm = ref({
-    email: '',
-    password: ''
-  })
+  // const dataForm = ref({
+  //   email: '',
+  //   password: ''
+  // })
 
-  const errorsForm = ref({
-    email: '',
-    password: ''
-  })
+  // const errorsForm = ref({
+  //   email: '',
+  //   password: ''
+  // })
 
   const params = ref({
     title: 'Login',
@@ -63,28 +63,28 @@
     linkText: 'Don’t have an account?'
   })
 
-  const validateEmail = () => {
-    const emailValue: string = authStore.dataForm.email
-    errorsForm.value.email = ''
+  // const validateEmail = () => {
+  //   const emailValue: string = authStore.dataForm.email
+  //   errorsForm.value.email = ''
 
-    const errors = Validation.email(emailValue)
-    errorsForm.value.email = errors
-  }
+  //   const errors = Validation.email(emailValue)
+  //   errorsForm.value.email = errors
+  // }
 
-  const validatePassword = () => {
-    const passwordValue: string = authStore.dataForm.password
-    errorsForm.value.password = ''
+  // const validatePassword = () => {
+  //   const passwordValue: string = authStore.dataForm.password
+  //   errorsForm.value.password = ''
 
-    const errors = Validation.password(passwordValue)
-    errorsForm.value.password = errors
-  }
+  //   const errors = Validation.password(passwordValue)
+  //   errorsForm.value.password = errors
+  // }
 
-  const isFilledForm = (data = authStore.dataForm, errors = errorsForm.value) => {
-    const isEmptyErrors = Object.values(errors).every((item) => item === '')
-    const isNotEmptyData = Object.values(data).every((item) => item !== '')
+  // const isFilledForm = (data = authStore.dataForm, errors = errorsForm.value) => {
+  //   const isEmptyErrors = Object.values(errors).every((item) => item === '')
+  //   const isNotEmptyData = Object.values(data).every((item) => item !== '')
 
-    return isEmptyErrors && isNotEmptyData
-  }
+  //   return isEmptyErrors && isNotEmptyData
+  // }
 
   const sumbit = () => {
     authStore.logIn()
