@@ -1,14 +1,32 @@
 <script setup lang="ts">
   import Menubar from 'primevue/menubar'
 
-  const props = defineProps({
-    menuItems: {
-      type: Array,
-      required: true
+  const menuItems = [
+    {
+      label: 'Home',
+      route: '/'
+    },
+    {
+      label: 'About',
+      route: '/about'
+    },
+    {
+      label: 'Catalog',
+      route: '/catalog'
+    },
+    {
+      label: 'User-profile',
+      route: '/user-profile'
+    },
+    {
+      label: 'Basket',
+      route: '/basket'
+    },
+    {
+      label: 'Product',
+      route: '/product'
     }
-  })
-
-  const { menuItems } = props
+  ]
 </script>
 
 <template>

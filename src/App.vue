@@ -4,42 +4,13 @@
   import { ref } from 'vue'
 
   // const pagesWithOutHeader = ['404']
-
-  const params = ref({
-    menuItems: [
-      {
-        label: 'Home',
-        route: '/'
-      },
-      {
-        label: 'About',
-        route: '/about'
-      },
-      {
-        label: 'Catalog',
-        route: '/catalog'
-      },
-      {
-        label: 'User-profile',
-        route: '/user-profile'
-      },
-      {
-        label: 'Basket',
-        route: '/basket'
-      },
-      {
-        label: 'Product',
-        route: '/product'
-      }
-    ]
-  })
 </script>
 
 <template>
   <div class="main-wrapper">
-    <Header v-bind="params" />
+    <Header />
     <router-view v-slot="{ Component }">
-      <component :is="Component" v-bind="params" />
+      <component :is="Component" />
     </router-view>
   </div>
 
