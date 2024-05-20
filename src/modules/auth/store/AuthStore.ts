@@ -1,11 +1,12 @@
 import { apiRoot } from './../services/client'
 import { defineStore } from 'pinia'
-import type { LoginProps } from '../interfaces/index'
+import type { LoginProps, ToastProps } from '../interfaces/index'
 import Validation from '@/components/utils/validation'
 
 interface State {
   dataForm: LoginProps
   errorsForm: LoginProps
+  toast: ToastProps
 }
 
 export const useAuthStore = defineStore('authStore', {
@@ -17,6 +18,11 @@ export const useAuthStore = defineStore('authStore', {
     errorsForm: {
       email: '',
       password: ''
+    },
+    toast: {
+      severity: undefined,
+      summary: undefined,
+      detail: ''
     }
   }),
   actions: {
@@ -42,11 +48,23 @@ export const useAuthStore = defineStore('authStore', {
     },
     async logIn() {
       try {
-        console.log(this.dataForm)
+        // console.log(this.dataForm)
         const respone = await apiRoot.login().post({ body: this.dataForm }).execute()
+        console.log(respone.body)
+
+        this.toast = {
+          summary: 'You logined successfully',
+          detail: 'Welcome to the Store',
+          severity: 'success'
+        }
 
         return respone.body
-      } catch (err) {
+      } catch (err: Error) {
+        this.toast = {
+          summary: 'Something went wrong :(',
+          detail: err.message,
+          severity: 'error'
+        }
         console.log(err)
       }
     }
