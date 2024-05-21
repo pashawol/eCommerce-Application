@@ -262,12 +262,14 @@ export const useRegistrationStore = defineStore('registrationStore', {
         }
 
         return response.body
-      } catch (error: Error) {
+      } catch (error: unknown) {
         console.error('Error during customer registration:', error)
-        this.toast = {
-          summary: 'Something went wrong :(',
-          detail: error.message,
-          severity: 'error'
+        if (error instanceof Error) {
+          this.toast = {
+            summary: 'Something went wrong :(',
+            detail: error.message,
+            severity: 'error'
+          }
         }
       }
     }

@@ -9,7 +9,8 @@ export interface ToastProps {
   severity: 'success' | 'info' | 'warn' | 'error' | 'secondary' | 'contrast' | undefined
 }
 
-export interface RegProps {
+export type RegProps = {
+  [key: string]: any
   firstName: string
   lastName: string
   email: string

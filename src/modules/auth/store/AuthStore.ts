@@ -59,11 +59,13 @@ export const useAuthStore = defineStore('authStore', {
         }
 
         return respone.body
-      } catch (err: Error) {
-        this.toast = {
-          summary: 'Something went wrong :(',
-          detail: err.message,
-          severity: 'error'
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.toast = {
+            summary: 'Something went wrong :(',
+            detail: err.message,
+            severity: 'error'
+          }
         }
         console.log(err)
       }
