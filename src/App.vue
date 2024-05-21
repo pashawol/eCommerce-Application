@@ -2,6 +2,7 @@
   import { RouterView } from 'vue-router'
   import Header from '@layouts/Header/HeaderApp.vue'
   import { ref } from 'vue'
+  import Toast from 'primevue/toast'
 
   // const pagesWithOutHeader = ['404']
 </script>
@@ -9,6 +10,7 @@
 <template>
   <div class="main-wrapper">
     <Header />
+    <Toast />
     <router-view v-slot="{ Component }">
       <component :is="Component" />
     </router-view>

@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <FormPage v-bind="params">
     <form @submit.prevent="sumbit()" class="mb-3">
       <div class="flex flex-column gap-2 mb-1">
@@ -62,6 +61,7 @@
           v-model="registrationStore.mainDateOfBirth"
           :dateFormat="dateFormat"
           @date-select="registrationStore.validateDOB"
+          :maxDate="new Date()"
         />
         <small class="p-error" id="date-help">{{ registrationStore.errorsForm.dateOfBirth }}</small>
       </div>
@@ -206,24 +206,23 @@
 <script setup lang="ts">
   import { useRegistrationStore } from '../store/RegistrationStore'
   import { ref } from 'vue'
+  import { useToast } from 'primevue/usetoast'
+  import { useRouter } from 'vue-router'
   import FormPage from '../components/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
   import Calendar from 'primevue/calendar'
   import Dropdown from 'primevue/dropdown'
-  import { countries } from '@/components/utils/countryList'
-  import Validation from '@/components/utils/validation'
-  import type { Country } from '@/components/utils/countryList'
-  import Toast from 'primevue/toast'
-  import { useToast } from 'primevue/usetoast'
-
   import Checkbox from 'primevue/checkbox'
+
+  import type { Country } from '../interfaces'
 
   const registrationStore = useRegistrationStore()
   const toast = useToast()
   const shippingAddress = ref(false)
   const billingAddress = ref(false)
   const sameAddress = ref(false)
+  const router = useRouter()
 
   const params = ref({
     title: 'Registration',
@@ -233,155 +232,12 @@
     linkText: 'Already have an account?'
   })
 
-  // const dataForm = ref({
-  //   email: '',
-  //   password: '',
-  //   firstName: '',
-  //   lastName: '',
-  //   date: ref<Date | null>(null),
-  //   postalCodeShippingAddress: '',
-  //   cityShippingAddress: '',
-  //   selectedCountryShippingAddress: ref<Country | null>(null),
-  //   streetShippingAddress: '',
-  //   postalCodeBillingAddress: '',
-  //   cityBillingAddress: '',
-  //   selectedCountryBillingAddress: ref<Country | null>(null),
-  //   streetBillingAddress: ''
-  // })
-
-  // const errorsForm = ref({
-  //   email: '',
-  //   password: '',
-  //   firstName: '',
-  //   lastName: '',
-  //   date: '',
-  //   postalCodeShippingAddress: '',
-  //   cityShippingAddress: '',
-  //   selectedCountryShippingAddress: '',
-  //   streetShippingAddress: '',
-  //   postalCodeBillingAddress: '',
-  //   cityBillingAddress: '',
-  //   selectedCountryBillingAddress: '',
-  //   streetBillingAddress: ''
-  // })
+  const countries = ref<Country[]>([
+    { name: 'Canada', code: 'CA' },
+    { name: 'United States', code: 'US' }
+  ])
 
   const dateFormat = 'dd-mm-yy'
-
-  // const validateEmail = () => {
-  //   const emailValue: string = dataForm.value.email
-
-  //   errorsForm.value.email = ''
-
-  //   const errors = Validation.email(emailValue)
-  //   errorsForm.value.email = errors
-  // }
-
-  // const validatePassword = () => {
-  //   const passwordValue: string = dataForm.value.password
-
-  //   errorsForm.value.password = ''
-
-  //   const errors = Validation.password(passwordValue)
-  //   errorsForm.value.password = errors
-  // }
-
-  // const validateFirstName = () => {
-  //   const firstNameValue: string = dataForm.value.firstName
-
-  //   errorsForm.value.firstName = ''
-
-  //   const errors = Validation.name(firstNameValue)
-  //   errorsForm.value.firstName = errors
-  // }
-  // const validateLastName = () => {
-  //   const lastNameValue: string = dataForm.value.lastName
-
-  //   errorsForm.value.lastName = ''
-
-  //   const errors = Validation.name(lastNameValue)
-  //   errorsForm.value.lastName = errors
-  // }
-  // const validateDOB = () => {
-  //   const dobValue = dataForm.value.date
-  //   if (!dobValue) return
-
-  //   errorsForm.value.date = ''
-
-  //   const errors = Validation.date(dobValue)
-  //   errorsForm.value.date = errors
-  // }
-
-  // const validateCityShipping = () => {
-  //   const cityValue: string = dataForm.value.cityShippingAddress
-
-  //   errorsForm.value.cityShippingAddress = ''
-
-  //   const errors = Validation.city(cityValue)
-  //   errorsForm.value.cityShippingAddress = errors
-  // }
-
-  // const validateStreetShipping = () => {
-  //   const streetValue: string = dataForm.value.streetShippingAddress
-
-  //   errorsForm.value.streetShippingAddress = ''
-
-  //   const errors = Validation.street(streetValue)
-  //   errorsForm.value.streetShippingAddress = errors
-  // }
-
-  // const validatePostalCodeShipping = () => {
-  //   const postalCodeValue: string = dataForm.value.postalCodeShippingAddress
-  //   const country = dataForm.value.selectedCountryShippingAddress
-
-  //   if (country !== null) {
-  //     const countryValue = country.name
-  //     errorsForm.value.postalCodeShippingAddress = ''
-
-  //     const errors = Validation.postalCode(postalCodeValue, countryValue)
-  //     errorsForm.value.postalCodeShippingAddress = errors
-  //   }
-  // }
-
-  // const validateCityBilling = () => {
-  //   const cityValue: string = dataForm.value.cityBillingAddress
-
-  //   errorsForm.value.cityBillingAddress = ''
-
-  //   const errors = Validation.city(cityValue)
-  //   errorsForm.value.cityBillingAddress = errors
-  // }
-
-  // const validateStreetBilling = () => {
-  //   const streetValue: string = dataForm.value.streetBillingAddress
-
-  //   errorsForm.value.streetBillingAddress = ''
-
-  //   const errors = Validation.street(streetValue)
-  //   errorsForm.value.streetBillingAddress = errors
-  // }
-
-  // const validatePostalCodeBilling = () => {
-  //   const postalCodeValue: string = dataForm.value.postalCodeBillingAddress
-  //   const country = dataForm.value.selectedCountryBillingAddress
-  //   if (country !== null) {
-  //     const countryValue = country.name
-  //     errorsForm.value.postalCodeBillingAddress = ''
-
-  //     const errors = Validation.postalCode(postalCodeValue, countryValue)
-  //     errorsForm.value.postalCodeBillingAddress = errors
-  //   }
-  // }
-
-  // const isFilledForm = (data = dataForm.value, errors = errorsForm.value) => {
-  //   const isEmptyErrors = Object.values(errors).every((item) => item === '')
-  //   const isNotEmptyData = Object.values(data).every((item) => item !== '')
-
-  //   return isEmptyErrors && isNotEmptyData
-  // }
-
-  // const changeFieldsVisibility = () => {
-  //   sameAddress.value = !sameAddress.value
-  // }
 
   const sumbit = () => {
     registrationStore.registration().then(() => {
@@ -391,6 +247,10 @@
         detail: registrationStore.toast.detail,
         life: 3000
       })
+
+      if (registrationStore.toast.severity === 'success') {
+        router.push('/')
+      }
     })
   }
 </script>

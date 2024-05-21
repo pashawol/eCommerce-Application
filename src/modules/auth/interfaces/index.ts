@@ -36,3 +36,8 @@ export interface RegProps {
   defaultBillingAddress: number | undefined
   defaultShippingAddress: number | undefined
 }
+
+export interface Country {
+  name: string
+  code: string
+}

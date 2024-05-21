@@ -1,4 +1,4 @@
-import type { CustomerDraft, MyCustomerDraft } from '@commercetools/platform-sdk'
+import type { MyCustomerDraft } from '@commercetools/platform-sdk'
 import { defineStore } from 'pinia'
 import { apiRoot } from '../services/client'
 import type { RegProps, ToastProps } from '../interfaces'
@@ -198,14 +198,52 @@ export const useRegistrationStore = defineStore('registrationStore', {
     },
 
     isFilledForm() {
-      const isEmptyErrors = Object.values(this.errorsForm).every((item) => item === '')
-      const isNotEmptyData = Object.values(this.customerDraft).every((item) => item !== '')
+      function areAllErrorStringPropertiesEmpty(obj: RegProps): boolean {
+        for (const key in obj) {
+          if (typeof obj[key] === 'string' && obj[key].trim() !== '') {
+            return false
+          }
+          if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+            if (!areAllErrorStringPropertiesEmpty(obj[key])) {
+              return false
+            }
+          }
+          if (Array.isArray(obj[key])) {
+            for (const item of obj[key]) {
+              if (!areAllErrorStringPropertiesEmpty(item)) {
+                return false
+              }
+            }
+          }
+        }
+        return true
+      }
 
-      // console.log(this.customerDraft)
-      // console.log(isNotEmptyData)
+      function areAllStringPropertiesFilled(obj: RegProps): boolean {
+        for (const key in obj) {
+          if (typeof obj[key] === 'string' && obj[key].trim() === '') {
+            return false
+          }
+          if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+            if (!areAllStringPropertiesFilled(obj[key])) {
+              return false
+            }
+          }
+          if (Array.isArray(obj[key])) {
+            for (const item of obj[key]) {
+              if (!areAllStringPropertiesFilled(item)) {
+                return false
+              }
+            }
+          }
+        }
+        return true
+      }
 
-      // return isEmptyErrors && isNotEmptyData
-      return isNotEmptyData
+      const isEmptyErrors = areAllErrorStringPropertiesEmpty(this.errorsForm)
+      const isNotEmptyData = areAllStringPropertiesFilled(this.customerDraft)
+
+      return isEmptyErrors && isNotEmptyData
     },
     async registration() {
       const JSONBody = this.customerDraft
@@ -223,7 +261,6 @@ export const useRegistrationStore = defineStore('registrationStore', {
           severity: 'success'
         }
 
-        console.log('Customer registered:', response.body)
         return response.body
       } catch (error: Error) {
         console.error('Error during customer registration:', error)
