@@ -42,3 +42,11 @@ export interface Country {
   name: string
   code: string
 }
+
+export interface PageContentProps {
+  title: string
+  btnName: string
+  linkName: string
+  linkUrl: string
+  linkText: string
+}

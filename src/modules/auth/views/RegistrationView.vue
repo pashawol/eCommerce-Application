@@ -1,5 +1,16 @@
 <template>
-  <FormPage v-bind="params">
+  <Button
+    style="position: fixed; left: 0; top: 0"
+    label="log"
+    @click="
+      console.log(
+        registrationStore.customerDraft,
+        'registrationStore.billingAddress',
+        registrationStore.billingAddress
+      )
+    "
+  />
+  <FormPage v-bind="registrationStore.pageContent">
     <form @submit.prevent="sumbit()" class="mb-3">
       <div class="flex flex-column gap-2 mb-1">
         <label for="username">Email</label>
@@ -121,10 +132,11 @@
       </div>
       <div class="flex align-items-center mb-4">
         <Checkbox
-          v-model="shippingAddress"
+          v-model="registrationStore.shippingAddress"
           inputId="shippingAddress"
           name="shipping-address"
-          value="Cheese"
+          :value="false"
+          @change="registrationStore.actionDefaultShippingAddress"
         />
         <label for="shipping-address" class="ml-2"> Set as default shipping address </label>
       </div>
@@ -189,10 +201,11 @@
       </div>
       <div class="flex align-items-center mb-4">
         <Checkbox
-          v-model="billingAddress"
+          v-model="registrationStore.billingAddress"
           inputId="billingAddress"
           name="billingAddress"
-          value="Cheese"
+          :value="false"
+          @change="registrationStore.actionDefaultBillingAddress"
         />
         <label for="billingAddress" class="ml-2"> Set as default billing address </label>
       </div>
@@ -223,14 +236,6 @@
   const billingAddress = ref(false)
   const sameAddress = ref(false)
   const router = useRouter()
-
-  const params = ref({
-    title: 'Registration',
-    btnName: 'Submit',
-    linkName: 'Login',
-    linkUrl: '/login',
-    linkText: 'Already have an account?'
-  })
 
   const countries = ref<Country[]>([
     { name: 'Canada', code: 'CA' },

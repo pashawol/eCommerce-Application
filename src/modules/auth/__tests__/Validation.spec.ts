@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import Validation from '../utils/validation'
+import Validation from '../services/validation'
 
 describe('Validation', () => {
   it('should validate email correctly', () => {

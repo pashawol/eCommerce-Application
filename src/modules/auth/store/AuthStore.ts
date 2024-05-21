@@ -1,12 +1,13 @@
 import { apiRoot } from './../services/client'
 import { defineStore } from 'pinia'
-import type { LoginProps, ToastProps } from '../interfaces/index'
-import Validation from '@/components/utils/validation'
+import type { LoginProps, PageContentProps, ToastProps } from '../interfaces/index'
+import Validation from '../services/validation'
 
 interface State {
   dataForm: LoginProps
   errorsForm: LoginProps
   toast: ToastProps
+  pageContent: PageContentProps
 }
 
 export const useAuthStore = defineStore('authStore', {
@@ -23,6 +24,13 @@ export const useAuthStore = defineStore('authStore', {
       severity: undefined,
       summary: undefined,
       detail: ''
+    },
+    pageContent: {
+      title: 'Login',
+      btnName: 'Submit',
+      linkName: 'Registration',
+      linkUrl: '/registration',
+      linkText: 'Don’t have an account?'
     }
   }),
   actions: {
