@@ -34,8 +34,8 @@ export type RegProps = {
   ]
   shippingAddresses: number[]
   billingAddresses: number[]
-  defaultBillingAddress: number | undefined
-  defaultShippingAddress: number | undefined
+  defaultBillingAddress: number | null
+  defaultShippingAddress: number | null
 }
 
 export interface Country {

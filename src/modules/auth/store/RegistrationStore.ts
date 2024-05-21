@@ -59,8 +59,8 @@ export const useRegistrationStore = defineStore('registrationStore', {
       ],
       shippingAddresses: [0],
       billingAddresses: [0],
-      defaultBillingAddress: 0,
-      defaultShippingAddress: 0
+      defaultBillingAddress: null,
+      defaultShippingAddress: null
     },
     errorsForm: {
       firstName: '',
@@ -104,16 +104,10 @@ export const useRegistrationStore = defineStore('registrationStore', {
   }),
   actions: {
     actionDefaultBillingAddress() {
-      this.customerDraft.defaultBillingAddress =
-        this.billingAddress.length > 0
-          ? (this.customerDraft.defaultBillingAddress = 1)
-          : (this.customerDraft.defaultBillingAddress = 0)
+      this.customerDraft.defaultBillingAddress = this.billingAddress[0]
     },
     actionDefaultShippingAddress() {
-      this.customerDraft.defaultShippingAddress =
-        this.shippingAddress.length > 0
-          ? (this.customerDraft.defaultShippingAddress = 1)
-          : (this.customerDraft.defaultShippingAddress = 0)
+      this.customerDraft.defaultShippingAddress = this.shippingAddress[0]
     },
     validateEmail() {
       const emailValue: string = this.customerDraft.email
