@@ -8,3 +8,31 @@ export interface ToastProps {
   summary?: string
   severity: 'success' | 'info' | 'warn' | 'error' | 'secondary' | 'contrast' | undefined
 }
+
+export interface RegProps {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  dateOfBirth: string
+  addresses: [
+    {
+      streetName: string
+
+      postalCode: string
+      city: string
+      country: string
+    },
+    {
+      streetName: string
+
+      postalCode: string
+      city: string
+      country: string
+    }
+  ]
+  shippingAddresses: number[]
+  billingAddresses: number[]
+  defaultBillingAddress: number | undefined
+  defaultShippingAddress: number | undefined
+}

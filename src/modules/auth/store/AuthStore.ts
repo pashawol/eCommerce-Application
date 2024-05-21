@@ -2,6 +2,7 @@ import { apiRoot } from './../services/client'
 import { defineStore } from 'pinia'
 import type { LoginProps, ToastProps } from '../interfaces/index'
 import Validation from '@/components/utils/validation'
+import type { CustomerDraft, MyCustomerDraft } from '@commercetools/platform-sdk'
 
 interface State {
   dataForm: LoginProps
