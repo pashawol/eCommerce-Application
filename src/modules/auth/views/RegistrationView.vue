@@ -73,7 +73,7 @@
           id="country"
           v-model="registrationStore.mainShippingDropdown"
           aria-describedby="country-help"
-          :options="countries"
+          :options="registrationStore.countries"
           optionLabel="name"
           @change="registrationStore.validatePostalCodeShipping"
         />
@@ -131,7 +131,13 @@
       </div>
       <div class="h6 text-center">Billing address</div>
       <div class="flex align-items-center mb-1">
-        <Checkbox v-model="sameAddress" inputId="sameAddress" name="sameAddress" value="Cheese" />
+        <Checkbox
+          v-model="registrationStore.sameAddress"
+          inputId="sameAddress"
+          name="sameAddress"
+          value="compare"
+          @change="registrationStore.setSameAddress"
+        />
         <label for="sameAddress" class="ml-2"> The same as shipping address </label>
       </div>
       <div class="group-wrapper billing-inputs">
@@ -141,7 +147,7 @@
             id="country"
             v-model="registrationStore.mainBillingDropdown"
             aria-describedby="country-help"
-            :options="countries"
+            :options="registrationStore.countries"
             optionLabel="name"
             @change="registrationStore.validatePostalCodeBilling"
           />
@@ -207,7 +213,6 @@
 
 <script setup lang="ts">
   import { useRegistrationStore } from '../store/RegistrationStore'
-  import { ref } from 'vue'
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
   import FormPage from '../components/FormPage/FormPage.vue'
@@ -217,18 +222,9 @@
   import Dropdown from 'primevue/dropdown'
   import Checkbox from 'primevue/checkbox'
 
-  import type { Country } from '../interfaces'
-
   const registrationStore = useRegistrationStore()
   const toast = useToast()
-  const sameAddress = ref(false)
   const router = useRouter()
-
-  const countries = ref<Country[]>([
-    { name: 'Canada', code: 'CA' },
-    { name: 'United States', code: 'US' }
-  ])
-
   const dateFormat = 'dd-mm-yy'
 
   const sumbit = () => {
