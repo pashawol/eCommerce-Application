@@ -48,7 +48,7 @@
   --highlight-bg: var(--light-color-6);
   --highlight-text-color: var(--body-color);
   color-scheme: light;
-  --border-radius: 4px;
+  --border-radius: 10px;
 }
 
 @font-face {
@@ -200,6 +200,7 @@ a {
 }
 .p-menuitem-link {
   color: inherit;
+  background: none !important;
   &:focus,
   &:hover {
     color: inherit;
@@ -2116,8 +2117,8 @@ a {
     font-family: var(--font-family);
     font-feature-settings: var(--font-feature-settings, normal);
     font-size: 1rem;
-    color: var(--body-color);
-    background: var(--body-bg);
+    color: var(--color-text);
+    background: var(--color-background);
     padding: rem(9) rem(12);
     border: 1px solid var(--light-color-4);
     transition:
@@ -8784,10 +8785,11 @@ a {
   }
 
   .p-menubar {
-    padding: 0 rem(24);
+    padding: rem(12) 0;
+
     background: var(--body-bg);
     // color: var(--body-color);
-    border-bottom: 3px solid var(--light-color-5);
+    // border-bottom: 3px solid var(--light-color-5);
     border-radius: 0;
   }
   .p-menubar .p-menubar-root-list {
@@ -8999,9 +9001,11 @@ a {
   }
   .p-menubar.p-menubar-mobile .p-menubar-root-list {
     padding: 0.5rem 0;
-    background: var(--body-bg);
+    background: black;
     border: 0 none;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    height: 100dvh !important;
+    top: 0 !important;
   }
   .p-menubar.p-menubar-mobile .p-menubar-root-list .p-menuitem-separator {
     border-top: 1px solid var(--light-color-5);
@@ -11613,4 +11617,15 @@ a {
 
 .p-component-overlay {
   background: var(--primary-cover);
+}
+
+.p-menuitem {
+  &:hover {
+    * {
+      color: #fff !important;
+    }
+  }
+  * {
+    background: none !important;
+  }
 }

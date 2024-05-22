@@ -1,0 +1,59 @@
+.FormPage {
+  &__title {
+    margin-bottom: rem(24);
+    font-weight: 600;
+  }
+
+  &__main {
+    padding: rem(48) rem(18);
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__body {
+    margin: auto;
+    padding-block: rem(36);
+    max-width: rem(424);
+    width: 100%;
+  }
+
+  .p-button {
+    width: 100%;
+  }
+
+  .p-password {
+    position: relative;
+  }
+  .p-dropdown {
+    background: var(--color-background);
+  }
+
+  .p-password svg {
+    position: absolute;
+    right: rem(10);
+    top: 50%;
+    transform: translateY(-50%);
+    stroke: var(--color-text);
+  }
+
+  // .group-wrapper {
+  //   display: grid;
+  //   grid-template-columns: repeat(2, 1fr);
+  //   gap: 0 rem(12);
+  //   .flex {
+  //     max-width: 50%;
+  //     flex: 0 0 50%;
+  //     width: 100%;
+  //   }
+  // }
+
+  .h6 {
+    color: var(--primary-white);
+  }
+
+  .p-checkbox .p-checkbox-box {
+    --body-bg: #{transparent};
+    --border-radius: #{rem(4)};
+    border-width: rem(1);
+  }
+}
