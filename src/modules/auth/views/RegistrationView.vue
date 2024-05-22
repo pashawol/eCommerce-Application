@@ -1,9 +1,4 @@
 <template>
-  <Button
-    style="position: fixed; top: 0; left: 0"
-    label="log"
-    @click="console.log(registrationStore.customerDraft)"
-  />
   <FormPage v-bind="registrationStore.pageContent">
     <form @submit.prevent="sumbit()" class="mb-3">
       <div class="flex flex-column gap-2 mb-1">
