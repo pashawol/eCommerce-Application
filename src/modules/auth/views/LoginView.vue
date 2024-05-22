@@ -1,5 +1,5 @@
 <template>
-  <FormPage v-bind="params">
+  <FormPage v-bind="authStore.pageContent">
     <form @submit.prevent="sumbit()" class="mb-3">
       <div class="flex flex-column gap-2 mb-1">
         <label for="username">Email</label>
@@ -34,7 +34,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
   import { useAuthStore } from '../store/AuthStore'
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
@@ -45,13 +44,6 @@
   const toast = useToast()
   const authStore = useAuthStore()
   const router = useRouter()
-  const params = ref({
-    title: 'Login',
-    btnName: 'Submit',
-    linkName: 'Registration',
-    linkUrl: '/registration',
-    linkText: 'Don’t have an account?'
-  })
 
   const sumbit = () => {
     authStore.logIn().then(() => {

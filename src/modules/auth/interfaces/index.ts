@@ -34,11 +34,19 @@ export type RegProps = {
   ]
   shippingAddresses: number[]
   billingAddresses: number[]
-  defaultBillingAddress: number | undefined
-  defaultShippingAddress: number | undefined
+  defaultBillingAddress: number | null
+  defaultShippingAddress: number | null
 }
 
 export interface Country {
   name: string
   code: string
+}
+
+export interface PageContentProps {
+  title: string
+  btnName: string
+  linkName: string
+  linkUrl: string
+  linkText: string
 }

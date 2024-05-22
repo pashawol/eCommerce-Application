@@ -1,12 +1,14 @@
 import type { MyCustomerDraft } from '@commercetools/platform-sdk'
 import { defineStore } from 'pinia'
 import { apiRoot } from '../services/client'
-import type { RegProps, ToastProps } from '../interfaces'
-import Validation from '@/components/utils/validation'
+import type { PageContentProps, RegProps, ToastProps } from '../interfaces'
+import Validation from '../services/validation'
 
 interface State {
   mainDateOfBirth: Date
   customerDraft: RegProps
+  billingAddress: number[]
+  shippingAddress: number[]
   errorsForm: RegProps
   mainShippingDropdown: {
     name: string
@@ -17,11 +19,14 @@ interface State {
     code: string
   }
   toast: ToastProps
+  pageContent: PageContentProps
 }
 
 export const useRegistrationStore = defineStore('registrationStore', {
   state: (): State => ({
     mainDateOfBirth: new Date(),
+    billingAddress: [],
+    shippingAddress: [],
     mainShippingDropdown: {
       name: '',
       code: ''
@@ -54,8 +59,8 @@ export const useRegistrationStore = defineStore('registrationStore', {
       ],
       shippingAddresses: [0],
       billingAddresses: [0],
-      defaultBillingAddress: 0,
-      defaultShippingAddress: 0
+      defaultBillingAddress: null,
+      defaultShippingAddress: null
     },
     errorsForm: {
       firstName: '',
@@ -88,9 +93,22 @@ export const useRegistrationStore = defineStore('registrationStore', {
       severity: undefined,
       summary: undefined,
       detail: ''
+    },
+    pageContent: {
+      title: 'Registration',
+      btnName: 'Submit',
+      linkName: 'Login',
+      linkUrl: '/login',
+      linkText: 'Already have an account?'
     }
   }),
   actions: {
+    actionDefaultBillingAddress() {
+      this.customerDraft.defaultBillingAddress = this.billingAddress[0]
+    },
+    actionDefaultShippingAddress() {
+      this.customerDraft.defaultShippingAddress = this.shippingAddress[0]
+    },
     validateEmail() {
       const emailValue: string = this.customerDraft.email
 
@@ -198,19 +216,22 @@ export const useRegistrationStore = defineStore('registrationStore', {
     },
 
     isFilledForm() {
-      function areAllErrorStringPropertiesEmpty(obj: RegProps): boolean {
+      function checkStringProperties(obj: RegProps, isempty: boolean): boolean {
         for (const key in obj) {
-          if (typeof obj[key] === 'string' && obj[key].trim() !== '') {
+          if (
+            typeof obj[key] === 'string' &&
+            (isempty ? obj[key].trim() === '' : obj[key].trim() !== '')
+          ) {
             return false
           }
           if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-            if (!areAllErrorStringPropertiesEmpty(obj[key])) {
+            if (!checkStringProperties(obj[key], isempty)) {
               return false
             }
           }
           if (Array.isArray(obj[key])) {
             for (const item of obj[key]) {
-              if (!areAllErrorStringPropertiesEmpty(item)) {
+              if (!checkStringProperties(item, isempty)) {
                 return false
               }
             }
@@ -219,29 +240,8 @@ export const useRegistrationStore = defineStore('registrationStore', {
         return true
       }
 
-      function areAllStringPropertiesFilled(obj: RegProps): boolean {
-        for (const key in obj) {
-          if (typeof obj[key] === 'string' && obj[key].trim() === '') {
-            return false
-          }
-          if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-            if (!areAllStringPropertiesFilled(obj[key])) {
-              return false
-            }
-          }
-          if (Array.isArray(obj[key])) {
-            for (const item of obj[key]) {
-              if (!areAllStringPropertiesFilled(item)) {
-                return false
-              }
-            }
-          }
-        }
-        return true
-      }
-
-      const isEmptyErrors = areAllErrorStringPropertiesEmpty(this.errorsForm)
-      const isNotEmptyData = areAllStringPropertiesFilled(this.customerDraft)
+      const isEmptyErrors = checkStringProperties(this.errorsForm, false)
+      const isNotEmptyData = checkStringProperties(this.customerDraft, true)
 
       return isEmptyErrors && isNotEmptyData
     },
