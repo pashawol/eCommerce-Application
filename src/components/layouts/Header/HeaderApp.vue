@@ -28,7 +28,7 @@
     }
   ]
 </script>
-
+// TODO: In future add to logout button functionality what delete acssess token from local storage
 <template>
   <header class="header">
     <Menubar :model="menuItems" breakpoint="1200px">
@@ -50,6 +50,10 @@
 
           <router-link to="/registration">
             <Button>Sign Up </Button>
+          </router-link>
+
+          <router-link to="/login">
+            <Button severity="danger">Log Out </Button>
           </router-link>
         </div>
       </template>
