@@ -216,6 +216,7 @@
   import { useRegistrationStore } from '../store/RegistrationStore'
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
+  import { useGlobalStore } from '@/store/GlobalStrore'
   import FormPage from '../components/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
@@ -223,6 +224,7 @@
   import Dropdown from 'primevue/dropdown'
   import Checkbox from 'primevue/checkbox'
 
+  const globalStore = useGlobalStore()
   const registrationStore = useRegistrationStore()
   const toast = useToast()
   const router = useRouter()
@@ -236,6 +238,8 @@
         detail: registrationStore.toast.detail,
         life: 3000
       })
+
+      globalStore.checkAuth()
 
       if (registrationStore.toast.severity === 'success') {
         router.push('/')

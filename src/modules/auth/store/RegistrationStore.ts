@@ -5,7 +5,7 @@ import type { Country, PageContentProps, RegProps, ToastProps } from '../interfa
 import Validation from '../services/validation'
 
 interface State {
-  mainDateOfBirth: Date
+  mainDateOfBirth: Date | undefined
   customerDraft: RegProps
   billingAddress: number[]
   shippingAddress: number[]
@@ -26,7 +26,7 @@ interface State {
 
 export const useRegistrationStore = defineStore('registrationStore', {
   state: (): State => ({
-    mainDateOfBirth: new Date(2000, 0, 1),
+    mainDateOfBirth: undefined,
     billingAddress: [],
     shippingAddress: [],
     sameAddress: [],
@@ -184,11 +184,15 @@ export const useRegistrationStore = defineStore('registrationStore', {
     validateDOB() {
       const dobValue = this.mainDateOfBirth
       if (!dobValue) return
-      this.customerDraft.dateOfBirth = new Date(this.mainDateOfBirth).toISOString().split('T')[0]
+      if (this.mainDateOfBirth) {
+        this.customerDraft.dateOfBirth = new Date(this.mainDateOfBirth).toISOString().split('T')[0]
+      }
       this.errorsForm.dateOfBirth = ''
 
-      const errors = Validation.date(new Date(this.mainDateOfBirth))
-      this.errorsForm.dateOfBirth = errors
+      if (this.mainDateOfBirth) {
+        const errors = Validation.date(new Date(this.mainDateOfBirth))
+        this.errorsForm.dateOfBirth = errors
+      }
     },
 
     validateCityShipping() {
@@ -332,6 +336,7 @@ export const useRegistrationStore = defineStore('registrationStore', {
           detail: 'Welcome to the Store',
           severity: 'success'
         }
+        localStorage.setItem('accessToken', 'tipaToken')
 
         return response.body
       } catch (error: unknown) {
