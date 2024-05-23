@@ -3,6 +3,7 @@
 
 .p-toast-message {
   margin-bottom: rem(16);
+  max-width: 100vw;
   &-content {
     padding: rem(10);
     border-width: 1px;

@@ -60,6 +60,7 @@
           id="date"
           v-model="registrationStore.mainDateOfBirth"
           :dateFormat="dateFormat"
+          :manualInput="false"
           @date-select="registrationStore.validateDOB"
           :maxDate="new Date()"
         />
