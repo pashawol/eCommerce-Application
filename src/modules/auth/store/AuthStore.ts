@@ -65,7 +65,7 @@ export const useAuthStore = defineStore('authStore', {
           detail: 'Welcome to the Store',
           severity: 'success'
         }
-
+        localStorage.setItem('accessToken', 'tipaToken')
         return respone.body
       } catch (err: unknown) {
         if (err instanceof Error) {

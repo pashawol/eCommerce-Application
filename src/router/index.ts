@@ -1,3 +1,4 @@
+import { useGlobalStore } from '@/store/GlobalStrore'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FetchView from '../views/FetchView.vue'
@@ -66,9 +67,8 @@ const router = createRouter({
   ]
 })
 router.beforeEach((to) => {
-  const isAuth = Authenticated.get()
-
-  if (isAuth) {
+  const globalStore = useGlobalStore()
+  if (globalStore.isAuth) {
     if (to.name === 'login' || to.name === 'registration') {
       return '/'
     }

@@ -1,6 +1,11 @@
 <script setup lang="ts">
   import Menubar from 'primevue/menubar'
+  import { onMounted, ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useGlobalStore } from '@/store/GlobalStrore'
 
+  const globalStore = useGlobalStore()
+  const router = useRouter()
   const menuItems = [
     {
       label: 'Home',
@@ -27,7 +32,18 @@
       route: '/product'
     }
   ]
+
+  const logout = () => {
+    localStorage.removeItem('accessToken')
+    router.push('/login')
+    globalStore.checkAuth()
+  }
+
+  onMounted(() => {
+    globalStore.checkAuth()
+  })
 </script>
+
 // TODO: In future add to logout button functionality what delete acssess token from local storage
 <template>
   <header class="header">
@@ -43,7 +59,7 @@
         </a>
       </template>
       <template #end>
-        <div class="flex align-items-center gap-2">
+        <div v-if="!globalStore.isAuth" class="flex align-items-center gap-2">
           <router-link to="/login">
             <Button outlined>Log in</Button>
           </router-link>
@@ -51,10 +67,10 @@
           <router-link to="/registration">
             <Button>Sign Up </Button>
           </router-link>
-
-          <router-link to="/login">
-            <Button severity="danger">Log Out </Button>
-          </router-link>
+        </div>
+        <div v-else class="flex align-items-center gap-2">
+          <Button @click="logout" severity="danger">Log Out </Button>
+          <router-link to="/login"> </router-link>
         </div>
       </template>
     </Menubar>
