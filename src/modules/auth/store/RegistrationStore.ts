@@ -26,7 +26,7 @@ interface State {
 
 export const useRegistrationStore = defineStore('registrationStore', {
   state: (): State => ({
-    mainDateOfBirth: new Date(),
+    mainDateOfBirth: new Date(2000, 0, 1),
     billingAddress: [],
     shippingAddress: [],
     sameAddress: [],
