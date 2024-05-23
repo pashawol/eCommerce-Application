@@ -11,7 +11,6 @@ export const useGlobalStore = defineStore('globalStore', {
   actions: {
     checkAuth() {
       localStorage.getItem('accessToken') ? (this.isAuth = true) : (this.isAuth = false)
-      console.log(this.isAuth)
     }
   }
 })

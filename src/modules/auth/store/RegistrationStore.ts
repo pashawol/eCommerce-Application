@@ -1,7 +1,7 @@
 import type { MyCustomerDraft } from '@commercetools/platform-sdk'
 import { defineStore } from 'pinia'
 import { apiRoot } from '../services/client'
-import type { Country, PageContentProps, RegProps, ToastProps } from '../interfaces'
+import type { Country, PageContentProps, RegProps, ToastProps, Address } from '../interfaces'
 import Validation from '../services/validation'
 
 interface State {
@@ -126,20 +126,21 @@ export const useRegistrationStore = defineStore('registrationStore', {
               value
           }
         }
-      } else {
-        for (const [key] of Object.entries(this.customerDraft.addresses[0])) {
-          if (key === 'country') {
-            this.mainBillingDropdown = {
-              name: '',
-              code: ''
-            }
-            this.customerDraft.addresses[1].country = ''
-          } else {
-            this.customerDraft.addresses[1][key as keyof (typeof this.customerDraft.addresses)[0]] =
-              ''
-          }
-        }
       }
+      // else {
+      //   for (const [key] of Object.entries(this.customerDraft.addresses[0])) {
+      //     if (key === 'country') {
+      //       this.mainBillingDropdown = {
+      //         name: '',
+      //         code: ''
+      //       }
+      //       this.customerDraft.addresses[1].country = ''
+      //     } else {
+      //       this.customerDraft.addresses[1][key as keyof (typeof this.customerDraft.addresses)[0]] =
+      //         ''
+      //     }
+      //   }
+      // }
     },
     actionDefaultBillingAddress() {
       this.customerDraft.defaultBillingAddress = this.billingAddress[0]
@@ -203,9 +204,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       const errors = Validation.city(cityValue)
       this.errorsForm.addresses[0].city = errors
 
-      this.customerDraft.addresses[0].city !== this.customerDraft.addresses[1].city
-        ? (this.sameAddress = [])
-        : (this.sameAddress = ['compare'])
+      // this.customerDraft.addresses[0].city !== this.customerDraft.addresses[1].city
+      //   ? (this.sameAddress = [])
+      //   : (this.sameAddress = ['compare'])
     },
 
     validateStreetShipping() {
@@ -216,9 +217,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       const errors = Validation.street(streetValue)
       this.errorsForm.addresses[0].streetName = errors
 
-      this.customerDraft.addresses[0].streetName !== this.customerDraft.addresses[1].streetName
-        ? (this.sameAddress = [])
-        : (this.sameAddress = ['compare'])
+      // this.customerDraft.addresses[0].streetName !== this.customerDraft.addresses[1].streetName
+      //   ? (this.sameAddress = [])
+      //   : (this.sameAddress = ['compare'])
     },
 
     validatePostalCodeShipping() {
@@ -233,14 +234,14 @@ export const useRegistrationStore = defineStore('registrationStore', {
         this.errorsForm.addresses[0].postalCode = errors
       }
 
-      if (
-        this.mainBillingDropdown.code !== this.mainShippingDropdown.code ||
-        this.customerDraft.addresses[0].postalCode !== this.customerDraft.addresses[1].postalCode
-      ) {
-        this.sameAddress = []
-      } else {
-        this.sameAddress = ['compare']
-      }
+      // if (
+      //   this.mainBillingDropdown.code !== this.mainShippingDropdown.code ||
+      //   this.customerDraft.addresses[0].postalCode !== this.customerDraft.addresses[1].postalCode
+      // ) {
+      //   this.sameAddress = []
+      // } else {
+      //   this.sameAddress = ['compare']
+      // }
     },
 
     validateCityBilling() {
@@ -251,9 +252,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       const errors = Validation.city(cityValue)
       this.errorsForm.addresses[1].city = errors
 
-      this.customerDraft.addresses[0].city !== this.customerDraft.addresses[1].city
-        ? (this.sameAddress = [])
-        : (this.sameAddress = ['compare'])
+      // this.customerDraft.addresses[0].city !== this.customerDraft.addresses[1].city
+      //   ? (this.sameAddress = [])
+      //   : (this.sameAddress = ['compare'])
     },
 
     validateStreetBilling() {
@@ -264,9 +265,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       const errors = Validation.street(streetValue)
       this.errorsForm.addresses[1].streetName = errors
 
-      this.customerDraft.addresses[0].streetName !== this.customerDraft.addresses[1].streetName
-        ? (this.sameAddress = [])
-        : (this.sameAddress = ['compare'])
+      // this.customerDraft.addresses[0].streetName !== this.customerDraft.addresses[1].streetName
+      //   ? (this.sameAddress = [])
+      //   : (this.sameAddress = ['compare'])
     },
 
     validatePostalCodeBilling() {
@@ -281,14 +282,14 @@ export const useRegistrationStore = defineStore('registrationStore', {
         this.errorsForm.addresses[1].postalCode = errors
       }
 
-      if (
-        this.mainBillingDropdown.code !== this.mainShippingDropdown.code ||
-        this.customerDraft.addresses[0].postalCode !== this.customerDraft.addresses[1].postalCode
-      ) {
-        this.sameAddress = []
-      } else {
-        this.sameAddress = ['compare']
-      }
+      // if (
+      //   this.mainBillingDropdown.code !== this.mainShippingDropdown.code ||
+      //   this.customerDraft.addresses[0].postalCode !== this.customerDraft.addresses[1].postalCode
+      // ) {
+      //   this.sameAddress = []
+      // } else {
+      //   this.sameAddress = ['compare']
+      // }
     },
 
     isFilledForm() {
@@ -314,6 +315,23 @@ export const useRegistrationStore = defineStore('registrationStore', {
           }
         }
         return true
+      }
+
+      if (this.sameAddress[0] === 'compare') {
+        for (const [key, value] of Object.entries(this.customerDraft.addresses[0])) {
+          if (key === 'country') {
+            for (const [innerKey] of Object.entries(this.countries)) {
+              if (this.countries[innerKey as unknown as number].code === value) {
+                this.mainBillingDropdown = this.countries[innerKey as unknown as number]
+                this.customerDraft.addresses[1].country =
+                  this.countries[innerKey as unknown as number].code
+              }
+            }
+          } else {
+            this.customerDraft.addresses[1][key as keyof (typeof this.customerDraft.addresses)[0]] =
+              value
+          }
+        }
       }
 
       const isEmptyErrors = checkStringProperties(this.errorsForm, false)
