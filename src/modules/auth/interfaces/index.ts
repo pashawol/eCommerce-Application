@@ -16,22 +16,7 @@ export type RegProps = {
   email: string
   password: string
   dateOfBirth: string
-  addresses: [
-    {
-      streetName: string
-
-      postalCode: string
-      city: string
-      country: string
-    },
-    {
-      streetName: string
-
-      postalCode: string
-      city: string
-      country: string
-    }
-  ]
+  addresses: Address[]
   shippingAddresses: number[]
   billingAddresses: number[]
   defaultBillingAddress: number | null
@@ -43,6 +28,13 @@ export interface Country {
   code: string
 }
 
+export interface Address {
+  streetName: string
+
+  postalCode: string
+  city: string
+  country: string
+}
 export interface PageContentProps {
   title: string
   btnName: string

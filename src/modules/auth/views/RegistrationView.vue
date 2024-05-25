@@ -60,6 +60,7 @@
           id="date"
           v-model="registrationStore.mainDateOfBirth"
           :dateFormat="dateFormat"
+          :manualInput="false"
           @date-select="registrationStore.validateDOB"
           :maxDate="new Date()"
         />
@@ -150,6 +151,7 @@
             :options="registrationStore.countries"
             optionLabel="name"
             @change="registrationStore.validatePostalCodeBilling"
+            :disabled="registrationStore.sameAddress[0] === 'compare'"
           />
           <small class="p-error" id="country-help">{{
             registrationStore.errorsForm.addresses[1].country
@@ -162,6 +164,7 @@
             v-model="registrationStore.customerDraft.addresses[1].postalCode"
             aria-describedby="postal-code-help"
             @input="registrationStore.validatePostalCodeBilling"
+            :disabled="registrationStore.sameAddress[0] === 'compare'"
           />
           <small class="p-error" id="postal-code-help">{{
             registrationStore.errorsForm.addresses[1].postalCode
@@ -175,6 +178,7 @@
             v-model="registrationStore.customerDraft.addresses[1].city"
             aria-describedby="city-help"
             @input="registrationStore.validateCityBilling"
+            :disabled="registrationStore.sameAddress[0] === 'compare'"
           />
           <small class="p-error" id="city-help">{{
             registrationStore.errorsForm.addresses[1].city
@@ -188,6 +192,7 @@
             v-model="registrationStore.customerDraft.addresses[1].streetName"
             aria-describedby="street-help"
             @input="registrationStore.validateStreetBilling"
+            :disabled="registrationStore.sameAddress[0] === 'compare'"
           />
           <small class="p-error" id="street-help">{{
             registrationStore.errorsForm.addresses[1].streetName
@@ -215,6 +220,7 @@
   import { useRegistrationStore } from '../store/RegistrationStore'
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
+  import { useGlobalStore } from '@/store/GlobalStrore'
   import FormPage from '../components/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
@@ -222,6 +228,7 @@
   import Dropdown from 'primevue/dropdown'
   import Checkbox from 'primevue/checkbox'
 
+  const globalStore = useGlobalStore()
   const registrationStore = useRegistrationStore()
   const toast = useToast()
   const router = useRouter()
@@ -235,6 +242,8 @@
         detail: registrationStore.toast.detail,
         life: 3000
       })
+
+      globalStore.checkAuth()
 
       if (registrationStore.toast.severity === 'success') {
         router.push('/')
