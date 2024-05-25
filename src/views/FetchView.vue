@@ -32,7 +32,7 @@ fetch("https://api.eu-central-1.aws.commercetools.com/ecommerceapplication/produ
 
   const fetchProducts = async () => {
     try {
-      const response = await axios(`${API_URL}/${PROJECT_KEY}/products`, {
+      const response = await fetch(`${API_URL}/${PROJECT_KEY}/products`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
