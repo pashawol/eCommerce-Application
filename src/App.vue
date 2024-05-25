@@ -1,10 +1,7 @@
 <script setup lang="ts">
   import { RouterView } from 'vue-router'
   import Header from '@layouts/Header/HeaderApp.vue'
-  import { ref } from 'vue'
   import Toast from 'primevue/toast'
-
-  // const pagesWithOutHeader = ['404']
 </script>
 
 <template>
