@@ -2,8 +2,6 @@ import { useGlobalStore } from '@/store/GlobalStrore'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FetchView from '../views/FetchView.vue'
-import Authenticated from '@/services/authentificated'
-import { ref } from 'vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +19,7 @@ const router = createRouter({
     {
       path: '/catalog',
       name: 'catalog',
-      component: () => import('../views/CatalogView.vue')
+      component: () => import('../modules/product/views/CatalogView.vue')
     },
     {
       path: '/user-profile',

@@ -12,6 +12,24 @@
 
   console.log(API_URL)
 
+  /* const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("Authorization", "••••••");
+
+const raw = "";
+
+const requestOptions = {
+  method: "GET",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("https://api.eu-central-1.aws.commercetools.com/ecommerceapplication/products", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error)); */
+
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${API_URL}/${PROJECT_KEY}/products`, {

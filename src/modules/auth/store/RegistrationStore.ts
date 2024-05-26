@@ -1,7 +1,7 @@
 import type { MyCustomerDraft } from '@commercetools/platform-sdk'
 import { defineStore } from 'pinia'
 import { apiRoot } from '../services/client'
-import type { Country, PageContentProps, RegProps, ToastProps, Address } from '../interfaces'
+import type { Country, PageContentProps, RegProps, ToastProps } from '../interfaces'
 import Validation from '../services/validation'
 
 interface State {
