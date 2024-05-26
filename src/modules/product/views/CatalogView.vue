@@ -27,25 +27,49 @@
 <script setup lang="ts">
   import Card from 'primevue/card'
   import { onMounted, ref } from 'vue'
-  // import axios from 'axios'
+  import axios from 'axios'
 
   const API_URL = import.meta.env.VITE_CTP_API_URL
+  const AUTH_URL = import.meta.env.VITE_CTP_AUTH_URL
   const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
-  // const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN
+  const PROJECT_ID = import.meta.env.VITE_CTP_CLIENT_ID
+  const PROJECT_SECRET = import.meta.env.VITE_CTP_CLIENT_SECRET
 
   const responseData = ref()
   const count = ref()
   const dataProducts = ref()
 
-  console.log(API_URL)
+  const getAnonymousToken = async () => {
+    const authString = btoa(`${PROJECT_ID}:${PROJECT_SECRET}`)
+
+    const response = await fetch(
+      `${AUTH_URL}/oauth/ecommerceapplication/anonymous/token?grant_type=client_credentials`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${authString}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch token')
+    }
+
+    const data = await response.json()
+    return data.access_token
+  }
 
   const fetchProducts = async () => {
     try {
+      const token = await getAnonymousToken()
+
       const response = await fetch(`${API_URL}/${PROJECT_KEY}/products`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ieUcEJ0yUIhyRY2itTZg7Y9kp862S5hJ`
+          Authorization: `Bearer ${token}`
         }
       })
 
