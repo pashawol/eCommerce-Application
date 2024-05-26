@@ -11,6 +11,29 @@
               alt="card-img"
               :src="product.masterData.current.masterVariant.images[0].url"
             />
+            <div class="catalog__prices-wrap">
+              <Badge
+                v-if="product.masterData.current.masterVariant.prices[0].discounted"
+                :value="
+                  (
+                    product.masterData.current.masterVariant.prices[0].discounted.value.centAmount /
+                    100
+                  ).toFixed(2)
+                "
+              >
+              </Badge>
+              <Badge
+                :class="{
+                  'original-price': product.masterData.current.masterVariant.prices[0].discounted
+                }"
+                :value="
+                  (
+                    product.masterData.current.masterVariant.prices[0].value.centAmount / 100
+                  ).toFixed(2)
+                "
+              >
+              </Badge>
+            </div>
           </template>
           <template #title>{{ product.masterData.current.name['en-US'] }}</template>
           <template #content>
@@ -26,6 +49,7 @@
 
 <script setup lang="ts">
   import Card from 'primevue/card'
+  import Badge from 'primevue/badge'
   import { onMounted, ref } from 'vue'
   import axios from 'axios'
 
@@ -99,13 +123,15 @@
     height: 100%;
     border: 1px solid var(--gray-500);
     transition: all 0.3s;
+    background: var(--gray-800);
+    overflow: hidden;
     img {
       transition: all 0.3s;
     }
     &:hover {
       box-shadow: 0 -9px 20px -3px var(--blue-500);
       img {
-        transform: scale(1.1);
+        transform: scale(1.12);
       }
     }
   }
@@ -117,7 +143,12 @@
     justify-content: center;
     background: var(--color-background);
   }
+  .p-card-body {
+    color: var(--gray-200);
+    padding: 10px 20px 0px 20px;
+  }
   .p-card-content {
+    padding-top: 10px;
     p {
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -126,6 +157,18 @@
     }
   }
   .catalog {
+    &__prices-wrap {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    .original-price {
+      text-decoration: line-through;
+      background: transparent;
+      color: var(--gray-400);
+    }
     &__list {
       list-style-type: none;
       display: grid;
