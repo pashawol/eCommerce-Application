@@ -13,10 +13,10 @@
         </button>
         <div class="CategoriesView__subcategories" v-if="isSubcategoriesVisible(category)">
           <div>
-            <button class="all">View All</button>
+            <button @click="fetchCategoryProducts(category.id)" class="all">View All</button>
           </div>
           <div v-for="subcategory in category.subcategories" :key="subcategory.id">
-            <button>
+            <button @click="fetchCategoryProducts(subcategory.id)">
               {{ subcategory.name['en-US'] }}
             </button>
           </div>
@@ -25,6 +25,35 @@
     </div>
     <ul class="catalog__list">
       <li v-for="(product, index) in dataProducts" :key="index">
+        <Card>
+          <template #header>
+            <img class="card-img" alt="card-img" :src="product.masterVariant.images[0].url" />
+            <div class="catalog__prices-wrap">
+              <Badge
+                v-if="product.masterVariant.prices[0].discounted"
+                :value="
+                  (product.masterVariant.prices[0].discounted.value.centAmount / 100).toFixed(2)
+                "
+              >
+              </Badge>
+              <Badge
+                :class="{
+                  'original-price': product.masterVariant.prices[0].discounted
+                }"
+                :value="(product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)"
+              >
+              </Badge>
+            </div>
+          </template>
+          <template #title>{{ product.name['en-US'] }}</template>
+          <template #content>
+            <p class="m-0">
+              {{ product.description['en-US'] }}
+            </p>
+          </template>
+        </Card>
+      </li>
+      <!-- <li v-for="(product, index) in dataProducts" :key="index">
         <Card>
           <template #header>
             <img
@@ -63,7 +92,7 @@
             </p>
           </template>
         </Card>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
@@ -125,11 +154,38 @@
     }
   }
 
+  const fetchCategoryProducts = async (categoryId) => {
+    try {
+      const token = await getAnonymousToken()
+
+      const response = await fetch(
+        `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch data')
+      }
+
+      responseData.value = await response.json()
+      dataProducts.value = responseData.value.results
+    } catch (err) {
+      console.error('Error fetching data:', err)
+      throw err
+    }
+  }
+
   const fetchProducts = async () => {
     try {
       const token = await getAnonymousToken()
 
-      const response = await fetch(`${API_URL}/${PROJECT_KEY}/products`, {
+      const response = await fetch(`${API_URL}/${PROJECT_KEY}/product-projections/search`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
