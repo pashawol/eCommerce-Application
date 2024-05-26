@@ -51,39 +51,15 @@
   import Card from 'primevue/card'
   import Badge from 'primevue/badge'
   import { onMounted, ref } from 'vue'
+  import { getAnonymousToken } from '../services/getToken'
   import axios from 'axios'
 
   const API_URL = import.meta.env.VITE_CTP_API_URL
-  const AUTH_URL = import.meta.env.VITE_CTP_AUTH_URL
   const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
-  const PROJECT_ID = import.meta.env.VITE_CTP_CLIENT_ID
-  const PROJECT_SECRET = import.meta.env.VITE_CTP_CLIENT_SECRET
 
   const responseData = ref()
   const count = ref()
   const dataProducts = ref()
-
-  const getAnonymousToken = async () => {
-    const authString = btoa(`${PROJECT_ID}:${PROJECT_SECRET}`)
-
-    const response = await fetch(
-      `${AUTH_URL}/oauth/ecommerceapplication/anonymous/token?grant_type=client_credentials`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Basic ${authString}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch token')
-    }
-
-    const data = await response.json()
-    return data.access_token
-  }
 
   const fetchProducts = async () => {
     try {
