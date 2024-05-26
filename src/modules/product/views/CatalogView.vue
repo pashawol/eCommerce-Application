@@ -1,6 +1,6 @@
 <template>
   <div class="catalog">
-    <h1>Catalog</h1>
+    <Breadcrumb :model="breadcrumbItems" @click="handleBreadcrumbClick" />
     <h1>Count Of Products: {{ count }}</h1>
     <div class="CategoriesView">
       <div
@@ -13,10 +13,10 @@
         </button>
         <div class="CategoriesView__subcategories" v-if="isSubcategoriesVisible(category)">
           <div>
-            <button @click="fetchCategoryProducts(category.id)" class="all">View All</button>
+            <button @click="selectCategory(category)" class="all">View All</button>
           </div>
           <div v-for="subcategory in category.subcategories" :key="subcategory.id">
-            <button @click="fetchCategoryProducts(subcategory.id)">
+            <button @click="selectSubcategory(category, subcategory)">
               {{ subcategory.name['en-US'] }}
             </button>
           </div>
@@ -100,6 +100,7 @@
 <script setup lang="ts">
   import Card from 'primevue/card'
   import Badge from 'primevue/badge'
+  import Breadcrumb from 'primevue/breadcrumb'
   import { onMounted, ref } from 'vue'
   import { getAnonymousToken } from '../services/getToken'
   import { type Category } from '../interfaces/category'
@@ -116,6 +117,7 @@
   const dataCategories = ref<Category[]>([])
   const classificatedCategories = ref()
   const openCategories = ref(new Set())
+  const breadcrumbItems = ref([{ label: 'Catalog', command: () => fetchCategories() }])
 
   const fetchCategories = async () => {
     try {
@@ -180,6 +182,39 @@
       throw err
     }
   }
+  const selectCategory = (category) => {
+    if (category.subcategories.length > 0) {
+      toggleSubcategories(category)
+    }
+
+    breadcrumbItems.value = [
+      {
+        label: 'Catalog',
+        command: () => {
+          fetchProducts()
+        }
+      },
+      { label: category.name['en-US'] }
+    ]
+    fetchCategoryProducts(category.id)
+  }
+
+  const selectSubcategory = (category, subcategory) => {
+    breadcrumbItems.value = [
+      { label: 'Catalog', command: () => fetchProducts() },
+      { label: category.name['en-US'], command: () => fetchCategoryProducts(category.id) },
+      { label: subcategory.name['en-US'] }
+    ]
+    fetchCategoryProducts(subcategory.id)
+  }
+
+  const handleBreadcrumbClick = (event) => {
+    console.log(event)
+    // const index = event.item.index;
+    // breadcrumbItems.value = breadcrumbItems.value.slice(0, index + 1);
+    // const clickedItem = breadcrumbItems.value[index];
+    // clickedItem.command();
+  }
 
   const fetchProducts = async () => {
     try {
@@ -209,8 +244,6 @@
   onMounted(() => {
     fetchCategories()
     fetchProducts()
-
-    console.log(dataProducts)
   })
 </script>
 
