@@ -1,6 +1,12 @@
 <template>
   <div class="catalog">
-    <Breadcrumb :model="breadcrumbItems" @click="handleBreadcrumbClick" />
+    <Breadcrumb :model="breadcrumbItems">
+      <template #item="{ item }">
+        <a class="p-menuitem-link" href="#" @click.prevent="handleBreadcrumbClick(item)">
+          <span class="p-menuitem-text">{{ item.label }}</span>
+        </a>
+      </template>
+    </Breadcrumb>
     <h1>Count Of Products: {{ count }}</h1>
     <div class="CategoriesView">
       <div
@@ -106,11 +112,14 @@
   import { type Category } from '../interfaces/category'
   import { type Product } from '../interfaces/product'
   import { organizeCategories } from '../services/categorization'
+  import type { MenuItem } from 'primevue/menuitem'
+  // import { useCatalogStore } from '../store/CatalogStore'
   import axios from 'axios'
 
   const API_URL = import.meta.env.VITE_CTP_API_URL
   const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 
+  // const catalogStore = useCatalogStore()
   const responseData = ref()
   const count = ref()
   const dataProducts = ref<Product[]>([])
@@ -182,7 +191,10 @@
       throw err
     }
   }
+
   const selectCategory = (category: Category): void => {
+    openCategories.value.clear()
+
     if (category.subcategories.length > 0) {
       toggleSubcategories(category)
     }
@@ -198,6 +210,8 @@
   }
 
   const selectSubcategory = (category: Category, subcategory: Category) => {
+    openCategories.value.clear()
+
     breadcrumbItems.value = [
       { label: 'Catalog', command: () => fetchProducts() },
       { label: category.name['en-US'], command: () => fetchCategoryProducts(category.id) },
@@ -206,14 +220,11 @@
     fetchCategoryProducts(subcategory.id)
   }
 
-  const handleBreadcrumbClick = (event: Event) => {
-    if (event.target) {
-      console.dir(event.target)
-    }
-    // const index = event.item.index;
-    // breadcrumbItems.value = breadcrumbItems.value.slice(0, index + 1);
-    // const clickedItem = breadcrumbItems.value[index];
-    // clickedItem.command();
+  const handleBreadcrumbClick = (item: MenuItem): void => {
+    const index = breadcrumbItems.value.findIndex((breadcrumb) => breadcrumb.label === item.label)
+    breadcrumbItems.value = breadcrumbItems.value.slice(0, index + 1)
+    const clickedItem = breadcrumbItems.value[index]
+    clickedItem.command()
   }
 
   const fetchProducts = async (): Promise<void> => {
