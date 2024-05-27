@@ -156,7 +156,7 @@
     }
   }
 
-  const fetchCategoryProducts = async (categoryId) => {
+  const fetchCategoryProducts = async (categoryId: string): Promise<void> => {
     try {
       const token = await getAnonymousToken()
 
@@ -182,7 +182,7 @@
       throw err
     }
   }
-  const selectCategory = (category) => {
+  const selectCategory = (category: Category): void => {
     if (category.subcategories.length > 0) {
       toggleSubcategories(category)
     }
@@ -190,33 +190,33 @@
     breadcrumbItems.value = [
       {
         label: 'Catalog',
-        command: () => {
-          fetchProducts()
-        }
+        command: () => fetchProducts()
       },
-      { label: category.name['en-US'] }
+      { label: category.name['en-US'], command: () => fetchCategoryProducts(category.id) }
     ]
     fetchCategoryProducts(category.id)
   }
 
-  const selectSubcategory = (category, subcategory) => {
+  const selectSubcategory = (category: Category, subcategory: Category) => {
     breadcrumbItems.value = [
       { label: 'Catalog', command: () => fetchProducts() },
       { label: category.name['en-US'], command: () => fetchCategoryProducts(category.id) },
-      { label: subcategory.name['en-US'] }
+      { label: subcategory.name['en-US'], command: () => fetchCategoryProducts(subcategory.id) }
     ]
     fetchCategoryProducts(subcategory.id)
   }
 
-  const handleBreadcrumbClick = (event) => {
-    console.log(event)
+  const handleBreadcrumbClick = (event: Event) => {
+    if (event.target) {
+      console.dir(event.target)
+    }
     // const index = event.item.index;
     // breadcrumbItems.value = breadcrumbItems.value.slice(0, index + 1);
     // const clickedItem = breadcrumbItems.value[index];
     // clickedItem.command();
   }
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (): Promise<void> => {
     try {
       const token = await getAnonymousToken()
 
