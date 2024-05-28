@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useGlobalStore } from '@/store/GlobalStrore'
+  import { useGlobalStore } from '@/store/GlobalStore'
   import { useAuthStore } from '../store/AuthStore'
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'

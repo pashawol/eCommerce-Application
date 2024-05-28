@@ -65,7 +65,7 @@ export const useRegistrationStore = defineStore('registrationStore', {
         }
       ],
       shippingAddresses: [0],
-      billingAddresses: [0],
+      billingAddresses: [1],
       defaultBillingAddress: null,
       defaultShippingAddress: null
     },
@@ -344,6 +344,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       try {
         // console.log(this.dataForm)
         const response = await apiRoot
+          .withProjectKey({
+            projectKey: import.meta.env.VITE_CTP_PROJECT_KEY
+          })
           .me()
           .signup()
           .post({ body: JSONBody as unknown as MyCustomerDraft })
@@ -354,7 +357,7 @@ export const useRegistrationStore = defineStore('registrationStore', {
           detail: 'Welcome to the Store',
           severity: 'success'
         }
-        localStorage.setItem('accessToken', 'tipaToken')
+        // localStorage.setItem('accessToken', 'tipaToken')
 
         return response.body
       } catch (error: unknown) {
