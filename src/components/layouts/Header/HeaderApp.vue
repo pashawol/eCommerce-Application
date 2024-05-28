@@ -2,7 +2,7 @@
   import Menubar from 'primevue/menubar'
   import { onMounted } from 'vue'
   import { useRouter } from 'vue-router'
-  import { useGlobalStore } from '@/store/GlobalStrore'
+  import { useGlobalStore } from '@/store/GlobalStore'
 
   const globalStore = useGlobalStore()
   const router = useRouter()

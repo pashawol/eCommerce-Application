@@ -2,6 +2,16 @@
   import { RouterView } from 'vue-router'
   import Header from '@layouts/Header/HeaderApp.vue'
   import Toast from 'primevue/toast'
+  import { useGlobalStore } from './store/GlobalStore'
+  import { onMounted } from 'vue'
+
+  const globalStore = useGlobalStore()
+
+  onMounted(async () => {
+    await globalStore.getToken()
+    globalStore.checkAuth()
+    console.log('Anonymous token:', globalStore.token)
+  })
 </script>
 
 <template>

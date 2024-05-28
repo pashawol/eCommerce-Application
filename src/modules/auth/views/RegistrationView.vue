@@ -220,7 +220,7 @@
   import { useRegistrationStore } from '../store/RegistrationStore'
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
-  import { useGlobalStore } from '@/store/GlobalStrore'
+  import { useGlobalStore } from '@/store/GlobalStore'
   import FormPage from '../components/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
@@ -246,7 +246,7 @@
       globalStore.checkAuth()
 
       if (registrationStore.toast.severity === 'success') {
-        router.push('/')
+        router.push('/login')
       }
     })
   }

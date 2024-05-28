@@ -1,4 +1,4 @@
-import { useGlobalStore } from '@/store/GlobalStrore'
+import { useGlobalStore } from '@/store/GlobalStore'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FetchView from '../views/FetchView.vue'
