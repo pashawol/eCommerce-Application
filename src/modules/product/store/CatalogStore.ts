@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getAnonymousToken } from '../services/getToken'
 import { organizeCategories } from '../services/categorization'
 import type { Product } from '../interfaces/product'
 import type { Category } from '../interfaces/category'
+import { useGlobalStore } from '@/store/GlobalStore'
 
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
+const globalStore = useGlobalStore()
 
 interface State {
   categories: Category[]
@@ -33,13 +34,12 @@ export const useCatalogStore = defineStore('catalogStore', {
       } else if (this.categories.length === 0 && !this.isLoadingCategories) {
         try {
           this.isLoadingCategories = true
-          const token = await getAnonymousToken()
 
           const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${globalStore.anonymousToken}`
             }
           })
           responseData.value = await response.json()
@@ -60,12 +60,11 @@ export const useCatalogStore = defineStore('catalogStore', {
       } else if (this.products.length === 0 && !this.isLoadingProducts) {
         try {
           this.isLoadingProducts = true
-          const token = await getAnonymousToken()
           const response = await fetch(`${API_URL}/${PROJECT_KEY}/product-projections/search`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${globalStore.anonymousToken}`
             }
           })
           responseData.value = await response.json()
@@ -80,7 +79,6 @@ export const useCatalogStore = defineStore('catalogStore', {
 
     async fetchCategoryProducts(categoryId: string): Promise<void> {
       try {
-        const token = await getAnonymousToken()
 
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
@@ -88,7 +86,7 @@ export const useCatalogStore = defineStore('catalogStore', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${globalStore.anonymousToken}`
             }
           }
         )
