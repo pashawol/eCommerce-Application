@@ -7,19 +7,22 @@ const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY
 const clientId = import.meta.env.VITE_CTP_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET
 const authUri = `${import.meta.env.VITE_CTP_AUTH_URL}/oauth/ecommerceapplication/anonymous/token`
+const apiUrl = import.meta.env.VITE_CTP_API_URL
 const scope = `${import.meta.env.VITE_CTP_SCOPES}`
 
 interface State {
   isAuth: boolean
   anonymousToken: string
   token: string | null
+  userData: Object
 }
 
 export const useGlobalStore = defineStore('globalStore', {
   state: (): State => ({
     isAuth: false,
     anonymousToken: '',
-    token: ''
+    token: '',
+    userData: {}
   }),
   actions: {
     async getToken() {
@@ -56,6 +59,32 @@ export const useGlobalStore = defineStore('globalStore', {
       localStorage.getItem('accessToken')
         ? (this.token = localStorage.getItem('accessToken'))
         : (this.token = this.anonymousToken)
+    },
+    async getUserData() {
+      try {
+        const response = await fetch(
+          `${apiUrl}/${projectKey}/customers/${localStorage.getItem('customerID')}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch customer data: ${response.statusText}`)
+        }
+
+        const customerData = await response.text()
+        // console.log('Customer data:', customerData)
+        this.userData = JSON.parse(customerData)
+        return customerData
+      } catch (error) {
+        console.error('Error obtaining user data:', error)
+        throw error
+      }
     }
   }
 })

@@ -2,6 +2,7 @@ import { apiRoot, getAccessTokenForUser } from './../services/client'
 import { defineStore } from 'pinia'
 import type { LoginProps, PageContentProps, ToastProps } from '../interfaces/index'
 import Validation from '../services/validation'
+import { useGlobalStore } from '@/store/GlobalStore'
 
 interface State {
   dataForm: LoginProps
@@ -55,6 +56,7 @@ export const useAuthStore = defineStore('authStore', {
       return isEmptyErrors && isNotEmptyData
     },
     async logIn() {
+      const globalStore = useGlobalStore()
       try {
         // console.log(this.dataForm)
         const respone = await apiRoot
@@ -68,6 +70,7 @@ export const useAuthStore = defineStore('authStore', {
         await getAccessTokenForUser(this.dataForm.email, this.dataForm.password).then(
           (accessToken) => {
             localStorage.setItem('accessToken', accessToken)
+            localStorage.setItem('customerID', respone.body.customer.id)
           }
         )
         this.toast = {
@@ -75,6 +78,7 @@ export const useAuthStore = defineStore('authStore', {
           detail: 'Welcome to the Store',
           severity: 'success'
         }
+        globalStore.userData = respone.body
         // localStorage.setItem('accessToken', 'tipaToken')
         // console.log(respone)
         return respone

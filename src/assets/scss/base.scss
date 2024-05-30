@@ -84,3 +84,55 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.container {
+  --containerGutter: #{rem(12)};
+  max-width: 100%;
+  padding: 0 var(--containerGutter);
+  margin: 0 auto;
+  // @include media(md) {
+  //   --containerGutter: #{rem(12)};
+  //   padding: 0 var(--containerGutter);
+  // }
+  @each $key, $val in $container-max-widths {
+    @include media($key) {
+      max-width: calc($val + var(--containerGutter) * 2);
+    }
+  }
+}
+
+.d-none {
+  display: none !important;
+}
+.d-block {
+  display: block !important;
+}
+.d-flex {
+  display: flex !important;
+}
+.align-items-center {
+  align-items: center !important;
+}
+
+@each $key, $val in $grid-breakpoints {
+  .d-#{$key}-none {
+    @include media($key) {
+      display: none !important;
+    }
+  }
+  .d-#{$key}-block {
+    @include media($key) {
+      display: block !important;
+    }
+  }
+  .d-#{$key}-flex {
+    @include media($key) {
+      display: flex !important;
+    }
+  }
+  .align-items-#{$key}-center {
+    @include media($key) {
+      align-items: center !important;
+    }
+  }
+}
