@@ -29,7 +29,7 @@
           </select>
         </label>
         <label>
-          Price:
+          Price, €:
           <select v-model="catalogStore.filters.price" @change="applyFilters">
             <option value="">All</option>
             <option value="less19">less 19</option>
