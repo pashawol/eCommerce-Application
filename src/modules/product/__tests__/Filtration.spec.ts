@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 
 import { getFiltersQuery } from '../services/filtration'
 
-describe('Validation', () => {
+describe('getFiltersQuery', () => {
   it('should validate password correctly', () => {
     const noFilters = {}
     const oneFilter = {
