@@ -2,6 +2,7 @@ import { apiRoot } from '@/services/anonymousToken'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { Buffer } from 'buffer'
+import type { Customer } from '@commercetools/platform-sdk'
 
 const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY
 const clientId = import.meta.env.VITE_CTP_CLIENT_ID
@@ -14,7 +15,7 @@ interface State {
   isAuth: boolean
   anonymousToken: string
   token: string | null
-  userData: Object
+  userData: Customer
 }
 
 export const useGlobalStore = defineStore('globalStore', {
@@ -22,7 +23,17 @@ export const useGlobalStore = defineStore('globalStore', {
     isAuth: false,
     anonymousToken: '',
     token: '',
-    userData: {}
+    userData: {
+      id: '',
+      version: 1,
+      createdAt: '',
+      lastModifiedAt: '',
+      email: '',
+      addresses: [],
+      isEmailVerified: false,
+      stores: [],
+      authenticationMode: ''
+    }
   }),
   actions: {
     async getToken() {
