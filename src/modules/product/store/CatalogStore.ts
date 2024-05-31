@@ -4,7 +4,7 @@ import { organizeCategories } from '../services/categorization'
 import type { Product } from '../interfaces/product'
 import type { Category } from '../interfaces/category'
 import { useGlobalStore } from '@/store/GlobalStore'
-import { getFiltersQuery } from '../services/filtration'
+import { type filters, getFiltersQuery } from '../services/filtration'
 
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
@@ -24,11 +24,8 @@ interface State {
   products: Product[]
   isLoadingCategories: boolean
   isLoadingProducts: boolean
-  filters: {
-    color?: string
-    size?: string
-    price?: string
-  }
+  filters: filters
+  sort: string
 }
 
 export const useCatalogStore = defineStore('catalogStore', {
@@ -37,7 +34,8 @@ export const useCatalogStore = defineStore('catalogStore', {
     products: [],
     isLoadingCategories: false,
     isLoadingProducts: false,
-    filters: {}
+    filters: {},
+    sort: 'price asc'
   }),
 
   actions: {
@@ -68,9 +66,10 @@ export const useCatalogStore = defineStore('catalogStore', {
 
         const filters = getFiltersQuery(this.filters)
         const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
+        const sortQuery = this.sort.length ? `sort=${encodeURIComponent(this.sort)}` : ''
 
         const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}`,
+          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}&${sortQuery}`,
           requestOptions
         )
         responseData.value = await response.json()
@@ -100,8 +99,13 @@ export const useCatalogStore = defineStore('catalogStore', {
       }
     },
 
-    setFilters(filters: Partial<State['filters']>) {
+    setFilters(filters: filters) {
       this.filters = { ...this.filters, ...filters }
+      this.fetchProducts()
+    },
+
+    setSort(sort: string) {
+      this.sort = sort
       this.fetchProducts()
     },
 

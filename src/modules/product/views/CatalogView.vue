@@ -39,6 +39,17 @@
         </label>
         <Button severity="contrast" @click="catalogStore.resetFilters">Reset Filters</Button>
       </div>
+      <div class="catalog__sort">
+        <label>
+          Sort:
+          <select v-model="catalogStore.sort" @change="applySort">
+            <option value="price asc">Price: Low to High</option>
+            <option value="price desc">Price: High to Low</option>
+            <option value="name.en-US asc">Name: A to Z</option>
+            <option value="name.en-US desc">Name: Z to A</option>
+          </select>
+        </label>
+      </div>
     </div>
 
     <div class="CategoriesView">
@@ -168,6 +179,10 @@
       size: catalogStore.filters.size,
       price: catalogStore.filters.price
     })
+  }
+
+  const applySort = () => {
+    catalogStore.setSort(catalogStore.sort)
   }
 
   onMounted(() => {
