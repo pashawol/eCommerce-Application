@@ -10,13 +10,13 @@ const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
 const globalStore = useGlobalStore()
-const header = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${globalStore.anonymousToken}`
-}
+
 const requestOptions = {
   method: 'GET',
-  headers: header
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${globalStore.anonymousToken}`
+  }
 }
 
 interface State {
@@ -50,7 +50,13 @@ export const useCatalogStore = defineStore('catalogStore', {
         try {
           this.isLoadingCategories = true
 
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, requestOptions)
+          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${globalStore.anonymousToken}`
+            }
+          })
           responseData.value = await response.json()
           this.categories = organizeCategories(responseData.value.results)
           localStorage.setItem('categories', JSON.stringify(this.categories))
@@ -70,7 +76,13 @@ export const useCatalogStore = defineStore('catalogStore', {
 
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}`,
-          requestOptions
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${globalStore.anonymousToken}`
+            }
+          }
         )
         responseData.value = await response.json()
         this.products = responseData.value.results
@@ -84,7 +96,13 @@ export const useCatalogStore = defineStore('catalogStore', {
       try {
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
-          requestOptions
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${globalStore.anonymousToken}`
+            }
+          }
         )
 
         if (!response.ok) {
