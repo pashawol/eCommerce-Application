@@ -7,6 +7,40 @@
         </a>
       </template>
     </Breadcrumb>
+    <div class="catalog__filters-navigation">
+      <div class="catalog__filters">
+        <label>
+          Color:
+          <select v-model="catalogStore.filters.color" @change="applyFilters">
+            <option value="">All</option>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="black">Black</option>
+            <option value="white">White</option>
+          </select>
+        </label>
+        <label>
+          Size:
+          <select v-model="catalogStore.filters.size" @change="applyFilters">
+            <option value="">All</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </label>
+        <label>
+          Price, €:
+          <select v-model="catalogStore.filters.price" @change="applyFilters">
+            <option value="">All</option>
+            <option value="less19">less 19</option>
+            <option value="19-40">19-40</option>
+            <option value="more40">more 40</option>
+          </select>
+        </label>
+        <Button severity="contrast" @click="catalogStore.resetFilters">Reset Filters</Button>
+      </div>
+    </div>
+
     <div class="CategoriesView">
       <div
         class="CategoriesView__main-category"
@@ -128,9 +162,18 @@
     clickedItem.command()
   }
 
+  const applyFilters = () => {
+    catalogStore.setFilters({
+      color: catalogStore.filters.color,
+      size: catalogStore.filters.size,
+      price: catalogStore.filters.price
+    })
+  }
+
   onMounted(() => {
     catalogStore.fetchCategories()
     catalogStore.fetchProducts()
+    catalogStore.resetFilters()
   })
 </script>
 

@@ -1,19 +1,34 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getAnonymousToken } from '../services/getToken'
 import { organizeCategories } from '../services/categorization'
 import type { Product } from '../interfaces/product'
 import type { Category } from '../interfaces/category'
+import { useGlobalStore } from '@/store/GlobalStore'
+import { getFiltersQuery } from '../services/filtration'
 
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
+const globalStore = useGlobalStore()
+
+const requestOptions = {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${globalStore.token}`
+  }
+}
 
 interface State {
   categories: Category[]
   products: Product[]
   isLoadingCategories: boolean
   isLoadingProducts: boolean
+  filters: {
+    color?: string
+    size?: string
+    price?: string
+  }
 }
 
 export const useCatalogStore = defineStore('catalogStore', {
@@ -21,7 +36,8 @@ export const useCatalogStore = defineStore('catalogStore', {
     categories: [],
     products: [],
     isLoadingCategories: false,
-    isLoadingProducts: false
+    isLoadingProducts: false,
+    filters: {}
   }),
 
   actions: {
@@ -33,15 +49,9 @@ export const useCatalogStore = defineStore('catalogStore', {
       } else if (this.categories.length === 0 && !this.isLoadingCategories) {
         try {
           this.isLoadingCategories = true
-          const token = await getAnonymousToken()
 
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
-          })
+          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, requestOptions)
+
           responseData.value = await response.json()
           this.categories = organizeCategories(responseData.value.results)
           localStorage.setItem('categories', JSON.stringify(this.categories))
@@ -53,44 +63,29 @@ export const useCatalogStore = defineStore('catalogStore', {
     },
 
     async fetchProducts() {
-      const cachedProducts = localStorage.getItem('products')
+      try {
+        this.isLoadingProducts = true
 
-      if (cachedProducts) {
-        this.products = JSON.parse(cachedProducts)
-      } else if (this.products.length === 0 && !this.isLoadingProducts) {
-        try {
-          this.isLoadingProducts = true
-          const token = await getAnonymousToken()
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/product-projections/search`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
-          })
-          responseData.value = await response.json()
-          this.products = responseData.value.results
-          localStorage.setItem('products', JSON.stringify(this.products))
-        } catch (err) {
-          console.error('Error fetching products:', err)
-          throw err
-        }
+        const filters = getFiltersQuery(this.filters)
+        const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
+
+        const response = await fetch(
+          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}`,
+          requestOptions
+        )
+        responseData.value = await response.json()
+        this.products = responseData.value.results
+      } catch (err) {
+        console.error('Error fetching products:', err)
+        throw err
       }
     },
 
     async fetchCategoryProducts(categoryId: string): Promise<void> {
       try {
-        const token = await getAnonymousToken()
-
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
-          }
+          requestOptions
         )
 
         if (!response.ok) {
@@ -103,6 +98,18 @@ export const useCatalogStore = defineStore('catalogStore', {
         console.error('Error fetching data:', err)
         throw err
       }
+    },
+
+    setFilters(filters: Partial<State['filters']>) {
+      this.filters = { ...this.filters, ...filters }
+      this.fetchProducts()
+    },
+
+    resetFilters() {
+      this.filters.color = ''
+      this.filters.size = ''
+      this.filters.price = ''
+      this.fetchProducts()
     }
   }
 })

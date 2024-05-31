@@ -7741,14 +7741,14 @@ a {
     box-shadow: 0 0 0 0.2rem #bfdbfe;
   }
   .p-breadcrumb .p-breadcrumb-list li .p-menuitem-link .p-menuitem-text {
-    color: var(--gray-200);
+    color: var(--color-text);
   }
   .p-breadcrumb .p-breadcrumb-list li .p-menuitem-link .p-menuitem-icon {
     color: var(--primary-gray);
   }
   .p-breadcrumb .p-breadcrumb-list li.p-menuitem-separator {
     margin: 0 0.5rem 0 0.5rem;
-    color: var(--gray-200);
+    color: var(--color-text);
   }
   .p-breadcrumb .p-breadcrumb-list li:last-child .p-menuitem-text {
     color: var(--gray-500) !important;
@@ -11623,7 +11623,7 @@ a {
 .p-menuitem {
   &:hover {
     * {
-      color: #fff !important;
+      color: var(--color-heading);
     }
   }
   * {

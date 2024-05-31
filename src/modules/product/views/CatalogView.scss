@@ -68,4 +68,30 @@
       object-fit: contain;
     }
   }
+
+  &__filters-navigation {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+
+  &__filters {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    select {
+      cursor: pointer;
+      border-radius: 10px;
+      margin-left: 5px;
+      padding-left: 5px;
+    }
+    button {
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 3px 6px;
+      font-size: 15px;
+    }
+  }
 }
