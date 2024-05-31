@@ -15,7 +15,7 @@ const requestOptions = {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${globalStore.anonymousToken}`
+    Authorization: `Bearer ${globalStore.token}`
   }
 }
 
@@ -50,13 +50,8 @@ export const useCatalogStore = defineStore('catalogStore', {
         try {
           this.isLoadingCategories = true
 
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${globalStore.anonymousToken}`
-            }
-          })
+          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, requestOptions)
+
           responseData.value = await response.json()
           this.categories = organizeCategories(responseData.value.results)
           localStorage.setItem('categories', JSON.stringify(this.categories))
@@ -76,13 +71,7 @@ export const useCatalogStore = defineStore('catalogStore', {
 
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${globalStore.anonymousToken}`
-            }
-          }
+          requestOptions
         )
         responseData.value = await response.json()
         this.products = responseData.value.results
@@ -96,13 +85,7 @@ export const useCatalogStore = defineStore('catalogStore', {
       try {
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${globalStore.anonymousToken}`
-            }
-          }
+          requestOptions
         )
 
         if (!response.ok) {
