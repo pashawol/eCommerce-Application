@@ -24,6 +24,7 @@ interface State {
   products: Product[]
   isLoadingCategories: boolean
   isLoadingProducts: boolean
+  searchQuery: string
   filters: {
     color?: string
     size?: string
@@ -37,6 +38,7 @@ export const useCatalogStore = defineStore('catalogStore', {
     products: [],
     isLoadingCategories: false,
     isLoadingProducts: false,
+    searchQuery: '',
     filters: {}
   }),
 
@@ -67,10 +69,13 @@ export const useCatalogStore = defineStore('catalogStore', {
         this.isLoadingProducts = true
 
         const filters = getFiltersQuery(this.filters)
+        const searchQuery = this.searchQuery
+          ? `&fuzzy=true&text.en-US=${encodeURIComponent(this.searchQuery)}`
+          : ''
         const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
 
         const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}`,
+          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}${searchQuery}`,
           requestOptions
         )
         responseData.value = await response.json()
@@ -106,6 +111,7 @@ export const useCatalogStore = defineStore('catalogStore', {
     },
 
     resetFilters() {
+      this.searchQuery = ''
       this.filters.color = ''
       this.filters.size = ''
       this.filters.price = ''

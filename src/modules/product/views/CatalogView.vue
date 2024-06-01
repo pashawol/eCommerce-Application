@@ -7,6 +7,19 @@
         </a>
       </template>
     </Breadcrumb>
+    <div class="catalog__filters catalog__search">
+      <label>
+        Search:
+        <input
+          type="text"
+          v-model="catalogStore.searchQuery"
+          @keyup.enter="applyFilters"
+          placeholder="Search products..."
+        />
+      </label>
+      <span class="pi pi-search" @click="applyFilters"></span>
+    </div>
+
     <div class="catalog__filters-navigation">
       <div class="catalog__filters">
         <label>

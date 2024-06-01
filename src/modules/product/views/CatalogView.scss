@@ -76,6 +76,15 @@
     padding: 1rem;
   }
 
+  &__search {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    .pi-search {
+      cursor: pointer;
+    }
+  }
+
   &__filters {
     display: flex;
     gap: 15px;
