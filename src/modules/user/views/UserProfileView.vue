@@ -6,16 +6,16 @@
         <div class="col">
           <div class="sUserProfileView__wrap">
             <span>Name, Surname, LastName</span>
-            {{ globalStore.userData.firstName }} {{ globalStore.userData.middleName }}
-            {{ globalStore.userData.lastName }}
+            {{ userData.firstName }} {{ userData.middleName }}
+            {{ userData.lastName }}
           </div>
           <div class="sUserProfileView__wrap">
             <span>Birthday</span>
-            {{ globalStore.userData.dateOfBirth }}
+            {{ userData.dateOfBirth }}
           </div>
           <div class="sUserProfileView__wrap">
             <span>Email</span>
-            {{ globalStore.userData.email }}
+            {{ userData.email }}
           </div>
         </div>
 
@@ -23,7 +23,7 @@
           <div class="sUserProfileView__addresses">
             <div
               class="sUserProfileView__address-wrap"
-              v-for="(address, index) in globalStore.userData.addresses"
+              v-for="(address, index) in userData.addresses"
               :key="address.id"
             >
               <h3>
@@ -52,7 +52,7 @@
       </div>
     </div>
     <!-- <div class="container">
-      {{ globalStore.userData }}
+      {{ userData }}
     </div> -->
   </div>
 </template>
@@ -63,21 +63,22 @@
 
 <script setup lang="ts">
   import { useGlobalStore } from '@/store/GlobalStore'
+  import { storeToRefs } from 'pinia'
   import Badge from 'primevue/badge'
   import { onMounted, ref } from 'vue'
 
   const globalStore = useGlobalStore()
+  const { userData } = storeToRefs(globalStore)
   const addressTitles = ref<string[]>(['Shipping address', 'Billing address'])
 
   function checkDefaultAddress(index: number): boolean {
-    const defaultShippingAddressId: string | undefined =
-      globalStore.userData.defaultShippingAddressId
-    const defaultBillindAddressId: string | undefined = globalStore.userData.defaultBillingAddressId
+    const defaultShippingAddressId: string | undefined = userData.value.defaultShippingAddressId
+    const defaultBillindAddressId: string | undefined = userData.value.defaultBillingAddressId
 
     if (
       index === 0 &&
       defaultShippingAddressId &&
-      globalStore.userData.shippingAddressIds?.includes(defaultShippingAddressId)
+      userData.value.shippingAddressIds?.includes(defaultShippingAddressId)
     ) {
       return true
     }
@@ -85,7 +86,7 @@
     if (
       index === 1 &&
       defaultBillindAddressId &&
-      globalStore.userData.billingAddressIds?.includes(defaultBillindAddressId)
+      userData.value.billingAddressIds?.includes(defaultBillindAddressId)
     ) {
       return true
     }
