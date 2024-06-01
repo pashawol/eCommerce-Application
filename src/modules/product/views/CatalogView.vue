@@ -90,7 +90,9 @@
       <li v-for="(product, index) in catalogStore.products" :key="index">
         <Card>
           <template #header>
-            <img class="card-img" alt="card-img" :src="product.masterVariant.images[0].url" />
+            <RouterLink :to="`/catalog/${product.id}`">
+              <img class="card-img" alt="card-img" :src="product.masterVariant.images[0].url" />
+            </RouterLink>
             <div class="catalog__prices-wrap">
               <Badge
                 v-if="product.masterVariant.prices[0].discounted"

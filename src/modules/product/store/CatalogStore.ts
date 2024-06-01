@@ -18,6 +18,7 @@ interface State {
   searchQuery: string
   filters: filters
   sort: string
+  productData?: Product | null
 }
 
 export const useCatalogStore = defineStore('catalogStore', {
@@ -32,7 +33,8 @@ export const useCatalogStore = defineStore('catalogStore', {
       size: '',
       price: ''
     },
-    sort: 'price asc'
+    sort: 'price asc',
+    productData: null
   }),
 
   actions: {
@@ -125,14 +127,31 @@ export const useCatalogStore = defineStore('catalogStore', {
 
     resetFilters() {
       this.searchQuery = ''
-      this.filters.color = ''
-      this.filters.size = ''
-      this.filters.price = ''
+      this.filters = {
+        color: '',
+        size: '',
+        price: ''
+      }
       this.fetchProducts()
     },
 
     applySort() {
       this.setSort(this.sort)
+    },
+
+    async fetchProductById(id: string) {
+      this.productData = null
+      try {
+        // const globalStore = useGlobalStore()
+        // if (!globalStore.token) return
+        const requestOptions = this.getRequestOptions()
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/products/${id}`, requestOptions)
+        const data = await response.json()
+        this.productData = data.masterData.current
+      } catch (err) {
+        console.error('Error fetching product:', err)
+        throw err
+      }
     }
   }
 })

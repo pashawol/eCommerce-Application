@@ -85,7 +85,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.container {
+.container { 
   --containerGutter: #{rem(12)};
   max-width: 100%;
   padding: 0 var(--containerGutter);
@@ -161,5 +161,5 @@ body {
 }
 .col {
   flex: 1 0 0%;
-  padding: 0;
+  padding: 0; 
 }
