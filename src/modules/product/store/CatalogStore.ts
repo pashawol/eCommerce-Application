@@ -133,14 +133,6 @@ export const useCatalogStore = defineStore('catalogStore', {
 
     applySort() {
       this.setSort(this.sort)
-    },
-
-    applyFilters() {
-      this.setFilters({
-        color: this.filters.color,
-        size: this.filters.size,
-        price: this.filters.price
-      })
     }
   }
 })

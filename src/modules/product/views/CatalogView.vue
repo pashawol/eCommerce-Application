@@ -13,18 +13,18 @@
         <input
           type="text"
           v-model="catalogStore.searchQuery"
-          @keyup.enter="catalogStore.applyFilters"
+          @keyup.enter="catalogStore.setFilters"
           placeholder="Search products..."
         />
       </label>
-      <span class="pi pi-search" @click="catalogStore.applyFilters"></span>
+      <span class="pi pi-search" @click="catalogStore.setFilters"></span>
     </div>
 
     <div class="catalog__filters-navigation">
       <div class="catalog__wrap">
         <label>
           Color:
-          <select v-model="catalogStore.filters.color" @change="catalogStore.applyFilters">
+          <select v-model="catalogStore.filters.color" @change="catalogStore.setFilters">
             <option value="">All</option>
             <option value="red">Red</option>
             <option value="blue">Blue</option>
@@ -34,7 +34,7 @@
         </label>
         <label>
           Size:
-          <select v-model="catalogStore.filters.size" @change="catalogStore.applyFilters">
+          <select v-model="catalogStore.filters.size" @change="catalogStore.setFilters">
             <option value="">All</option>
             <option value="small">Small</option>
             <option value="medium">Medium</option>
@@ -43,7 +43,7 @@
         </label>
         <label>
           Price, $:
-          <select v-model="catalogStore.filters.price" @change="catalogStore.applyFilters">
+          <select v-model="catalogStore.filters.price" @change="catalogStore.setFilters">
             <option value="">All</option>
             <option value="less19">less 19</option>
             <option value="19-40">19-40</option>
