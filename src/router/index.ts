@@ -17,9 +17,14 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/catalog',
+      path: '/catalog/',
       name: 'catalog',
       component: () => import('../modules/product/views/CatalogView.vue')
+    },
+    {
+      path: '/catalog/:id',
+      name: 'product',
+      component: () => import('../modules/product/views/ProductView.vue')
     },
     {
       path: '/user-profile',
@@ -41,16 +46,6 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../modules/auth/views/LoginView.vue')
-    },
-    {
-      path: '/404',
-      name: '404',
-      component: () => import('../views/404View.vue')
-    },
-    {
-      path: '/product',
-      name: 'product',
-      component: () => import('../views/ProductView.vue')
     },
     {
       path: '/example',
