@@ -29,8 +29,7 @@ const router = createRouter({
     {
       path: '/user-profile',
       name: 'user-profile',
-      component: () => import('../views/UserProfileView.vue'),
-      children: [] // Add an empty array for children
+      component: () => import('../modules/user/views/UserProfileView.vue')
     },
     {
       path: '/basket',

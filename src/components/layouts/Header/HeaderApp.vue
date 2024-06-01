@@ -35,8 +35,10 @@
 
   const logout = () => {
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('customerID')
     router.push('/login')
     globalStore.checkAuth()
+    globalStore.userData = {}
   }
 
   onMounted(() => {

@@ -10,7 +10,7 @@
   onMounted(async () => {
     await globalStore.getToken()
     globalStore.checkAuth()
-    console.log('Anonymous token:', globalStore.token)
+    if (globalStore.isAuth) await globalStore.getUserData()
   })
 </script>
 
