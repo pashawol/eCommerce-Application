@@ -21,7 +21,7 @@
     </div>
 
     <div class="catalog__filters-navigation">
-      <div class="catalog__filters">
+      <div class="catalog__wrap">
         <label>
           Color:
           <select v-model="catalogStore.filters.color" @change="applyFilters">
@@ -52,7 +52,7 @@
         </label>
         <Button severity="contrast" @click="catalogStore.resetFilters">Reset Filters</Button>
       </div>
-      <div class="catalog__sort">
+      <div class="catalog__wrap">
         <label>
           Sort:
           <select v-model="catalogStore.sort" @change="applySort">

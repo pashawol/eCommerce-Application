@@ -81,12 +81,18 @@
     display: flex;
     gap: 15px;
     align-items: center;
+    padding: 1rem;
     .pi-search {
       cursor: pointer;
     }
+    input {
+      border-radius: 10px;
+      margin-left: 5px;
+      padding: 3px 6px;
+    }
   }
 
-  &__filters {
+  &__wrap {
     display: flex;
     gap: 15px;
     align-items: center;
@@ -105,14 +111,7 @@
     }
   }
 
-  &__filters {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  &__sort {
+  &__wrap {
     display: flex;
     gap: 15px;
     align-items: center;
