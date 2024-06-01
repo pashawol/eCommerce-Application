@@ -29,7 +29,7 @@
           </select>
         </label>
         <label>
-          Price, €:
+          Price, $:
           <select v-model="catalogStore.filters.price" @change="applyFilters">
             <option value="">All</option>
             <option value="less19">less 19</option>
@@ -38,6 +38,17 @@
           </select>
         </label>
         <Button severity="contrast" @click="catalogStore.resetFilters">Reset Filters</Button>
+      </div>
+      <div class="catalog__sort">
+        <label>
+          Sort:
+          <select v-model="catalogStore.sort" @change="applySort">
+            <option value="price asc">Price: Low to High</option>
+            <option value="price desc">Price: High to Low</option>
+            <option value="name.en-US asc">Name: A to Z</option>
+            <option value="name.en-US desc">Name: Z to A</option>
+          </select>
+        </label>
       </div>
     </div>
 
@@ -104,10 +115,14 @@
   import { type Category } from '../interfaces/category'
   import type { MenuItem } from 'primevue/menuitem'
   import { useCatalogStore } from '../store/CatalogStore'
+  import { useGlobalStore } from '@/store/GlobalStore'
 
   const catalogStore = useCatalogStore()
+  const globalStore = useGlobalStore()
   const openCategories = ref(new Set())
-  const breadcrumbItems = ref([{ label: 'Catalog', command: () => catalogStore.fetchProducts() }])
+  const breadcrumbItems = ref([
+    { label: 'Catalog', command: async () => await catalogStore.fetchProducts() }
+  ])
 
   const isSubcategoriesVisible = (category: Category) => {
     return openCategories.value.has(category.id)
@@ -132,7 +147,7 @@
       { label: 'Catalog', command: () => catalogStore.fetchProducts() },
       {
         label: category.name['en-US'],
-        command: () => catalogStore.fetchCategoryProducts(category.id)
+        command: async () => await catalogStore.fetchCategoryProducts(category.id)
       }
     ]
     catalogStore.fetchCategoryProducts(category.id)
@@ -142,14 +157,14 @@
     openCategories.value.clear()
 
     breadcrumbItems.value = [
-      { label: 'Catalog', command: () => catalogStore.fetchProducts() },
+      { label: 'Catalog', command: async () => await catalogStore.fetchProducts() },
       {
         label: category.name['en-US'],
-        command: () => catalogStore.fetchCategoryProducts(category.id)
+        command: async () => await catalogStore.fetchCategoryProducts(category.id)
       },
       {
         label: subcategory.name['en-US'],
-        command: () => catalogStore.fetchCategoryProducts(subcategory.id)
+        command: async () => await catalogStore.fetchCategoryProducts(subcategory.id)
       }
     ]
     catalogStore.fetchCategoryProducts(subcategory.id)
@@ -170,10 +185,15 @@
     })
   }
 
+  const applySort = () => {
+    catalogStore.setSort(catalogStore.sort)
+  }
+
   onMounted(() => {
+    // if (globalStore.anonymousToken) {
     catalogStore.fetchCategories()
     catalogStore.fetchProducts()
-    catalogStore.resetFilters()
+    // }
   })
 </script>
 

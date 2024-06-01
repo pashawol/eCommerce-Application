@@ -1,4 +1,4 @@
-interface filters {
+export interface filters {
   color?: string
   size?: string
   price?: string
