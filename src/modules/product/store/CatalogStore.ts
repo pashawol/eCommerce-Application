@@ -4,20 +4,20 @@ import { organizeCategories } from '../services/categorization'
 import type { Product } from '../interfaces/product'
 import type { Category } from '../interfaces/category'
 import { useGlobalStore } from '@/store/GlobalStore'
-import { getFiltersQuery } from '../services/filtration'
+import { type filters, getFiltersQuery } from '../services/filtration'
 
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
-const globalStore = useGlobalStore()
+// const globalStore = useGlobalStore()
 
-const requestOptions = {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${globalStore.token}`
-  }
-}
+// const requestOptions = {
+//   method: 'GET',
+//   headers: {
+//     'Content-Type': 'application/json',
+//     Authorization: `Bearer ${globalStore.token}`
+//   }
+// }
 
 interface State {
   categories: Category[]
@@ -25,11 +25,8 @@ interface State {
   isLoadingCategories: boolean
   isLoadingProducts: boolean
   searchQuery: string
-  filters: {
-    color?: string
-    size?: string
-    price?: string
-  }
+  filters: filters
+  sort: string
 }
 
 export const useCatalogStore = defineStore('catalogStore', {
@@ -39,10 +36,26 @@ export const useCatalogStore = defineStore('catalogStore', {
     isLoadingCategories: false,
     isLoadingProducts: false,
     searchQuery: '',
-    filters: {}
+    filters: {
+      color: '',
+      size: '',
+      price: ''
+    },
+    sort: 'price asc'
   }),
 
   actions: {
+    getRequestOptions() {
+      const globalStore = useGlobalStore()
+      return {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${globalStore.token}`
+        }
+      }
+    },
+
     async fetchCategories() {
       const cachedCategories = localStorage.getItem('categories')
 
@@ -52,7 +65,10 @@ export const useCatalogStore = defineStore('catalogStore', {
         try {
           this.isLoadingCategories = true
 
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/categories`, requestOptions)
+          const response = await fetch(
+            `${API_URL}/${PROJECT_KEY}/categories`,
+            this.getRequestOptions()
+          )
 
           responseData.value = await response.json()
           this.categories = organizeCategories(responseData.value.results)
@@ -73,10 +89,11 @@ export const useCatalogStore = defineStore('catalogStore', {
           ? `&fuzzy=true&text.en-US=${encodeURIComponent(this.searchQuery)}`
           : ''
         const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
+        const sortQuery = this.sort.length ? `sort=${encodeURIComponent(this.sort)}` : ''
 
         const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}${searchQuery}`,
-          requestOptions
+          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}${searchQuery}&${sortQuery}`,
+          this.getRequestOptions()
         )
         responseData.value = await response.json()
         this.products = responseData.value.results
@@ -90,7 +107,7 @@ export const useCatalogStore = defineStore('catalogStore', {
       try {
         const response = await fetch(
           `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
-          requestOptions
+          this.getRequestOptions()
         )
 
         if (!response.ok) {
@@ -105,8 +122,13 @@ export const useCatalogStore = defineStore('catalogStore', {
       }
     },
 
-    setFilters(filters: Partial<State['filters']>) {
+    setFilters(filters: filters) {
       this.filters = { ...this.filters, ...filters }
+      this.fetchProducts()
+    },
+
+    setSort(sort: string) {
+      this.sort = sort
       this.fetchProducts()
     },
 
