@@ -9,21 +9,13 @@ import { type filters, getFiltersQuery } from '../services/filtration'
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
-// const globalStore = useGlobalStore()
-
-// const requestOptions = {
-//   method: 'GET',
-//   headers: {
-//     'Content-Type': 'application/json',
-//     Authorization: `Bearer ${globalStore.token}`
-//   }
-// }
 
 interface State {
   categories: Category[]
   products: Product[]
   isLoadingCategories: boolean
   isLoadingProducts: boolean
+  searchQuery: string
   filters: filters
   sort: string
 }
@@ -34,6 +26,7 @@ export const useCatalogStore = defineStore('catalogStore', {
     products: [],
     isLoadingCategories: false,
     isLoadingProducts: false,
+    searchQuery: '',
     filters: {
       color: '',
       size: '',
@@ -83,11 +76,14 @@ export const useCatalogStore = defineStore('catalogStore', {
         this.isLoadingProducts = true
 
         const filters = getFiltersQuery(this.filters)
+        const searchQuery = this.searchQuery
+          ? `&fuzzy=true&text.en-US=${encodeURIComponent(this.searchQuery)}`
+          : ''
         const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
         const sortQuery = this.sort.length ? `sort=${encodeURIComponent(this.sort)}` : ''
 
         const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}&${sortQuery}`,
+          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}${searchQuery}&${sortQuery}`,
           this.getRequestOptions()
         )
         responseData.value = await response.json()
@@ -128,10 +124,15 @@ export const useCatalogStore = defineStore('catalogStore', {
     },
 
     resetFilters() {
+      this.searchQuery = ''
       this.filters.color = ''
       this.filters.size = ''
       this.filters.price = ''
       this.fetchProducts()
+    },
+
+    applySort() {
+      this.setSort(this.sort)
     }
   }
 })
