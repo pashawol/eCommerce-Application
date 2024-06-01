@@ -9,15 +9,6 @@ import { type filters, getFiltersQuery } from '../services/filtration'
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
-// const globalStore = useGlobalStore()
-
-// const requestOptions = {
-//   method: 'GET',
-//   headers: {
-//     'Content-Type': 'application/json',
-//     Authorization: `Bearer ${globalStore.token}`
-//   }
-// }
 
 interface State {
   categories: Category[]
@@ -138,6 +129,18 @@ export const useCatalogStore = defineStore('catalogStore', {
       this.filters.size = ''
       this.filters.price = ''
       this.fetchProducts()
+    },
+
+    applySort() {
+      this.setSort(this.sort)
+    },
+
+    applyFilters() {
+      this.setFilters({
+        color: this.filters.color,
+        size: this.filters.size,
+        price: this.filters.price
+      })
     }
   }
 })

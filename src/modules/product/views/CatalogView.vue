@@ -13,18 +13,18 @@
         <input
           type="text"
           v-model="catalogStore.searchQuery"
-          @keyup.enter="applyFilters"
+          @keyup.enter="catalogStore.applyFilters"
           placeholder="Search products..."
         />
       </label>
-      <span class="pi pi-search" @click="applyFilters"></span>
+      <span class="pi pi-search" @click="catalogStore.applyFilters"></span>
     </div>
 
     <div class="catalog__filters-navigation">
       <div class="catalog__wrap">
         <label>
           Color:
-          <select v-model="catalogStore.filters.color" @change="applyFilters">
+          <select v-model="catalogStore.filters.color" @change="catalogStore.applyFilters">
             <option value="">All</option>
             <option value="red">Red</option>
             <option value="blue">Blue</option>
@@ -34,7 +34,7 @@
         </label>
         <label>
           Size:
-          <select v-model="catalogStore.filters.size" @change="applyFilters">
+          <select v-model="catalogStore.filters.size" @change="catalogStore.applyFilters">
             <option value="">All</option>
             <option value="small">Small</option>
             <option value="medium">Medium</option>
@@ -43,7 +43,7 @@
         </label>
         <label>
           Price, $:
-          <select v-model="catalogStore.filters.price" @change="applyFilters">
+          <select v-model="catalogStore.filters.price" @change="catalogStore.applyFilters">
             <option value="">All</option>
             <option value="less19">less 19</option>
             <option value="19-40">19-40</option>
@@ -55,7 +55,7 @@
       <div class="catalog__wrap">
         <label>
           Sort:
-          <select v-model="catalogStore.sort" @change="applySort">
+          <select v-model="catalogStore.sort" @change="catalogStore.applySort">
             <option value="price asc">Price: Low to High</option>
             <option value="price desc">Price: High to Low</option>
             <option value="name.en-US asc">Name: A to Z</option>
@@ -124,7 +124,7 @@
   import Card from 'primevue/card'
   import Badge from 'primevue/badge'
   import Breadcrumb from 'primevue/breadcrumb'
-  import { onMounted, ref } from 'vue'
+  import { ref, watchEffect } from 'vue'
   import { type Category } from '../interfaces/category'
   import type { MenuItem } from 'primevue/menuitem'
   import { useCatalogStore } from '../store/CatalogStore'
@@ -190,23 +190,11 @@
     clickedItem.command()
   }
 
-  const applyFilters = () => {
-    catalogStore.setFilters({
-      color: catalogStore.filters.color,
-      size: catalogStore.filters.size,
-      price: catalogStore.filters.price
-    })
-  }
-
-  const applySort = () => {
-    catalogStore.setSort(catalogStore.sort)
-  }
-
-  onMounted(() => {
-    // if (globalStore.anonymousToken) {
-    catalogStore.fetchCategories()
-    catalogStore.fetchProducts()
-    // }
+  watchEffect(() => {
+    if (globalStore.token) {
+      catalogStore.fetchCategories()
+      catalogStore.fetchProducts()
+    }
   })
 </script>
 
