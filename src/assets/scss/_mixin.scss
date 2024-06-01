@@ -261,3 +261,34 @@
     }
   }
 }
+
+@mixin mt($s: '.36s') {
+  --s: #{$s};
+  transition: all var(--s) ease-in-out;
+}
+
+@mixin roww($a: 12px, $b: 0, $m: p) {
+  @include gut($a, $b);
+
+  margin-top: calc(-1 * var(--gutter-y));
+  margin-left: calc(-1 * var(--gutter-x) / 2);
+  margin-right: calc(-1 * var(--gutter-x) / 2);
+
+  > * {
+    margin-top: calc(var(--gutter-y));
+    @if $m==m {
+      margin-left: calc(var(--gutter-x) / 2);
+      margin-right: calc(var(--gutter-x) / 2);
+    } @else {
+      padding-left: calc(var(--gutter-x) / 2);
+      padding-right: calc(var(--gutter-x) / 2);
+    }
+  }
+}
+
+@mixin ratio($w: 1, $h: 1) {
+  display: block;
+  position: relative;
+  --ratio: #{$h}/#{$w};
+  aspect-ratio: var(--ratio);
+}
