@@ -47,11 +47,6 @@ const router = createRouter({
       component: () => import('../modules/auth/views/LoginView.vue')
     },
     {
-      path: '/example',
-      name: 'example',
-      component: FetchView
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: '404',
       component: () => import('../views/404View.vue')
