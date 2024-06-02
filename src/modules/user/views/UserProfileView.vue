@@ -338,18 +338,14 @@
 
   const sumbit = () => {
     toast.add({
-      severity: userStore.toast.severity,
-      summary: userStore.toast.summary,
-      detail: userStore.toast.detail,
+      ...userStore.toast,
       life: 3000
     })
   }
 
   const addressSumbit = () => {
     toast.add({
-      severity: userStore.toast.severity,
-      summary: userStore.toast.summary,
-      detail: userStore.toast.detail,
+      ...userStore.toast,
       life: 3000
     })
   }
