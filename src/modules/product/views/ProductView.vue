@@ -61,7 +61,7 @@
   import Panel from 'primevue/panel'
   import Galleria from 'primevue/galleria'
   import Badge from 'primevue/badge'
-  import { ref, onMounted, watchEffect } from 'vue'
+  import { watchEffect } from 'vue'
   import { useRoute } from 'vue-router'
   const route = useRoute()
   const id = route.params.id
