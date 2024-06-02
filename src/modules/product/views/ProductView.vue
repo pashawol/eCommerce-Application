@@ -24,10 +24,28 @@
               <!-- <img :src="" alt="Product Image" /> -->
             </div>
             <div class="col">
-              <p>{{ productData.description['en-US'] }}</p>
+              <h2>
+                Price:
+                <Badge
+                  size="xlarge"
+                  v-if="productData.masterVariant.prices[0].discounted"
+                  :value="
+                    (productData.masterVariant.prices[0].discounted.value.centAmount / 100).toFixed(
+                      2
+                    )
+                  "
+                  severity="success"
+                />
+
+                <span :class="{ strike: productData.masterVariant.prices[0].discounted }">
+                  {{ (productData.masterVariant.prices[0].value.centAmount / 100).toFixed(2) }}
+                </span>
+              </h2>
+              <div class="description">
+                <p>{{ productData.description['en-US'] }}</p>
+              </div>
+              <!-- <h2>Price: {{ productData.masterVariant.prices[0].value.centAmount }}</h2> -->
               <!-- 
-              <h2>Price: {{ productData.value.price }}</h2>
-              <Badge :value="productData.value.stock" severity="success" />
               <p>
                 <Button label="Add to Cart" icon="pi pi-shopping-cart" />
               </p> -->
@@ -42,6 +60,7 @@
 <script setup lang="ts">
   import Panel from 'primevue/panel'
   import Galleria from 'primevue/galleria'
+  import Badge from 'primevue/badge'
   import { ref, onMounted, watchEffect } from 'vue'
   import { useRoute } from 'vue-router'
   const route = useRoute()
