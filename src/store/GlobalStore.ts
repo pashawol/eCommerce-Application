@@ -71,6 +71,19 @@ export const useGlobalStore = defineStore('globalStore', {
         ? (this.token = localStorage.getItem('accessToken'))
         : (this.token = this.anonymousToken)
     },
+    resetUserData() {
+      this.userData = {
+        id: '',
+        version: 1,
+        createdAt: '',
+        lastModifiedAt: '',
+        email: '',
+        addresses: [],
+        isEmailVerified: false,
+        stores: [],
+        authenticationMode: ''
+      }
+    },
     async getUserData() {
       try {
         const response = await fetch(

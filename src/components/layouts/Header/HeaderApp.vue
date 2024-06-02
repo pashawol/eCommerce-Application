@@ -38,7 +38,7 @@
     localStorage.removeItem('customerID')
     router.push('/login')
     globalStore.checkAuth()
-    globalStore.userData = {}
+    globalStore.resetUserData()
   }
 
   onMounted(() => {
@@ -46,7 +46,6 @@
   })
 </script>
 
-// TODO: In future add to logout button functionality what delete acssess token from local storage
 <template>
   <header class="header">
     <Menubar :model="menuItems" breakpoint="1200px">

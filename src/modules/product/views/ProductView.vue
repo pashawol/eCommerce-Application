@@ -107,8 +107,8 @@
 <script setup lang="ts">
   import Panel from 'primevue/panel'
   import Galleria from 'primevue/galleria'
-  import Badge from 'primevue/badge' 
-  import { ref, watchEffect, computed, onMounted } from 'vue' 
+  import Badge from 'primevue/badge'
+  import { ref, watchEffect, computed, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   const route = useRoute()
   const id = route.params.id
@@ -183,12 +183,8 @@
   const closeFullScreen = () => {
     if (document.exitFullscreen) {
       document.exitFullscreen()
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen()
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen()
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen()
+    } else {
+      document.exitFullscreen()
     }
   }
   const bindDocumentListeners = () => {
