@@ -8,3 +8,16 @@ export interface ToastProps {
   summary?: string
   severity: 'success' | 'info' | 'warn' | 'error' | 'secondary' | 'contrast' | undefined
 }
+
+export interface AddressFormProps {
+  ids: string
+  streetName: string
+  postalCode: string
+  city: string
+  country: string
+}
+
+export interface Country {
+  name: string
+  code: string
+}

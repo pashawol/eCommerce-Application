@@ -4,7 +4,7 @@
       :showHeader="false"
       v-model:visible="modalVisible"
       modal
-      class="flex flex-column px-5 py-5 gap-4"
+      class="flex flex-column px-2 sm:px-5 py-5 gap-4"
       style="
         width: 35rem;
         border-radius: 12px;
@@ -17,7 +17,7 @@
     >
       <template #container="{ closeCallback }">
         <form @submit.prevent="sumbit()">
-          <div class="d-flex gap-2 mb-1">
+          <div class="d-flex flex-column sm:flex-row gap-2 mb-1">
             <div class="flex flex-column gap-2 mb-1 w-100">
               <label for="username">Change Name</label>
               <InputText
@@ -25,8 +25,7 @@
                 v-model="userStore.dataForm.email"
                 aria-describedby="email-help"
                 @input="userStore.validateEmail"
-                required
-                class="w-100"
+                style="width: 100%"
               />
               <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
             </div>
@@ -37,8 +36,7 @@
                 v-model="userStore.dataForm.email"
                 aria-describedby="email-help"
                 @input="userStore.validateEmail"
-                required
-                class="w-100"
+                style="width: 100%"
               />
               <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
             </div>
@@ -49,8 +47,7 @@
                 v-model="userStore.dataForm.email"
                 aria-describedby="email-help"
                 @input="userStore.validateEmail"
-                required
-                class="w-100"
+                style="width: 100%"
               />
               <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
             </div>
@@ -74,7 +71,6 @@
               v-model="userStore.dataForm.email"
               aria-describedby="email-help"
               @input="userStore.validateEmail"
-              required
             />
             <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
           </div>
@@ -97,6 +93,110 @@
         </form>
       </template>
     </Dialog>
+    <Dialog
+      :showHeader="false"
+      v-model:visible="modalAddressVisible"
+      modal
+      class="flex flex-column px-2 sm:px-5 py-5 gap-4"
+      style="
+        width: 35rem;
+        border-radius: 12px;
+        background-image: radial-gradient(
+          circle at left top,
+          var(--primary-400),
+          var(--primary-700)
+        );
+      "
+    >
+      <template #container="{ closeCallback }">
+        <form @submit.prevent="addressSumbit()">
+          {{ userStore.addressForm.ids }}
+          <div class="flex flex-column gap-2 mb-1">
+            <label for="country">Country</label>
+            <Dropdown
+              id="country"
+              v-model="userStore.countriesDropdown"
+              aria-describedby="country-help"
+              :options="userStore.countries"
+              optionLabel="name"
+              @change="userStore.validatePostalCode"
+            />
+            <small class="p-error" id="country-help">{{
+              userStore.addressErrorsForm.country
+            }}</small>
+          </div>
+          <div class="flex flex-column gap-2">
+            <label for="postal-code">Postal Code</label>
+            <InputText
+              id="postal-code"
+              v-model="userStore.addressForm.postalCode"
+              aria-describedby="postal-code-help"
+              @input="userStore.validatePostalCode"
+            />
+            <small class="p-error" id="postal-code-help">{{
+              userStore.addressErrorsForm.postalCode
+            }}</small>
+          </div>
+
+          <div class="flex flex-column gap-2">
+            <label for="city">City</label>
+            <InputText
+              id="city"
+              v-model="userStore.addressForm.city"
+              aria-describedby="city-help"
+              @input="userStore.validateCity"
+            />
+            <small class="p-error" id="city-help">{{ userStore.addressErrorsForm.city }}</small>
+          </div>
+
+          <div class="flex flex-column gap-2 mb-1">
+            <label for="street">Street</label>
+            <InputText
+              id="street"
+              v-model="userStore.addressForm.streetName"
+              aria-describedby="street-help"
+              @input="userStore.validateStreet"
+            />
+            <small class="p-error" id="street-help">{{
+              userStore.addressErrorsForm.streetName
+            }}</small>
+          </div>
+          <div class="flex align-items-center gap-3">
+            <Button
+              type="button"
+              label="Cancel"
+              @click="closeCallback"
+              text
+              class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+            ></Button>
+            <Button
+              type="submit"
+              label="Save Changes"
+              :disabled="!userStore.isFilledAddressForm()"
+              text
+              class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+            ></Button>
+          </div>
+        </form>
+      </template>
+    </Dialog>
+    <!-- <Dialog
+      :showHeader="false"
+      v-model:visible="modalAddressVisible"
+      modal
+      class="flex flex-column px-2 sm:px-5 py-5 gap-4"
+      style="
+        width: 35rem;
+        border-radius: 12px;
+        background-image: radial-gradient(
+          circle at left top,
+          var(--primary-400),
+          var(--primary-700)
+        );
+      "
+    >
+      {{ userStore.addressForm.ids }}
+    </Dialog> -->
     <div class="container">
       <h1 class="sUserProfileView__title">
         Your profile info
@@ -136,6 +236,12 @@
                 "
                 value="Default"
               />
+              <Button
+                class="edit-address"
+                @click="(modalAddressVisible = true), (userStore.addressForm.ids = addressIDs)"
+              >
+                <Icon name="pencil" />
+              </Button>
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
                 {{ findAddressData(addressIDs)?.country }}
@@ -170,6 +276,12 @@
                 "
                 value="Default"
               />
+              <Button
+                class="edit-address"
+                @click="(modalAddressVisible = true), (userStore.addressForm.ids = addressIDs)"
+              >
+                <Icon name="pencil" />
+              </Button>
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
                 {{ findAddressData(addressIDs)?.country }}
@@ -208,6 +320,7 @@
   import Badge from 'primevue/badge'
   import Dialog from 'primevue/dialog'
   import { useToast } from 'primevue/usetoast'
+  import Dropdown from 'primevue/dropdown'
 
   const globalStore = useGlobalStore()
   const userStore = useUserStore()
@@ -215,6 +328,7 @@
   const { userData } = storeToRefs(globalStore)
   const toast = useToast()
   const modalVisible = ref<boolean>(false)
+  const modalAddressVisible = ref<boolean>(false)
 
   console.log(userData.value)
 
@@ -223,6 +337,15 @@
   }
 
   const sumbit = () => {
+    toast.add({
+      severity: userStore.toast.severity,
+      summary: userStore.toast.summary,
+      detail: userStore.toast.detail,
+      life: 3000
+    })
+  }
+
+  const addressSumbit = () => {
     toast.add({
       severity: userStore.toast.severity,
       summary: userStore.toast.summary,
