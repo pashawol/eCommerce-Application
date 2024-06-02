@@ -183,12 +183,8 @@
   const closeFullScreen = () => {
     if (document.exitFullscreen) {
       document.exitFullscreen()
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen()
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen()
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen()
+    } else {
+      document.exitFullscreen()
     }
   }
   const bindDocumentListeners = () => {
