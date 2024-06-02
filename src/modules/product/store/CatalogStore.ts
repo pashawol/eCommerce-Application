@@ -139,17 +139,29 @@ export const useCatalogStore = defineStore('catalogStore', {
       this.setSort(this.sort)
     },
 
-    async fetchProductById(id: string) {
+    async fetchProductById(id: string, callback: () => void): Promise<void> {
       this.productData = null
       try {
         // const globalStore = useGlobalStore()
         // if (!globalStore.token) return
         const requestOptions = this.getRequestOptions()
         const response = await fetch(`${API_URL}/${PROJECT_KEY}/products/${id}`, requestOptions)
-        const data = await response.json()
-        this.productData = data.masterData.current
+        // if (response.status === 404) {
+        //   router.push({ name: '404' })
+        //   return
+        // }
+        if (response.status === 200) {
+          const data = await response.json()
+          this.productData = data.masterData.current
+        }
+
+        if (response.status === 404) {
+          callback()
+          return
+        }
       } catch (err) {
         console.error('Error fetching product:', err)
+
         throw err
       }
     }
