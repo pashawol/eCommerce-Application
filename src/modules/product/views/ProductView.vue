@@ -107,8 +107,8 @@
 <script setup lang="ts">
   import Panel from 'primevue/panel'
   import Galleria from 'primevue/galleria'
-  import Badge from 'primevue/badge'
-  import { ref, watchEffect, computed, onMounted } from 'vue'
+  import Badge from 'primevue/badge' 
+  import { ref, watchEffect, computed, onMounted } from 'vue' 
   import { useRoute } from 'vue-router'
   const route = useRoute()
   const id = route.params.id
