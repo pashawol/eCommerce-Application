@@ -38,7 +38,7 @@
     localStorage.removeItem('customerID')
     router.push('/login')
     globalStore.checkAuth()
-    globalStore.userData = {}
+    globalStore.resetUserData()
   }
 
   onMounted(() => {
