@@ -1,8 +1,110 @@
 <template>
   <div class="sUserProfileView">
+    <Dialog
+      :showHeader="false"
+      v-model:visible="modalVisible"
+      modal
+      class="flex flex-column px-5 py-5 gap-4"
+      style="
+        width: 35rem;
+        border-radius: 12px;
+        background-image: radial-gradient(
+          circle at left top,
+          var(--primary-400),
+          var(--primary-700)
+        );
+      "
+    >
+      <template #container="{ closeCallback }">
+        <form @submit.prevent="sumbit()">
+          <div class="d-flex gap-2 mb-1">
+            <div class="flex flex-column gap-2 mb-1 w-100">
+              <label for="username">Change Name</label>
+              <InputText
+                id="text"
+                v-model="userStore.dataForm.email"
+                aria-describedby="email-help"
+                @input="userStore.validateEmail"
+                required
+                class="w-100"
+              />
+              <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+            </div>
+            <div class="flex flex-column gap-2 mb-1 w-100">
+              <label for="surname">Change Surname</label>
+              <InputText
+                id="text"
+                v-model="userStore.dataForm.email"
+                aria-describedby="email-help"
+                @input="userStore.validateEmail"
+                required
+                class="w-100"
+              />
+              <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+            </div>
+            <div class="flex flex-column gap-2 mb-1 w-100">
+              <label for="middlername">Change Midllename</label>
+              <InputText
+                id="text"
+                v-model="userStore.dataForm.email"
+                aria-describedby="email-help"
+                @input="userStore.validateEmail"
+                required
+                class="w-100"
+              />
+              <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+            </div>
+          </div>
+          <div class="flex flex-column gap-2 mb-1">
+            <label for="date">Date of Birth</label>
+            <Calendar
+              id="date"
+              v-model="userStore.mainDateOfBirth"
+              dateFormat="dd-mm-yy"
+              :manualInput="false"
+              @date-select="userStore.validateDOB"
+              :maxDate="new Date()"
+            />
+            <small class="p-error" id="date-help">{{ userStore.errorsForm.dateOfBirth }}</small>
+          </div>
+          <div class="flex flex-column gap-2 mb-1">
+            <label for="username">Change Email</label>
+            <InputText
+              id="email"
+              v-model="userStore.dataForm.email"
+              aria-describedby="email-help"
+              @input="userStore.validateEmail"
+              required
+            />
+            <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+          </div>
+          <div class="flex align-items-center gap-3">
+            <Button
+              type="button"
+              label="Cancel"
+              @click="closeCallback"
+              text
+              class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+            ></Button>
+            <Button
+              type="submit"
+              label="Save Changes"
+              :disabled="!userStore.isFilledForm()"
+              text
+              class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+            ></Button>
+          </div>
+        </form>
+      </template>
+    </Dialog>
     <div class="container">
-      <h1 class="sUserProfileView__title">Your profile info</h1>
-      <div class="row">
+      <h1 class="sUserProfileView__title">
+        Your profile info
+        <Button @click="modalVisible = true">
+          <Icon name="pencil" />
+        </Button>
+      </h1>
+      <div class="sUserProfileView__row row">
         <div class="col">
           <div class="sUserProfileView__wrap">
             <span>Name, Surname, LastName</span>
@@ -20,40 +122,75 @@
         </div>
 
         <div class="col">
-          <div class="sUserProfileView__addresses">
+          <h3>Shipping address</h3>
+          <div class="sUserProfileView__addresses row">
             <div
-              class="sUserProfileView__address-wrap"
-              v-for="(address, index) in userData.addresses"
-              :key="address.id"
+              class="sUserProfileView__address-wrap col"
+              v-for="addressIDs of userData.shippingAddressIds"
+              :key="addressIDs"
             >
-              <h3>
-                {{ addressTitles[index] }}
-                <Badge v-if="address.id && checkDefaultAddress(index)" value="Default" />
-              </h3>
+              <Badge
+                v-if="
+                  userData.defaultShippingAddressId &&
+                  addressIDs === userData.defaultShippingAddressId
+                "
+                value="Default"
+              />
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
-                {{ address.country }}
+                {{ findAddressData(addressIDs)?.country }}
               </div>
               <div class="sUserProfileView__wrap">
                 <span>City</span>
-                {{ address.city }}
+                {{ findAddressData(addressIDs)?.city }}
               </div>
               <div class="sUserProfileView__wrap">
                 <span>Street name</span>
-                {{ address.streetName }}
+                {{ findAddressData(addressIDs)?.streetName }}
               </div>
               <div class="sUserProfileView__wrap">
                 <span>Postal code</span>
-                {{ address.postalCode }}
+                {{ findAddressData(addressIDs)?.postalCode }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <h3>Billing address</h3>
+          <div class="sUserProfileView__addresses">
+            <div
+              class="sUserProfileView__address-wrap"
+              v-for="addressIDs of userData.billingAddressIds"
+              :key="addressIDs"
+            >
+              <Badge
+                v-if="
+                  userData.defaultBillingAddressId &&
+                  addressIDs === userData.defaultBillingAddressId
+                "
+                value="Default"
+              />
+              <div class="sUserProfileView__wrap">
+                <span>Country</span>
+                {{ findAddressData(addressIDs)?.country }}
+              </div>
+              <div class="sUserProfileView__wrap">
+                <span>City</span>
+                {{ findAddressData(addressIDs)?.city }}
+              </div>
+              <div class="sUserProfileView__wrap">
+                <span>Street name</span>
+                {{ findAddressData(addressIDs)?.streetName }}
+              </div>
+              <div class="sUserProfileView__wrap">
+                <span>Postal code</span>
+                {{ findAddressData(addressIDs)?.postalCode }}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- <div class="container">
-      {{ userData }}
-    </div> -->
   </div>
 </template>
 
@@ -62,35 +199,35 @@
 </style>
 
 <script setup lang="ts">
+  import type { Address } from '@commercetools/platform-sdk'
   import { useGlobalStore } from '@/store/GlobalStore'
+  import { useUserStore } from '../store/UserStore'
   import { storeToRefs } from 'pinia'
+  import { ref } from 'vue'
+  import Calendar from 'primevue/calendar'
   import Badge from 'primevue/badge'
-  import { onMounted, ref } from 'vue'
+  import Dialog from 'primevue/dialog'
+  import { useToast } from 'primevue/usetoast'
 
   const globalStore = useGlobalStore()
+  const userStore = useUserStore()
+
   const { userData } = storeToRefs(globalStore)
-  const addressTitles = ref<string[]>(['Shipping address', 'Billing address'])
+  const toast = useToast()
+  const modalVisible = ref<boolean>(false)
 
-  function checkDefaultAddress(index: number): boolean {
-    const defaultShippingAddressId: string | undefined = userData.value.defaultShippingAddressId
-    const defaultBillindAddressId: string | undefined = userData.value.defaultBillingAddressId
+  console.log(userData.value)
 
-    if (
-      index === 0 &&
-      defaultShippingAddressId &&
-      userData.value.shippingAddressIds?.includes(defaultShippingAddressId)
-    ) {
-      return true
-    }
+  function findAddressData(id: string): Address | undefined {
+    return userData.value.addresses.find((address) => address.id === id)
+  }
 
-    if (
-      index === 1 &&
-      defaultBillindAddressId &&
-      userData.value.billingAddressIds?.includes(defaultBillindAddressId)
-    ) {
-      return true
-    }
-
-    return false
+  const sumbit = () => {
+    toast.add({
+      severity: userStore.toast.severity,
+      summary: userStore.toast.summary,
+      detail: userStore.toast.detail,
+      life: 3000
+    })
   }
 </script>
