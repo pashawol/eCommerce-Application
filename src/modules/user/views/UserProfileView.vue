@@ -16,40 +16,46 @@
       "
     >
       <template #container="{ closeCallback }">
-        <form @submit.prevent="sumbit()">
+        <form @submit.prevent="submit()">
           <div class="d-flex flex-column sm:flex-row gap-2 mb-1">
-            <div class="flex flex-column gap-2 mb-1 w-100">
+            <div class="flex flex-column align-items-start gap-2 mb-1 w-100 flex-grow-1">
               <label for="username">Change Name</label>
               <InputText
                 id="text"
-                v-model="userStore.dataForm.email"
-                aria-describedby="email-help"
-                @input="userStore.validateEmail"
-                style="width: 100%"
+                v-model="userStore.dataForm.name"
+                aria-describedby="username-help"
+                @input="userStore.validateName"
+                style="width: 100%; flex-grow: 0"
               />
-              <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+              <small style="max-width: 161px" class="p-error" id="username-help">{{
+                userStore.errorsForm.name
+              }}</small>
             </div>
-            <div class="flex flex-column gap-2 mb-1 w-100">
+            <div class="flex flex-column align-items-start gap-2 mb-1 w-100 flex-grow-1">
               <label for="surname">Change Surname</label>
               <InputText
                 id="text"
-                v-model="userStore.dataForm.email"
-                aria-describedby="email-help"
-                @input="userStore.validateEmail"
-                style="width: 100%"
+                v-model="userStore.dataForm.lastName"
+                aria-describedby="surname-help"
+                @input="userStore.validateSurname"
+                style="width: 100%; flex-grow: 0"
               />
-              <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+              <small style="max-width: 161px" class="p-error" id="surname-help">{{
+                userStore.errorsForm.lastName
+              }}</small>
             </div>
-            <div class="flex flex-column gap-2 mb-1 w-100">
-              <label for="middlername">Change Midllename</label>
+            <div class="flex flex-column align-items-start gap-2 mb-1 w-100 flex-grow-1">
+              <label for="middlename">Change Midllename</label>
               <InputText
                 id="text"
-                v-model="userStore.dataForm.email"
-                aria-describedby="email-help"
-                @input="userStore.validateEmail"
-                style="width: 100%"
+                v-model="userStore.dataForm.midlleName"
+                aria-describedby="middlename-help"
+                @input="userStore.validateMiddleName"
+                style="width: 100%; flex-grow: 0"
               />
-              <small class="p-error" id="email-help">{{ userStore.errorsForm.email }}</small>
+              <small style="max-width: 161px" class="p-error" id="midlleName-help">{{
+                userStore.errorsForm.midlleName
+              }}</small>
             </div>
           </div>
           <div class="flex flex-column gap-2 mb-1">
@@ -207,7 +213,7 @@
       <div class="sUserProfileView__row row">
         <div class="col">
           <div class="sUserProfileView__wrap">
-            <span>Name, Surname, LastName</span>
+            <span>Name, MiddleName, LastName</span>
             {{ userData.firstName }} {{ userData.middleName }}
             {{ userData.lastName }}
           </div>
@@ -330,16 +336,17 @@
   const modalVisible = ref<boolean>(false)
   const modalAddressVisible = ref<boolean>(false)
 
-  console.log(userData.value)
-
   function findAddressData(id: string): Address | undefined {
     return userData.value.addresses.find((address) => address.id === id)
   }
 
-  const sumbit = () => {
-    toast.add({
-      ...userStore.toast,
-      life: 3000
+  const submit = () => {
+    userStore.changePersonalInfo().then(() => {
+      modalVisible.value = false
+      toast.add({
+        ...userStore.toast,
+        life: 3000
+      })
     })
   }
 

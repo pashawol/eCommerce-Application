@@ -1,6 +1,9 @@
 export interface LoginProps {
   email: string
   dateOfBirth: string
+  name: string
+  lastName: string
+  midlleName: string
 }
 
 export interface ToastProps {
@@ -20,4 +23,9 @@ export interface AddressFormProps {
 export interface Country {
   name: string
   code: string
+}
+
+export interface BodyRawProps {
+  version: number
+  actions: Record<string, string>[]
 }
