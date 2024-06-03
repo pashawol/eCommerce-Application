@@ -161,7 +161,6 @@ export const useUserStore = defineStore('userStore', {
       createHeader.append('Content-Type', 'application/json')
       createHeader.append('Authorization', `Bearer ${globalStore.token}`)
 
-      console.log(this.dataForm)
       if (this.dataForm.name !== '') {
         bodyRaw.actions.push({
           action: 'setFirstName',
