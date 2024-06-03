@@ -18,7 +18,7 @@ interface State {
   searchQuery: string
   filters: filters
   sort: string
-  productData?: Product | nullб
+  productData?: Product | null
   serverAnswer: string
 }
 
