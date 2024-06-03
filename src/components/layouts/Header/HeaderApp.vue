@@ -26,11 +26,11 @@
     {
       label: 'Basket',
       route: '/basket'
-    },
-    {
-      label: 'Product',
-      route: '/product'
     }
+    // {
+    //   label: 'Product',
+    //   route: '/product'
+    // }
   ]
 
   const logout = () => {

@@ -1,5 +1,5 @@
-<template>
-  <div class="catalog">
+<template class="">
+  <div class="catalog container">
     <Breadcrumb :model="breadcrumbItems">
       <template #item="{ item }">
         <a class="p-menuitem-link" href="#" @click.prevent="handleBreadcrumbClick(item)">
