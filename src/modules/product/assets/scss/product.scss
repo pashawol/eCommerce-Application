@@ -31,6 +31,9 @@
 
   .row {
     display: grid;
+    align-items: flex-start;
+    justify-items: baseline;
+    padding: 0;
     @media (min-width: 992px) {
       grid-template-columns: 440px 1fr;
     }
