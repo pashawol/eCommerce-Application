@@ -102,16 +102,19 @@
       </Panel>
     </div>
   </div>
+  <template v-else> <NotFoundView v-if="(serverAnswer = '404')" /> </template>
 </template>
 
 <script setup lang="ts">
+  import NotFoundView from '@/views/NotFoundView.vue'
   import Panel from 'primevue/panel'
   import Galleria from 'primevue/galleria'
   import Badge from 'primevue/badge'
   import { ref, watchEffect, computed, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   const route = useRoute()
-  const id = route.params.id
+  const { id } = route.params as { id: string }
+  // const router = useRouter()
 
   import { useCatalogStore } from '../store/CatalogStore'
   import { useGlobalStore } from '@/store/GlobalStore'
@@ -120,19 +123,14 @@
   const catalogStore = useCatalogStore()
   const globalStore = useGlobalStore()
 
-  const { productData } = storeToRefs(catalogStore)
-
-  import { useRouter } from 'vue-router'
-  const router = useRouter()
+  const { productData, serverAnswer } = storeToRefs(catalogStore)
 
   onMounted(() => {
     bindDocumentListeners()
   })
   watchEffect(() => {
     if (globalStore.token) {
-      catalogStore.fetchProductById(id as string, () => {
-        router.replace('/404')
-      })
+      catalogStore.fetchProductById(id as string)
     }
   })
 

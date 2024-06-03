@@ -18,7 +18,8 @@ interface State {
   searchQuery: string
   filters: filters
   sort: string
-  productData?: Product | null
+  productData?: Product | nullб
+  serverAnswer: string
 }
 
 export const useCatalogStore = defineStore('catalogStore', {
@@ -34,7 +35,8 @@ export const useCatalogStore = defineStore('catalogStore', {
       price: ''
     },
     sort: 'price asc',
-    productData: null
+    productData: null,
+    serverAnswer: ''
   }),
 
   actions: {
@@ -139,7 +141,7 @@ export const useCatalogStore = defineStore('catalogStore', {
       this.setSort(this.sort)
     },
 
-    async fetchProductById(id: string, callback: () => void): Promise<void> {
+    async fetchProductById(id: string): Promise<void> {
       this.productData = null
       try {
         // const globalStore = useGlobalStore()
@@ -150,19 +152,19 @@ export const useCatalogStore = defineStore('catalogStore', {
         //   router.push({ name: '404' })
         //   return
         // }
-        if (response.status === 200) {
-          const data = await response.json()
-          this.productData = data.masterData.current
-        }
+        // if (response.status === 200) {
+        const data = await response.json()
+        this.productData = data.masterData.current
+        // }
 
-        if (response.status === 404) {
-          callback()
-          return
-        }
+        // if (response.status === 404) {
+        //   return
+        // }
       } catch (err) {
-        console.error('Error fetching product:', err)
+        // console.error('Error fetching product:', err)
+        this.serverAnswer = '404'
 
-        throw err
+        // throw err
       }
     }
   }

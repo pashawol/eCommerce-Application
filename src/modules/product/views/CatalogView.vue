@@ -90,7 +90,7 @@
       <li v-for="(product, index) in catalogStore.products" :key="index">
         <Card>
           <template #header>
-            <RouterLink :to="`/catalog/${product.id}cacas`">
+            <RouterLink :to="`/catalog/${product.id}`">
               <img class="card-img" alt="card-img" :src="product.masterVariant.images[0].url" />
             </RouterLink>
             <div class="catalog__prices-wrap">
@@ -110,7 +110,11 @@
               </Badge>
             </div>
           </template>
-          <template #title>{{ product.name['en-US'] }}</template>
+          <template #title
+            ><RouterLink :to="`/catalog/${product.id}`">{{
+              product.name['en-US']
+            }}</RouterLink></template
+          >
           <template #content>
             <p class="m-0">
               {{ product.description['en-US'] }}
