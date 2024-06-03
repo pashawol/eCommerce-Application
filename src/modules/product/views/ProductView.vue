@@ -102,7 +102,7 @@
       </Panel>
     </div>
   </div>
-  <template v-else> <NotFoundView v-if="(serverAnswer = '404')" /> </template>
+  <NotFoundView v-if="serverAnswer === '404'" />
 </template>
 
 <script setup lang="ts">
@@ -125,17 +125,12 @@
 
   const { productData, serverAnswer } = storeToRefs(catalogStore)
 
-  import { useRouter } from 'vue-router'
-  const router = useRouter()
-
   onMounted(() => {
     bindDocumentListeners()
   })
   watchEffect(() => {
     if (globalStore.token) {
-      catalogStore.fetchProductById(id as string, () => {
-        router.replace('/404')
-      })
+      catalogStore.fetchProductById(id as string)
     }
   })
 

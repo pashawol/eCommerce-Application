@@ -143,6 +143,7 @@ export const useCatalogStore = defineStore('catalogStore', {
 
     async fetchProductById(id: string): Promise<void> {
       this.productData = null
+      this.serverAnswer = ''
       try {
         // const globalStore = useGlobalStore()
         // if (!globalStore.token) return
@@ -157,14 +158,14 @@ export const useCatalogStore = defineStore('catalogStore', {
         this.productData = data.masterData.current
         // }
 
-        // if (response.status === 404) {
-        //   return
-        // }
+        if (response.status === 404) {
+          this.serverAnswer = '404'
+          return
+        }
       } catch (err) {
-        // console.error('Error fetching product:', err)
-        this.serverAnswer = '404'
+        console.error('Error fetching product:', err)
 
-        // throw err
+        throw err
       }
     }
   }
