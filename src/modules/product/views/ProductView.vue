@@ -125,12 +125,17 @@
 
   const { productData, serverAnswer } = storeToRefs(catalogStore)
 
+  import { useRouter } from 'vue-router'
+  const router = useRouter()
+
   onMounted(() => {
     bindDocumentListeners()
   })
   watchEffect(() => {
     if (globalStore.token) {
-      catalogStore.fetchProductById(id as string)
+      catalogStore.fetchProductById(id as string, () => {
+        router.replace('/404')
+      })
     }
   })
 

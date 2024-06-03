@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <main>
+  <main class="container">
     <h1>HOME PAGE</h1>
     {{ globalStore.token }}
   </main>
