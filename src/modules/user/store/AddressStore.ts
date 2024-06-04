@@ -107,7 +107,9 @@ export const useAddressStore = defineStore('addressStore', {
         })
       } else if (
         this.action === 'removeShippingAddressId' ||
-        this.action === 'removeBillingAddressId'
+        this.action === 'removeBillingAddressId' ||
+        this.action === 'setDefaultShippingAddress' ||
+        this.action === 'setDefaultBillingAddress'
       ) {
         bodyRaw.actions.push({
           action: this.action,

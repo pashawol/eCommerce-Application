@@ -190,7 +190,7 @@
     </Dialog>
     <Dialog
       :showHeader="false"
-      v-model:visible="modalRemoveAddressVisible"
+      v-model:visible="modalConfrimVisible"
       modal
       class="flex flex-column px-2 sm:px-5 py-5 gap-4"
       style="
@@ -204,7 +204,13 @@
       "
     >
       <template #container="{ closeCallback }">
-        <h2 class="text-center">Are you sure to delete address?</h2>
+        <h2 class="text-center">
+          {{
+            addressStore.action.includes('remove')
+              ? 'Are you sure to delete address?'
+              : 'Are you sure to set as default address?'
+          }}
+        </h2>
         <div class="flex align-items-center gap-3">
           <Button
             type="button"
@@ -263,6 +269,17 @@
                 value="Default"
               />
               <Button
+                class="set-default"
+                v-else
+                @click="
+                  (modalConfrimVisible = true),
+                    (addressStore.action = 'setDefaultShippingAddress'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="check" />
+              </Button>
+              <Button
                 class="edit-address"
                 @click="
                   (modalAddressVisible = true),
@@ -275,7 +292,7 @@
               <Button
                 class="delete-address"
                 @click="
-                  (modalRemoveAddressVisible = true),
+                  (modalConfrimVisible = true),
                     (addressStore.action = 'removeShippingAddressId'),
                     (addressStore.ids = addressIDs)
                 "
@@ -327,6 +344,17 @@
                 value="Default"
               />
               <Button
+                class="set-default"
+                v-else
+                @click="
+                  (modalConfrimVisible = true),
+                    (addressStore.action = 'setDefaultBillingAddress'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="check" />
+              </Button>
+              <Button
                 class="edit-address"
                 @click="
                   (modalAddressVisible = true),
@@ -339,7 +367,7 @@
               <Button
                 class="delete-address"
                 @click="
-                  (modalRemoveAddressVisible = true),
+                  (modalConfrimVisible = true),
                     (addressStore.action = 'removeBillingAddressId'),
                     (addressStore.ids = addressIDs)
                 "
@@ -405,7 +433,7 @@
   const toast = useToast()
   const modalVisible = ref<boolean>(false)
   const modalAddressVisible = ref<boolean>(false)
-  const modalRemoveAddressVisible = ref<boolean>(false)
+  const modalConfrimVisible = ref<boolean>(false)
   const addressType = ref<string>('')
 
   function findAddressData(id: string): Address | undefined {
@@ -442,7 +470,7 @@
 
   const approveDeletting = () => {
     addressStore.addressAction().then(() => {
-      modalRemoveAddressVisible.value = false
+      modalConfrimVisible.value = false
       toast.add({
         ...addressStore.toast,
         life: 3000
