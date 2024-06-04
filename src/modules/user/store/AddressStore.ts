@@ -105,6 +105,14 @@ export const useAddressStore = defineStore('addressStore', {
           action: this.action,
           address: this.address
         })
+      } else if (
+        this.action === 'removeShippingAddressId' ||
+        this.action === 'removeBillingAddressId'
+      ) {
+        bodyRaw.actions.push({
+          action: this.action,
+          addressId: this.ids
+        })
       }
 
       createHeader.append('Content-Type', 'application/json')

@@ -188,9 +188,9 @@
         </form>
       </template>
     </Dialog>
-    <!-- <Dialog
+    <Dialog
       :showHeader="false"
-      v-model:visible="modalAddressVisible"
+      v-model:visible="modalRemoveAddressVisible"
       modal
       class="flex flex-column px-2 sm:px-5 py-5 gap-4"
       style="
@@ -203,8 +203,26 @@
         );
       "
     >
-      {{ userStore.addressForm.ids }}
-    </Dialog> -->
+      <template #container="{ closeCallback }">
+        <h2 class="text-center">Are you sure to delete address?</h2>
+        <div class="flex align-items-center gap-3">
+          <Button
+            type="button"
+            label="Cancel"
+            @click="closeCallback"
+            text
+            class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+          ></Button>
+          <Button
+            type="submit"
+            label="Approve"
+            @click="approveDeletting()"
+            text
+            class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+          ></Button>
+        </div>
+      </template>
+    </Dialog>
     <div class="container">
       <h1 class="sUserProfileView__title">
         Your profile info
@@ -253,6 +271,16 @@
                 "
               >
                 <Icon name="pencil" />
+              </Button>
+              <Button
+                class="delete-address"
+                @click="
+                  (modalRemoveAddressVisible = true),
+                    (addressStore.action = 'removeShippingAddressId'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="trashCan" />
               </Button>
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
@@ -307,6 +335,16 @@
                 "
               >
                 <Icon name="pencil" />
+              </Button>
+              <Button
+                class="delete-address"
+                @click="
+                  (modalRemoveAddressVisible = true),
+                    (addressStore.action = 'removeBillingAddressId'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="trashCan" />
               </Button>
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
@@ -367,6 +405,7 @@
   const toast = useToast()
   const modalVisible = ref<boolean>(false)
   const modalAddressVisible = ref<boolean>(false)
+  const modalRemoveAddressVisible = ref<boolean>(false)
   const addressType = ref<string>('')
 
   function findAddressData(id: string): Address | undefined {
@@ -398,6 +437,16 @@
           })
         })
       }
+    })
+  }
+
+  const approveDeletting = () => {
+    addressStore.addressAction().then(() => {
+      modalRemoveAddressVisible.value = false
+      toast.add({
+        ...addressStore.toast,
+        life: 3000
+      })
     })
   }
 </script>
