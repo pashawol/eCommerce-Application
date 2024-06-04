@@ -41,3 +41,5 @@ export interface Address {
   city: string
   country: string
 }
+
+export type PasswordformProps = Record<string, string>

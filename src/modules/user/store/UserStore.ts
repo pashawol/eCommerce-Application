@@ -1,6 +1,6 @@
 import { useGlobalStore } from './../../../store/GlobalStore'
 import { defineStore } from 'pinia'
-import type { BodyRawProps, LoginProps, ToastProps } from '../interfaces'
+import type { BodyRawProps, LoginProps, PasswordformProps, ToastProps } from '../interfaces'
 import Validation from '../services/validation'
 
 const API_URL = import.meta.env.VITE_CTP_API_URL
@@ -10,6 +10,8 @@ interface State {
   dataForm: LoginProps
   errorsForm: LoginProps
   toast: ToastProps
+  passwordForm: PasswordformProps
+  passwordErrorForm: PasswordformProps
 }
 
 export const useUserStore = defineStore('userStore', {
@@ -33,6 +35,16 @@ export const useUserStore = defineStore('userStore', {
       severity: undefined,
       summary: '',
       detail: ''
+    },
+    passwordForm: {
+      currentPassword: '',
+      newPassword: '',
+      confrimPassword: ''
+    },
+    passwordErrorForm: {
+      currentPassword: '',
+      newPassword: '',
+      confrimPassword: ''
     }
   }),
   actions: {
@@ -82,6 +94,38 @@ export const useUserStore = defineStore('userStore', {
     isFilledForm() {
       const isEmptyErrors = Object.values(this.errorsForm).every((item) => item === '')
       const isNotEmptyData = Object.values(this.dataForm).some((item) => item !== '')
+
+      console.log(isEmptyErrors)
+      console.log(isNotEmptyData)
+
+      return isEmptyErrors && isNotEmptyData
+    },
+    validatePassword() {
+      const passwordValue: string = this.passwordForm.currentPassword
+      const newPasswordValue: string = this.passwordForm.newPassword
+
+      this.passwordErrorForm.currentPassword = ''
+      this.passwordErrorForm.newPassword = ''
+
+      const errors = Validation.password(passwordValue)
+      const newErrors = Validation.password(newPasswordValue)
+
+      this.passwordErrorForm.currentPassword = errors
+      this.passwordErrorForm.newPassword = newErrors
+    },
+    validateConfrimPassword() {
+      const newPasswordValue: string = this.passwordForm.newPassword
+      const confrimPasswordValue: string = this.passwordForm.confrimPassword
+
+      if (newPasswordValue !== confrimPasswordValue) {
+        this.passwordErrorForm.confrimPassword = 'Passwords do not match'
+      } else {
+        this.passwordErrorForm.confrimPassword = ''
+      }
+    },
+    isFilledPasswordForm() {
+      const isEmptyErrors = Object.values(this.passwordErrorForm).every((item) => item === '')
+      const isNotEmptyData = Object.values(this.passwordForm).every((item) => item !== '')
 
       return isEmptyErrors && isNotEmptyData
     },
@@ -149,6 +193,50 @@ export const useUserStore = defineStore('userStore', {
         }
 
         return response.json().then((data) => (globalStore.userData = data))
+      } catch (error: unknown) {
+        console.log('Error: ', error)
+        if (error instanceof Error) {
+          this.toast = {
+            summary: 'Something went wrong :(',
+            detail: error.message,
+            severity: 'error'
+          }
+        }
+      }
+    },
+    async updatePassword() {
+      const globalStore = useGlobalStore()
+      const createHeader = new Headers()
+      const bodyRaw = {
+        id: globalStore.userData.id,
+        version: globalStore.userData.version,
+        currentPassword: this.passwordForm.currentPassword,
+        newPassword: this.passwordForm.newPassword
+      }
+
+      createHeader.append('Content-Type', 'application/json')
+      createHeader.append('Authorization', `Bearer ${globalStore.token}`)
+
+      const requestOptions = {
+        method: 'POST',
+        headers: createHeader,
+        body: JSON.stringify(bodyRaw)
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/customers/password`, requestOptions)
+
+        if (!response.ok) {
+          throw new Error(`Change failed failed: ${response.statusText}`)
+        }
+
+        this.toast = {
+          summary: 'Successfully changed',
+          detail: 'Your password has been changed',
+          severity: 'success'
+        }
+
+        return response.json()
       } catch (error: unknown) {
         console.log('Error: ', error)
         if (error instanceof Error) {
