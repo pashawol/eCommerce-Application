@@ -100,6 +100,11 @@ export const useAddressStore = defineStore('addressStore', {
           addressId: this.ids,
           address: this.address
         })
+      } else if (this.action === 'addAddress') {
+        bodyRaw.actions.push({
+          action: this.action,
+          address: this.address
+        })
       }
 
       createHeader.append('Content-Type', 'application/json')
@@ -136,6 +141,58 @@ export const useAddressStore = defineStore('addressStore', {
           postalCode: '',
           city: '',
           country: ''
+        }
+
+        return response.json().then((data) => (globalStore.userData = data))
+      } catch (error: unknown) {
+        console.log('Error: ', error)
+        if (error instanceof Error) {
+          this.toast = {
+            summary: 'Something went wrong :(',
+            detail: error.message,
+            severity: 'error'
+          }
+        }
+      }
+    },
+    async addAddressToPosition(addressType: string) {
+      const globalStore = useGlobalStore()
+      const createHeader = new Headers()
+      const bodyRaw: BodyRawProps = {
+        version: globalStore.userData.version,
+        actions: []
+      }
+
+      createHeader.append('Content-Type', 'application/json')
+      createHeader.append('Authorization', `Bearer ${globalStore.token}`)
+
+      bodyRaw.actions = [
+        {
+          action: addressType,
+          addressId:
+            globalStore.userData.addresses[globalStore.userData.addresses.length - 1].id || ''
+        }
+      ]
+
+      const requestOptions = {
+        method: 'POST',
+        headers: createHeader,
+        body: JSON.stringify(bodyRaw)
+      }
+
+      try {
+        const response = await fetch(
+          `${API_URL}/${PROJECT_KEY}/customers/${globalStore.userData.id}`,
+          requestOptions
+        )
+        if (!response.ok) {
+          throw new Error(`Change failed failed: ${response.statusText}`)
+        }
+
+        this.toast = {
+          summary: 'Successfully changed',
+          detail: `Your new address has been added to your ${addressType === 'addShippingAddressId' ? 'Shipping' : 'Billing'} list`,
+          severity: 'success'
         }
 
         return response.json().then((data) => (globalStore.userData = data))

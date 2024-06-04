@@ -271,13 +271,23 @@
                 {{ findAddressData(addressIDs)?.postalCode }}
               </div>
             </div>
+            <div
+              class="sUserProfileView__address-wrap add-address col"
+              @click="
+                (modalAddressVisible = true),
+                  (addressStore.action = 'addAddress'),
+                  (addressType = 'addShippingAddressId')
+              "
+            >
+              <Icon name="plus" />
+            </div>
           </div>
         </div>
         <div class="col">
           <h3>Billing address</h3>
-          <div class="sUserProfileView__addresses">
+          <div class="sUserProfileView__addresses row">
             <div
-              class="sUserProfileView__address-wrap"
+              class="sUserProfileView__address-wrap col"
               v-for="addressIDs of userData.billingAddressIds"
               :key="addressIDs"
             >
@@ -315,6 +325,16 @@
                 {{ findAddressData(addressIDs)?.postalCode }}
               </div>
             </div>
+            <div
+              class="sUserProfileView__address-wrap add-address col"
+              @click="
+                (modalAddressVisible = true),
+                  (addressStore.action = 'addAddress'),
+                  (addressType = 'addBillingAddressId')
+              "
+            >
+              <Icon name="plus" />
+            </div>
           </div>
         </div>
       </div>
@@ -347,6 +367,7 @@
   const toast = useToast()
   const modalVisible = ref<boolean>(false)
   const modalAddressVisible = ref<boolean>(false)
+  const addressType = ref<string>('')
 
   function findAddressData(id: string): Address | undefined {
     return userData.value.addresses.find((address) => address.id === id)
@@ -369,6 +390,14 @@
         ...addressStore.toast,
         life: 3000
       })
+      if (addressStore.action === 'addAddress') {
+        addressStore.addAddressToPosition(addressType.value).then(() => {
+          toast.add({
+            ...addressStore.toast,
+            life: 3000
+          })
+        })
+      }
     })
   }
 </script>

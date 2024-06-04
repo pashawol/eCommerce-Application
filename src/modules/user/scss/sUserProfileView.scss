@@ -99,6 +99,22 @@
       display: block;
     }
   }
+  .add-address {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all ease-in 0.36s;
+    svg {
+      height: 1em;
+      width: 1em;
+      font-size: 22px;
+    }
+    &:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+  }
 }
 
 .p-dropdown {
