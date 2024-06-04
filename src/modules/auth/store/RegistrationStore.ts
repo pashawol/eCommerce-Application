@@ -127,20 +127,6 @@ export const useRegistrationStore = defineStore('registrationStore', {
           }
         }
       }
-      // else {
-      //   for (const [key] of Object.entries(this.customerDraft.addresses[0])) {
-      //     if (key === 'country') {
-      //       this.mainBillingDropdown = {
-      //         name: '',
-      //         code: ''
-      //       }
-      //       this.customerDraft.addresses[1].country = ''
-      //     } else {
-      //       this.customerDraft.addresses[1][key as keyof (typeof this.customerDraft.addresses)[0]] =
-      //         ''
-      //     }
-      //   }
-      // }
     },
     actionDefaultBillingAddress() {
       this.customerDraft.defaultBillingAddress = this.billingAddress[0]

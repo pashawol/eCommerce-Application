@@ -146,6 +146,17 @@
       border-color: var(--primary-color);
     }
   }
+  .password-form {
+    .p-password {
+      position: relative;
+      svg {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10px;
+      }
+    }
+  }
 }
 
 .p-dropdown {

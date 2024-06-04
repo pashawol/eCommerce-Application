@@ -237,19 +237,73 @@
         </Button>
       </h1>
       <div class="sUserProfileView__row row">
-        <div class="col">
-          <div class="sUserProfileView__wrap">
-            <span>Name, MiddleName, LastName</span>
-            {{ userData.firstName }} {{ userData.middleName }}
-            {{ userData.lastName }}
+        <div class="col d-flex flex-column sm:flex-row gap-4">
+          <div>
+            <div class="sUserProfileView__wrap">
+              <span>Name, MiddleName, LastName</span>
+              {{ userData.firstName }} {{ userData.middleName }}
+              {{ userData.lastName }}
+            </div>
+            <div class="sUserProfileView__wrap">
+              <span>Birthday</span>
+              {{ userData.dateOfBirth }}
+            </div>
+            <div class="sUserProfileView__wrap">
+              <span>Email</span>
+              {{ userData.email }}
+            </div>
           </div>
-          <div class="sUserProfileView__wrap">
-            <span>Birthday</span>
-            {{ userData.dateOfBirth }}
-          </div>
-          <div class="sUserProfileView__wrap">
-            <span>Email</span>
-            {{ userData.email }}
+          <div class="sm:ml-auto">
+            <form @submit.prevent="updatePass()" class="password-form">
+              <div class="flex flex-column gap-2 mb-1">
+                <label for="password">Password</label>
+                <Password
+                  id="password"
+                  v-model="userStore.passwordForm.currentPassword"
+                  aria-describedby="password-help"
+                  :feedback="false"
+                  toggleMask
+                  @input="userStore.validatePassword"
+                />
+                <small class="p-error" id="password-help">{{
+                  userStore.passwordErrorForm.currentPassword
+                }}</small>
+              </div>
+              <div class="flex flex-column gap-2 mb-1">
+                <label for="password">New Password</label>
+                <Password
+                  id="password"
+                  v-model="userStore.passwordForm.newPassword"
+                  aria-describedby="password-help"
+                  :feedback="false"
+                  toggleMask
+                  @input="userStore.validatePassword"
+                />
+                <small class="p-error" id="password-help">{{
+                  userStore.passwordErrorForm.newPassword
+                }}</small>
+              </div>
+              <div class="flex flex-column gap-2 mb-1">
+                <label for="password">Confrim New Password</label>
+                <Password
+                  id="password"
+                  v-model="userStore.passwordForm.confrimPassword"
+                  aria-describedby="password-help"
+                  :feedback="false"
+                  toggleMask
+                  @input="userStore.validateConfrimPassword"
+                />
+                <small class="p-error" id="password-help">{{
+                  userStore.passwordErrorForm.confrimPassword
+                }}</small>
+              </div>
+              <Button
+                :disabled="!userStore.isFilledPasswordForm()"
+                type="submit"
+                class="d-block ml-auto mt-2"
+                label="Change Password"
+              />
+            </form>
           </div>
         </div>
 
@@ -424,6 +478,7 @@
   import Dialog from 'primevue/dialog'
   import Dropdown from 'primevue/dropdown'
   import { useToast } from 'primevue/usetoast'
+  import Password from 'primevue/password'
 
   const globalStore = useGlobalStore()
   const userStore = useUserStore()
@@ -473,6 +528,15 @@
       modalConfrimVisible.value = false
       toast.add({
         ...addressStore.toast,
+        life: 3000
+      })
+    })
+  }
+
+  const updatePass = () => {
+    userStore.updatePassword().then(() => {
+      toast.add({
+        ...userStore.toast,
         life: 3000
       })
     })

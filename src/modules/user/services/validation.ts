@@ -3,6 +3,10 @@ export default class Validation {
     return validateFieldErrors(value, emailValidations(value))
   }
 
+  public static password(value: string) {
+    return validateFieldErrors(value, passwordValidations(value))
+  }
+
   public static name = (value: string) => {
     return validateFieldErrors(value, nameValidations(value))
   }
@@ -87,6 +91,49 @@ const emailValidations = (emailValue: string) => {
     }
   ]
 }
+
+const passwordValidations = (passwordValue: string) => {
+  const trimmedPassword: string = passwordValue.trim()
+  return [
+    {
+      condition: passwordValue === '',
+      errorMessage: ''
+    },
+    {
+      condition: trimmedPassword !== passwordValue,
+      errorMessage: 'Remove spaces'
+    },
+    {
+      condition: /^[а-яА-Я]*$/.test(trimmedPassword),
+      errorMessage: 'Use Latin characters'
+    },
+    {
+      condition: trimmedPassword.length < 8,
+      errorMessage: 'Password must be at least 8 characters long'
+    },
+    {
+      condition: !/[a-z]/.test(trimmedPassword),
+      errorMessage: 'Password must contain at least one lowercase letter'
+    },
+    {
+      condition: !/[A-Z]/.test(trimmedPassword),
+      errorMessage: 'Password must contain at least one uppercase letter'
+    },
+    {
+      condition: !/\d/.test(trimmedPassword),
+      errorMessage: 'Password must contain at least one digit'
+    },
+    {
+      condition: !/[\W_]/.test(trimmedPassword),
+      errorMessage: 'Password must contain at least one special character (!@#$%^&*)'
+    },
+    {
+      condition: true,
+      errorMessage: ''
+    }
+  ]
+}
+
 const nameValidations = (nameValue: string) => {
   const trimmedName: string = nameValue.trim()
 
