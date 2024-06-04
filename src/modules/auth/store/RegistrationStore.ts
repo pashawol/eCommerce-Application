@@ -186,7 +186,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       const dobValue = this.mainDateOfBirth
       if (!dobValue) return
       if (this.mainDateOfBirth) {
-        this.customerDraft.dateOfBirth = new Date(this.mainDateOfBirth).toISOString().split('T')[0]
+        const date = new Date(this.mainDateOfBirth)
+        const setCurrentDate = date.setDate(date.getDate() + 1)
+        this.customerDraft.dateOfBirth = new Date(setCurrentDate).toISOString().split('T')[0]
       }
       this.errorsForm.dateOfBirth = ''
 

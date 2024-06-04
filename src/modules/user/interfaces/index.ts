@@ -13,7 +13,6 @@ export interface ToastProps {
 }
 
 export interface AddressFormProps {
-  ids: string
   streetName: string
   postalCode: string
   city: string
@@ -27,5 +26,18 @@ export interface Country {
 
 export interface BodyRawProps {
   version: number
-  actions: Record<string, string>[]
+  actions: Record<string, string | Object>[]
+}
+
+export interface Country {
+  name: string
+  code: string
+}
+
+export interface Address {
+  streetName: string
+
+  postalCode: string
+  city: string
+  country: string
 }

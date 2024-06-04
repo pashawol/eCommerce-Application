@@ -103,7 +103,7 @@
       :showHeader="false"
       v-model:visible="modalAddressVisible"
       modal
-      class="flex flex-column px-2 sm:px-5 py-5 gap-4"
+      class="flex flex-column px-2 sm:px-5 py-5"
       style="
         width: 35rem;
         border-radius: 12px;
@@ -115,32 +115,34 @@
       "
     >
       <template #container="{ closeCallback }">
+        <h3 class="mb-0">
+          {{ addressStore.action === 'changeAddress' ? 'Change Address Info' : '' }}
+        </h3>
         <form @submit.prevent="addressSumbit()">
-          {{ userStore.addressForm.ids }}
           <div class="flex flex-column gap-2 mb-1">
             <label for="country">Country</label>
             <Dropdown
               id="country"
-              v-model="userStore.countriesDropdown"
+              v-model="addressStore.countriesDropdown"
               aria-describedby="country-help"
-              :options="userStore.countries"
+              :options="addressStore.countries"
               optionLabel="name"
-              @change="userStore.validatePostalCode"
+              @change="addressStore.validatePostalCode"
             />
             <small class="p-error" id="country-help">{{
-              userStore.addressErrorsForm.country
+              addressStore.addressErrorsForm.country
             }}</small>
           </div>
           <div class="flex flex-column gap-2">
             <label for="postal-code">Postal Code</label>
             <InputText
               id="postal-code"
-              v-model="userStore.addressForm.postalCode"
+              v-model="addressStore.address.postalCode"
               aria-describedby="postal-code-help"
-              @input="userStore.validatePostalCode"
+              @input="addressStore.validatePostalCode"
             />
             <small class="p-error" id="postal-code-help">{{
-              userStore.addressErrorsForm.postalCode
+              addressStore.addressErrorsForm.postalCode
             }}</small>
           </div>
 
@@ -148,23 +150,23 @@
             <label for="city">City</label>
             <InputText
               id="city"
-              v-model="userStore.addressForm.city"
+              v-model="addressStore.address.city"
               aria-describedby="city-help"
-              @input="userStore.validateCity"
+              @input="addressStore.validateCity"
             />
-            <small class="p-error" id="city-help">{{ userStore.addressErrorsForm.city }}</small>
+            <small class="p-error" id="city-help">{{ addressStore.addressErrorsForm.city }}</small>
           </div>
 
           <div class="flex flex-column gap-2 mb-1">
             <label for="street">Street</label>
             <InputText
               id="street"
-              v-model="userStore.addressForm.streetName"
+              v-model="addressStore.address.streetName"
               aria-describedby="street-help"
-              @input="userStore.validateStreet"
+              @input="addressStore.validateStreet"
             />
             <small class="p-error" id="street-help">{{
-              userStore.addressErrorsForm.streetName
+              addressStore.addressErrorsForm.streetName
             }}</small>
           </div>
           <div class="flex align-items-center gap-3">
@@ -178,7 +180,7 @@
             <Button
               type="submit"
               label="Save Changes"
-              :disabled="!userStore.isFilledAddressForm()"
+              :disabled="!addressStore.isFilledAddressForm()"
               text
               class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
             ></Button>
@@ -186,9 +188,9 @@
         </form>
       </template>
     </Dialog>
-    <!-- <Dialog
+    <Dialog
       :showHeader="false"
-      v-model:visible="modalAddressVisible"
+      v-model:visible="modalConfrimVisible"
       modal
       class="flex flex-column px-2 sm:px-5 py-5 gap-4"
       style="
@@ -201,8 +203,32 @@
         );
       "
     >
-      {{ userStore.addressForm.ids }}
-    </Dialog> -->
+      <template #container="{ closeCallback }">
+        <h2 class="text-center">
+          {{
+            addressStore.action.includes('remove')
+              ? 'Are you sure to delete address?'
+              : 'Are you sure to set as default address?'
+          }}
+        </h2>
+        <div class="flex align-items-center gap-3">
+          <Button
+            type="button"
+            label="Cancel"
+            @click="closeCallback"
+            text
+            class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+          ></Button>
+          <Button
+            type="submit"
+            label="Approve"
+            @click="approveDeletting()"
+            text
+            class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
+          ></Button>
+        </div>
+      </template>
+    </Dialog>
     <div class="container">
       <h1 class="sUserProfileView__title">
         Your profile info
@@ -243,10 +269,35 @@
                 value="Default"
               />
               <Button
+                class="set-default"
+                v-else
+                @click="
+                  (modalConfrimVisible = true),
+                    (addressStore.action = 'setDefaultShippingAddress'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="check" />
+              </Button>
+              <Button
                 class="edit-address"
-                @click="(modalAddressVisible = true), (userStore.addressForm.ids = addressIDs)"
+                @click="
+                  (modalAddressVisible = true),
+                    (addressStore.ids = addressIDs),
+                    (addressStore.action = 'changeAddress')
+                "
               >
                 <Icon name="pencil" />
+              </Button>
+              <Button
+                class="delete-address"
+                @click="
+                  (modalConfrimVisible = true),
+                    (addressStore.action = 'removeShippingAddressId'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="trashCan" />
               </Button>
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
@@ -265,13 +316,23 @@
                 {{ findAddressData(addressIDs)?.postalCode }}
               </div>
             </div>
+            <div
+              class="sUserProfileView__address-wrap add-address col"
+              @click="
+                (modalAddressVisible = true),
+                  (addressStore.action = 'addAddress'),
+                  (addressType = 'addShippingAddressId')
+              "
+            >
+              <Icon name="plus" />
+            </div>
           </div>
         </div>
         <div class="col">
           <h3>Billing address</h3>
-          <div class="sUserProfileView__addresses">
+          <div class="sUserProfileView__addresses row">
             <div
-              class="sUserProfileView__address-wrap"
+              class="sUserProfileView__address-wrap col"
               v-for="addressIDs of userData.billingAddressIds"
               :key="addressIDs"
             >
@@ -283,10 +344,35 @@
                 value="Default"
               />
               <Button
+                class="set-default"
+                v-else
+                @click="
+                  (modalConfrimVisible = true),
+                    (addressStore.action = 'setDefaultBillingAddress'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="check" />
+              </Button>
+              <Button
                 class="edit-address"
-                @click="(modalAddressVisible = true), (userStore.addressForm.ids = addressIDs)"
+                @click="
+                  (modalAddressVisible = true),
+                    (addressStore.ids = addressIDs),
+                    (addressStore.action = 'changeAddress')
+                "
               >
                 <Icon name="pencil" />
+              </Button>
+              <Button
+                class="delete-address"
+                @click="
+                  (modalConfrimVisible = true),
+                    (addressStore.action = 'removeBillingAddressId'),
+                    (addressStore.ids = addressIDs)
+                "
+              >
+                <Icon name="trashCan" />
               </Button>
               <div class="sUserProfileView__wrap">
                 <span>Country</span>
@@ -304,6 +390,16 @@
                 <span>Postal code</span>
                 {{ findAddressData(addressIDs)?.postalCode }}
               </div>
+            </div>
+            <div
+              class="sUserProfileView__address-wrap add-address col"
+              @click="
+                (modalAddressVisible = true),
+                  (addressStore.action = 'addAddress'),
+                  (addressType = 'addBillingAddressId')
+              "
+            >
+              <Icon name="plus" />
             </div>
           </div>
         </div>
@@ -320,21 +416,25 @@
   import type { Address } from '@commercetools/platform-sdk'
   import { useGlobalStore } from '@/store/GlobalStore'
   import { useUserStore } from '../store/UserStore'
+  import { useAddressStore } from '../store/AddressStore'
   import { storeToRefs } from 'pinia'
   import { ref } from 'vue'
   import Calendar from 'primevue/calendar'
   import Badge from 'primevue/badge'
   import Dialog from 'primevue/dialog'
-  import { useToast } from 'primevue/usetoast'
   import Dropdown from 'primevue/dropdown'
+  import { useToast } from 'primevue/usetoast'
 
   const globalStore = useGlobalStore()
   const userStore = useUserStore()
+  const addressStore = useAddressStore()
 
   const { userData } = storeToRefs(globalStore)
   const toast = useToast()
   const modalVisible = ref<boolean>(false)
   const modalAddressVisible = ref<boolean>(false)
+  const modalConfrimVisible = ref<boolean>(false)
+  const addressType = ref<string>('')
 
   function findAddressData(id: string): Address | undefined {
     return userData.value.addresses.find((address) => address.id === id)
@@ -351,9 +451,30 @@
   }
 
   const addressSumbit = () => {
-    toast.add({
-      ...userStore.toast,
-      life: 3000
+    addressStore.addressAction().then(() => {
+      modalAddressVisible.value = false
+      toast.add({
+        ...addressStore.toast,
+        life: 3000
+      })
+      if (addressStore.action === 'addAddress') {
+        addressStore.addAddressToPosition(addressType.value).then(() => {
+          toast.add({
+            ...addressStore.toast,
+            life: 3000
+          })
+        })
+      }
+    })
+  }
+
+  const approveDeletting = () => {
+    addressStore.addressAction().then(() => {
+      modalConfrimVisible.value = false
+      toast.add({
+        ...addressStore.toast,
+        life: 3000
+      })
     })
   }
 </script>

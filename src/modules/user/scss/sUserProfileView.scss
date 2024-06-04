@@ -77,6 +77,37 @@
         color: var(--primary-color);
       }
     }
+    .delete-address {
+      position: absolute;
+      background-color: transparent;
+      border: none;
+      color: var(--color-heading);
+      font-size: 20px;
+      font-weight: 600;
+      padding: 0;
+      margin: 0 0 0 12px;
+      bottom: 40px;
+      right: 10px;
+      &:hover {
+        color: var(--additional-red);
+      }
+    }
+    .set-default {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      color: var(--color-heading);
+      font-weight: 600;
+      padding: 0;
+      &:hover {
+        color: var(--primary-color);
+      }
+      svg {
+        font-size: 16px;
+      }
+    }
     svg {
       height: 1em;
       width: 1em;
@@ -97,6 +128,22 @@
       font-size: 16px;
       color: var(--color-heading);
       display: block;
+    }
+  }
+  .add-address {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all ease-in 0.36s;
+    svg {
+      height: 1em;
+      width: 1em;
+      font-size: 22px;
+    }
+    &:hover {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
     }
   }
 }

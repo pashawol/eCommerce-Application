@@ -221,6 +221,7 @@
   import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
   import { useGlobalStore } from '@/store/GlobalStore'
+  import { useAuthStore } from '../store/AuthStore'
   import FormPage from '../components/FormPage/FormPage.vue'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
@@ -230,6 +231,7 @@
 
   const globalStore = useGlobalStore()
   const registrationStore = useRegistrationStore()
+  const authStore = useAuthStore()
   const toast = useToast()
   const router = useRouter()
   const dateFormat = 'dd-mm-yy'
@@ -243,11 +245,15 @@
         life: 3000
       })
 
-      globalStore.checkAuth()
+      authStore.dataForm.email = registrationStore.customerDraft.email
+      authStore.dataForm.password = registrationStore.customerDraft.password
+      authStore.logIn().then(() => {
+        globalStore.checkAuth()
 
-      if (registrationStore.toast.severity === 'success') {
-        router.push('/login')
-      }
+        if (authStore.toast.severity === 'success') {
+          router.push('/')
+        }
+      })
     })
   }
 </script>
