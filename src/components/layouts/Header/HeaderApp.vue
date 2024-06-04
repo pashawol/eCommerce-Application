@@ -19,10 +19,10 @@
       label: 'Catalog',
       route: '/catalog'
     },
-    {
-      label: 'User-profile',
-      route: '/user-profile'
-    },
+    // {
+    //   label: 'User-profile',
+    //   route: '/user-profile'
+    // },
     {
       label: 'Basket',
       route: '/basket'
@@ -70,8 +70,12 @@
           </router-link>
         </div>
         <div v-else class="flex align-items-center gap-2">
+          <router-link to="/user-profile">
+            <Button class="profile-btn">
+              <Icon name="user" />
+            </Button>
+          </router-link>
           <Button @click="logout" severity="danger">Log Out </Button>
-          <router-link to="/login"> </router-link>
         </div>
       </template>
     </Menubar>
