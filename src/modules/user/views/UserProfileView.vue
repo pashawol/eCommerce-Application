@@ -103,7 +103,7 @@
       :showHeader="false"
       v-model:visible="modalAddressVisible"
       modal
-      class="flex flex-column px-2 sm:px-5 py-5 gap-4"
+      class="flex flex-column px-2 sm:px-5 py-5"
       style="
         width: 35rem;
         border-radius: 12px;
@@ -115,32 +115,34 @@
       "
     >
       <template #container="{ closeCallback }">
+        <h3 class="mb-0">
+          {{ addressStore.action === 'changeAddress' ? 'Change Address Info' : '' }}
+        </h3>
         <form @submit.prevent="addressSumbit()">
-          {{ userStore.addressForm.ids }}
           <div class="flex flex-column gap-2 mb-1">
             <label for="country">Country</label>
             <Dropdown
               id="country"
-              v-model="userStore.countriesDropdown"
+              v-model="addressStore.countriesDropdown"
               aria-describedby="country-help"
-              :options="userStore.countries"
+              :options="addressStore.countries"
               optionLabel="name"
-              @change="userStore.validatePostalCode"
+              @change="addressStore.validatePostalCode"
             />
             <small class="p-error" id="country-help">{{
-              userStore.addressErrorsForm.country
+              addressStore.addressErrorsForm.country
             }}</small>
           </div>
           <div class="flex flex-column gap-2">
             <label for="postal-code">Postal Code</label>
             <InputText
               id="postal-code"
-              v-model="userStore.addressForm.postalCode"
+              v-model="addressStore.address.postalCode"
               aria-describedby="postal-code-help"
-              @input="userStore.validatePostalCode"
+              @input="addressStore.validatePostalCode"
             />
             <small class="p-error" id="postal-code-help">{{
-              userStore.addressErrorsForm.postalCode
+              addressStore.addressErrorsForm.postalCode
             }}</small>
           </div>
 
@@ -148,23 +150,23 @@
             <label for="city">City</label>
             <InputText
               id="city"
-              v-model="userStore.addressForm.city"
+              v-model="addressStore.address.city"
               aria-describedby="city-help"
-              @input="userStore.validateCity"
+              @input="addressStore.validateCity"
             />
-            <small class="p-error" id="city-help">{{ userStore.addressErrorsForm.city }}</small>
+            <small class="p-error" id="city-help">{{ addressStore.addressErrorsForm.city }}</small>
           </div>
 
           <div class="flex flex-column gap-2 mb-1">
             <label for="street">Street</label>
             <InputText
               id="street"
-              v-model="userStore.addressForm.streetName"
+              v-model="addressStore.address.streetName"
               aria-describedby="street-help"
-              @input="userStore.validateStreet"
+              @input="addressStore.validateStreet"
             />
             <small class="p-error" id="street-help">{{
-              userStore.addressErrorsForm.streetName
+              addressStore.addressErrorsForm.streetName
             }}</small>
           </div>
           <div class="flex align-items-center gap-3">
@@ -178,7 +180,7 @@
             <Button
               type="submit"
               label="Save Changes"
-              :disabled="!userStore.isFilledAddressForm()"
+              :disabled="!addressStore.isFilledAddressForm()"
               text
               class="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
             ></Button>
@@ -244,7 +246,11 @@
               />
               <Button
                 class="edit-address"
-                @click="(modalAddressVisible = true), (userStore.addressForm.ids = addressIDs)"
+                @click="
+                  (modalAddressVisible = true),
+                    (addressStore.ids = addressIDs),
+                    (addressStore.action = 'changeAddress')
+                "
               >
                 <Icon name="pencil" />
               </Button>
@@ -284,7 +290,11 @@
               />
               <Button
                 class="edit-address"
-                @click="(modalAddressVisible = true), (userStore.addressForm.ids = addressIDs)"
+                @click="
+                  (modalAddressVisible = true),
+                    (addressStore.ids = addressIDs),
+                    (addressStore.action = 'changeAddress')
+                "
               >
                 <Icon name="pencil" />
               </Button>
@@ -320,16 +330,18 @@
   import type { Address } from '@commercetools/platform-sdk'
   import { useGlobalStore } from '@/store/GlobalStore'
   import { useUserStore } from '../store/UserStore'
+  import { useAddressStore } from '../store/AddressStore'
   import { storeToRefs } from 'pinia'
   import { ref } from 'vue'
   import Calendar from 'primevue/calendar'
   import Badge from 'primevue/badge'
   import Dialog from 'primevue/dialog'
-  import { useToast } from 'primevue/usetoast'
   import Dropdown from 'primevue/dropdown'
+  import { useToast } from 'primevue/usetoast'
 
   const globalStore = useGlobalStore()
   const userStore = useUserStore()
+  const addressStore = useAddressStore()
 
   const { userData } = storeToRefs(globalStore)
   const toast = useToast()
@@ -351,9 +363,12 @@
   }
 
   const addressSumbit = () => {
-    toast.add({
-      ...userStore.toast,
-      life: 3000
+    addressStore.addressAction().then(() => {
+      modalAddressVisible.value = false
+      toast.add({
+        ...addressStore.toast,
+        life: 3000
+      })
     })
   }
 </script>

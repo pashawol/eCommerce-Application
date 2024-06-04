@@ -1,6 +1,6 @@
 import { useGlobalStore } from './../../../store/GlobalStore'
 import { defineStore } from 'pinia'
-import type { AddressFormProps, BodyRawProps, Country, LoginProps, ToastProps } from '../interfaces'
+import type { BodyRawProps, LoginProps, ToastProps } from '../interfaces'
 import Validation from '../services/validation'
 
 const API_URL = import.meta.env.VITE_CTP_API_URL
@@ -10,26 +10,11 @@ interface State {
   dataForm: LoginProps
   errorsForm: LoginProps
   toast: ToastProps
-  addressForm: AddressFormProps
-  addressErrorsForm: AddressFormProps
-  countries: Country[]
-  countriesDropdown: {
-    name: string
-    code: string
-  }
 }
 
 export const useUserStore = defineStore('userStore', {
   state: (): State => ({
     mainDateOfBirth: undefined,
-    countries: [
-      { name: 'Canada', code: 'CA' },
-      { name: 'United States', code: 'US' }
-    ],
-    countriesDropdown: {
-      name: '',
-      code: ''
-    },
     dataForm: {
       name: '',
       lastName: '',
@@ -37,26 +22,12 @@ export const useUserStore = defineStore('userStore', {
       email: '',
       dateOfBirth: ''
     },
-    addressForm: {
-      ids: '',
-      streetName: '',
-      postalCode: '',
-      city: '',
-      country: ''
-    },
     errorsForm: {
       email: '',
       name: '',
       lastName: '',
       midlleName: '',
       dateOfBirth: ''
-    },
-    addressErrorsForm: {
-      ids: '',
-      streetName: '',
-      postalCode: '',
-      city: '',
-      country: ''
     },
     toast: {
       severity: undefined,
@@ -108,47 +79,11 @@ export const useUserStore = defineStore('userStore', {
         this.errorsForm.dateOfBirth = errors
       }
     },
-    validateCity() {
-      const cityValue: string = this.addressErrorsForm.city
-
-      this.addressErrorsForm.city = ''
-
-      const errors = Validation.city(cityValue)
-      this.addressErrorsForm.city = errors
-    },
-
-    validateStreet() {
-      const streetValue: string = this.addressErrorsForm.streetName
-
-      this.addressErrorsForm.streetName = ''
-
-      const errors = Validation.street(streetValue)
-      this.addressErrorsForm.streetName = errors
-    },
-
-    validatePostalCode() {
-      const postalCodeValue: string = this.addressForm.postalCode
-      const country = this.countriesDropdown
-      this.addressForm.country = country.code
-      if (country !== null) {
-        const countryValue = country.name
-        this.addressErrorsForm.postalCode = ''
-
-        const errors = Validation.postalCode(postalCodeValue, countryValue)
-        this.addressErrorsForm.postalCode = errors
-      }
-    },
     isFilledForm() {
       const isEmptyErrors = Object.values(this.errorsForm).every((item) => item === '')
       const isNotEmptyData = Object.values(this.dataForm).some((item) => item !== '')
 
       return isEmptyErrors && isNotEmptyData
-    },
-    isFilledAddressForm() {
-      const isEmptyErrors = Object.values(this.addressErrorsForm).every((item) => item === '')
-      // const isNotEmptyData = Object.values(this.dataForm).every((item) => item !== '')
-
-      return isEmptyErrors
     },
     async changePersonalInfo() {
       const globalStore = useGlobalStore()
