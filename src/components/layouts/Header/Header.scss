@@ -36,7 +36,7 @@
       min-width: rem(92);
     }
     @include media-down {
-      aspect-ratio: 1;
+      // aspect-ratio: 1;
       padding: rem(10);
       width: auto;
       height: auto;
@@ -51,6 +51,14 @@
   }
   .p-menubar {
     gap: 0.5rem;
+  }
+  .profile-btn {
+    min-width: auto;
+    svg {
+      font-size: rem(18);
+      width: 1em;
+      height: 1em;
+    }
   }
 }
 .logo-link {
