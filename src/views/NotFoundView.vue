@@ -1,6 +1,6 @@
 <template>
   <div class="404-page">
-    <div class="row">
+    <div class="error-page-row row">
       <div>
         <img src="/img/404.gif" alt="404 page" />
       </div>
@@ -20,7 +20,7 @@
 </template>
 
 <style lang="scss">
-  .row {
+  .error-page-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     justify-items: center;
