@@ -80,7 +80,7 @@ export const useAddressStore = defineStore('addressStore', {
     },
     isFilledAddressForm() {
       const isEmptyErrors = Object.values(this.addressErrorsForm).every((item) => item === '')
-      const isNotEmptyData = Object.values(this.address).some((item) => item !== '')
+      const isNotEmptyData = Object.values(this.address).every((item) => item !== '')
 
       return isEmptyErrors && isNotEmptyData
     },
