@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .error-page-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
