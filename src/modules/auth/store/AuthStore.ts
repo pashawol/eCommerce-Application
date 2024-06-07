@@ -1,7 +1,9 @@
-import { apiRoot } from './../services/client'
+import { apiRoot, getAccessTokenForUser } from './../services/client'
 import { defineStore } from 'pinia'
 import type { LoginProps, PageContentProps, ToastProps } from '../interfaces/index'
 import Validation from '../services/validation'
+import { useGlobalStore } from '@/store/GlobalStore'
+import type { Customer } from '@commercetools/platform-sdk'
 
 interface State {
   dataForm: LoginProps
@@ -55,18 +57,33 @@ export const useAuthStore = defineStore('authStore', {
       return isEmptyErrors && isNotEmptyData
     },
     async logIn() {
+      const globalStore = useGlobalStore()
+
       try {
-        // console.log(this.dataForm)
-        const respone = await apiRoot.login().post({ body: this.dataForm }).execute()
-        console.log(respone.body)
+        const respone = await apiRoot
+          .withProjectKey({
+            projectKey: import.meta.env.VITE_CTP_PROJECT_KEY
+          })
+          .login()
+          .post({ body: this.dataForm })
+          .execute()
+
+        await getAccessTokenForUser(this.dataForm.email, this.dataForm.password).then(
+          (accessToken) => {
+            localStorage.setItem('accessToken', accessToken)
+            localStorage.setItem('customerID', respone.body.customer.id)
+          }
+        )
 
         this.toast = {
           summary: 'You logined successfully',
           detail: 'Welcome to the Store',
           severity: 'success'
         }
-        localStorage.setItem('accessToken', 'tipaToken')
-        return respone.body
+
+        globalStore.userData = respone.body.customer
+
+        return respone
       } catch (err: unknown) {
         if (err instanceof Error) {
           this.toast = {

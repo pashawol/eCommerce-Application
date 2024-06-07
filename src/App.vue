@@ -1,10 +1,17 @@
 <script setup lang="ts">
   import { RouterView } from 'vue-router'
   import Header from '@layouts/Header/HeaderApp.vue'
-  import { ref } from 'vue'
   import Toast from 'primevue/toast'
+  import { useGlobalStore } from './store/GlobalStore'
+  import { onMounted } from 'vue'
 
-  // const pagesWithOutHeader = ['404']
+  const globalStore = useGlobalStore()
+
+  onMounted(async () => {
+    await globalStore.getToken()
+    globalStore.checkAuth()
+    if (globalStore.isAuth) await globalStore.getUserData()
+  })
 </script>
 
 <template>

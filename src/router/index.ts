@@ -1,9 +1,6 @@
-import { useGlobalStore } from '@/store/GlobalStrore'
+import { useGlobalStore } from '@/store/GlobalStore'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import FetchView from '../views/FetchView.vue'
-import Authenticated from '@/services/authentificated'
-import { ref } from 'vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,15 +16,19 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/catalog',
+      path: '/catalog/',
       name: 'catalog',
-      component: () => import('../views/CatalogView.vue')
+      component: () => import('../modules/product/views/CatalogView.vue')
+    },
+    {
+      path: '/catalog/:id',
+      name: 'product',
+      component: () => import('../modules/product/views/ProductView.vue')
     },
     {
       path: '/user-profile',
       name: 'user-profile',
-      component: () => import('../views/UserProfileView.vue'),
-      children: [] // Add an empty array for children
+      component: () => import('../modules/user/views/UserProfileView.vue')
     },
     {
       path: '/basket',
@@ -45,24 +46,9 @@ const router = createRouter({
       component: () => import('../modules/auth/views/LoginView.vue')
     },
     {
-      path: '/404',
-      name: '404',
-      component: () => import('../views/404View.vue')
-    },
-    {
-      path: '/product',
-      name: 'product',
-      component: () => import('../views/ProductView.vue')
-    },
-    {
-      path: '/example',
-      name: 'example',
-      component: FetchView
-    },
-    {
       path: '/:pathMatch(.*)*',
-      name: '404',
-      component: () => import('../views/404View.vue')
+      name: 'NotFoundView',
+      component: () => import('../views/NotFoundView.vue')
     }
   ]
 })

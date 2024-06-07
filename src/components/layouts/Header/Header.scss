@@ -36,7 +36,7 @@
       min-width: rem(92);
     }
     @include media-down {
-      aspect-ratio: 1;
+      // aspect-ratio: 1;
       padding: rem(10);
       width: auto;
       height: auto;
@@ -44,13 +44,21 @@
     justify-content: center;
     text-align: center;
   }
-  border-bottom: var(--6XS, 1px) solid rgba(255, 255, 255, 0.12);
+  border-bottom: var(--6XS, 1px) solid var(--color-border);
   .p-menubar-button {
     order: 1;
     // @extend .p-button, .p-button-white;
   }
   .p-menubar {
     gap: 0.5rem;
+  }
+  .profile-btn {
+    min-width: auto;
+    svg {
+      font-size: rem(18);
+      width: 1em;
+      height: 1em;
+    }
   }
 }
 .logo-link {

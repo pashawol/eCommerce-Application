@@ -1,0 +1,31 @@
+.CategoriesView {
+  display: flex;
+  justify-content: center;
+  button {
+    cursor: pointer;
+    width: 100%;
+    color: var(--gray-200);
+    background: var(--gray-800);
+    border: none;
+    padding: 13px;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  .all {
+    font-weight: 700;
+  }
+  &__main-category {
+    position: relative;
+    min-width: 150px;
+    display: flex;
+  }
+  &__subcategories {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    min-width: 100%;
+    background: var(--indigo-600);
+  }
+}

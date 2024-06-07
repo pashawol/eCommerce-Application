@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import Menubar from 'primevue/menubar'
-  import { onMounted, ref } from 'vue'
+  import { onMounted } from 'vue'
   import { useRouter } from 'vue-router'
-  import { useGlobalStore } from '@/store/GlobalStrore'
+  import { useGlobalStore } from '@/store/GlobalStore'
 
   const globalStore = useGlobalStore()
   const router = useRouter()
@@ -19,24 +19,26 @@
       label: 'Catalog',
       route: '/catalog'
     },
-    {
-      label: 'User-profile',
-      route: '/user-profile'
-    },
+    // {
+    //   label: 'User-profile',
+    //   route: '/user-profile'
+    // },
     {
       label: 'Basket',
       route: '/basket'
-    },
-    {
-      label: 'Product',
-      route: '/product'
     }
+    // {
+    //   label: 'Product',
+    //   route: '/product'
+    // }
   ]
 
   const logout = () => {
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('customerID')
     router.push('/login')
     globalStore.checkAuth()
+    globalStore.resetUserData()
   }
 
   onMounted(() => {
@@ -44,7 +46,6 @@
   })
 </script>
 
-// TODO: In future add to logout button functionality what delete acssess token from local storage
 <template>
   <header class="header">
     <Menubar :model="menuItems" breakpoint="1200px">
@@ -69,8 +70,12 @@
           </router-link>
         </div>
         <div v-else class="flex align-items-center gap-2">
+          <router-link to="/user-profile">
+            <Button class="profile-btn">
+              <Icon name="user" />
+            </Button>
+          </router-link>
           <Button @click="logout" severity="danger">Log Out </Button>
-          <router-link to="/login"> </router-link>
         </div>
       </template>
     </Menubar>

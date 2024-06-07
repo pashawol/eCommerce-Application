@@ -1,7 +1,7 @@
 import type { MyCustomerDraft } from '@commercetools/platform-sdk'
 import { defineStore } from 'pinia'
 import { apiRoot } from '../services/client'
-import type { Country, PageContentProps, RegProps, ToastProps, Address } from '../interfaces'
+import type { Country, PageContentProps, RegProps, ToastProps } from '../interfaces'
 import Validation from '../services/validation'
 
 interface State {
@@ -65,7 +65,7 @@ export const useRegistrationStore = defineStore('registrationStore', {
         }
       ],
       shippingAddresses: [0],
-      billingAddresses: [0],
+      billingAddresses: [1],
       defaultBillingAddress: null,
       defaultShippingAddress: null
     },
@@ -127,20 +127,6 @@ export const useRegistrationStore = defineStore('registrationStore', {
           }
         }
       }
-      // else {
-      //   for (const [key] of Object.entries(this.customerDraft.addresses[0])) {
-      //     if (key === 'country') {
-      //       this.mainBillingDropdown = {
-      //         name: '',
-      //         code: ''
-      //       }
-      //       this.customerDraft.addresses[1].country = ''
-      //     } else {
-      //       this.customerDraft.addresses[1][key as keyof (typeof this.customerDraft.addresses)[0]] =
-      //         ''
-      //     }
-      //   }
-      // }
     },
     actionDefaultBillingAddress() {
       this.customerDraft.defaultBillingAddress = this.billingAddress[0]
@@ -186,7 +172,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       const dobValue = this.mainDateOfBirth
       if (!dobValue) return
       if (this.mainDateOfBirth) {
-        this.customerDraft.dateOfBirth = new Date(this.mainDateOfBirth).toISOString().split('T')[0]
+        const date = new Date(this.mainDateOfBirth)
+        const setCurrentDate = date.setDate(date.getDate() + 1)
+        this.customerDraft.dateOfBirth = new Date(setCurrentDate).toISOString().split('T')[0]
       }
       this.errorsForm.dateOfBirth = ''
 
@@ -344,6 +332,9 @@ export const useRegistrationStore = defineStore('registrationStore', {
       try {
         // console.log(this.dataForm)
         const response = await apiRoot
+          .withProjectKey({
+            projectKey: import.meta.env.VITE_CTP_PROJECT_KEY
+          })
           .me()
           .signup()
           .post({ body: JSONBody as unknown as MyCustomerDraft })
@@ -354,7 +345,7 @@ export const useRegistrationStore = defineStore('registrationStore', {
           detail: 'Welcome to the Store',
           severity: 'success'
         }
-        localStorage.setItem('accessToken', 'tipaToken')
+        // localStorage.setItem('accessToken', 'tipaToken')
 
         return response.body
       } catch (error: unknown) {
