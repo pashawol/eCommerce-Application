@@ -109,6 +109,9 @@
               >
               </Badge>
             </div>
+            <div class="catalog__add-btn add-btn">
+              <ButtonAddToCart />
+            </div>
           </template>
           <template #title
             ><RouterLink :to="`/catalog/${product.id}`">{{
@@ -135,6 +138,7 @@
   import type { MenuItem } from 'primevue/menuitem'
   import { useCatalogStore } from '../store/CatalogStore'
   import { useGlobalStore } from '@/store/GlobalStore'
+  import ButtonAddToCart from '../components/ButtonAddToCart.vue'
 
   const catalogStore = useCatalogStore()
   const globalStore = useGlobalStore()
