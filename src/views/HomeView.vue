@@ -1,7 +1,4 @@
 <script setup lang="ts">
-  import { useGlobalStore } from '@/store/GlobalStore'
-
-  const globalStore = useGlobalStore()
 </script>
 
 <template>
