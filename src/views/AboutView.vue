@@ -56,7 +56,16 @@
 
 <template>
   <div class="about container">
-    <h1>Our MegaFrontTeam:</h1>
+    <div class="about__header">
+      <h1>Our MegaFrontTeam</h1>
+      <p>
+        The team collaborated effectively by leveraging each member's strengths and maintaining
+        clear communication throughout the project. Regular meetings, detailed task management, and
+        a shared commitment to the project's goals ensured a seamless workflow and a successful
+        outcome.
+      </p>
+      <p>----</p>
+    </div>
     <div class="about__content">
       <div
         v-for="(member, index) in teamMembers"
@@ -85,6 +94,7 @@
     </div>
 
     <div class="about__footer">
+      <p class="text-center">----</p>
       <h2>Special thanks to<br /><span>🏆 The Rolling Scopes School: 🏆</span></h2>
       <a title="click me" target="_blank" href="https://rs.school/">
         <img src="/img/logo__rs_school.svg" alt="Logo of the Rolling Scopes School" />
@@ -96,9 +106,8 @@
 <style scoped lang="scss">
   h1 {
     color: var(--color-heading);
-    text-align: center;
-    margin-bottom: 40px;
     font-weight: 600;
+    margin-bottom: 10px;
   }
   .p-tabview {
     --body-bg: transparent;
@@ -155,6 +164,13 @@
 
   .about {
     padding: 50px 20px;
+
+    &__header {
+      text-align: center;
+      margin: auto;
+      margin-bottom: 40px;
+      max-width: 500px;
+    }
 
     &__content {
       display: flex;
