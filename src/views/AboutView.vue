@@ -4,7 +4,7 @@
     <div class="about__footer">
       <h2>Special thanks to<br /><span>🏆 The Rolling Scopes School: 🏆</span></h2>
       <a title="click me" target="_blank" href="https://rs.school/">
-        <img src="/img/logo__rs_school.svg" alt="" />
+        <img src="/img/logo__rs_school.svg" alt="Logo of the Rolling Scopes School" />
       </a>
     </div>
   </div>
