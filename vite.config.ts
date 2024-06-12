@@ -36,6 +36,7 @@ export default defineConfig({
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
       '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
       '@img': fileURLToPath(new URL('./src/img', import.meta.url)),
+      '@modules': fileURLToPath(new URL('./src/modules', import.meta.url)),
       'node-fetch': 'isomorphic-fetch'
     }
   },

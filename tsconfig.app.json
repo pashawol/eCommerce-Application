@@ -19,7 +19,8 @@
       "@common/*": ["./src/components/common/*"],
       "@assets/*": ["./src/assets/*"],
       "@img/*": ["./src/img/*"],
-      "@services/*": ["./src/services/*"]
+      "@services/*": ["./src/services/*"],
+      "@modules/*": ["./src/modules/*"]
     }
   }
 }
