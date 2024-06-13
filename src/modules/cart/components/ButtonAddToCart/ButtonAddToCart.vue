@@ -4,13 +4,7 @@
     v-if="loadingAddLineItem && cartStore.currentProduct === props.productData.sku"
     height="2.75rem"
   ></Skeleton>
-  <Button
-    label="Add to Cart"
-    severity="success"
-    icon="pi pi-cart-plus"
-    @click="cartStore.addLineItem(productData)"
-    v-else
-  />
+  <Button label="Add to Cart" severity="success" icon="pi pi-cart-plus" @click="submit" v-else />
 </template>
 
 <script setup lang="ts">
@@ -29,20 +23,16 @@
   const props = defineProps<{
     productData: productDataInterface
   }>()
-
-  watchEffect(() => {
-    if (
-      cartStore.currentProduct === props.productData.sku &&
-      cartStore.toast.severity &&
-      cartStore.toast.summary &&
-      cartStore.toast.detail
-    ) {
-      toast.add({
-        ...cartStore.toast,
-        life: 2000
-      })
-    }
-  })
+  const submit = () => {
+    cartStore.addLineItem(props.productData).then(() => {
+      if (cartStore.currentProduct !== null && cartStore.currentProduct === props.productData.sku) {
+        toast.add({
+          ...cartStore.toast,
+          life: 2000
+        })
+      }
+    })
+  }
 </script>
 
 <style scoped>

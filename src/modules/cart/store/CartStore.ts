@@ -57,38 +57,49 @@ export const useCartStore = defineStore('cartStore', {
     async addLineItem(productData: productDataInterface) {
       try {
         this.loadingAddLineItem = true
+        this.currentProduct = productData.sku
+
         if (!this.myCart) {
           await this.createCart()
         }
 
         if (!this.myCart) return
 
-        await this.fetchCart()
-        if (!this.myCart) return
-
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart.id}`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify({
-            version: this.myCart.version,
-            currency: 'USD',
-            actions: [
-              {
-                action: 'addLineItem',
-                ...productData
-              }
-            ]
+        if (
+          this.currentProduct !== null &&
+          this.myCart.lineItems.some((item) => item.variant.sku === this.currentProduct)
+        ) {
+          this.toast = {
+            summary: 'Error',
+            detail: 'Product already in cart',
+            severity: 'error'
+          }
+        } else {
+          const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart.id}`, {
+            ...this.getRequestOptions('POST'),
+            body: JSON.stringify({
+              version: this.myCart.version,
+              currency: 'USD',
+              actions: [
+                {
+                  action: 'addLineItem',
+                  ...productData
+                }
+              ]
+            })
           })
-        })
-        const data = await response.json()
-        this.currentProduct = productData.sku
-        this.toast = {
-          summary: 'Success',
-          detail: 'Product added to cart',
-          severity: 'success'
+
+          this.toast = {
+            summary: 'Success',
+            detail: 'Product added to cart',
+            severity: 'success'
+          }
+          await this.fetchCart()
         }
+
         setTimeout(() => {
-          this.loadingAddLineItem = false
           this.currentProduct = null
+          this.loadingAddLineItem = false
         }, 500)
       } catch (error) {
         console.error('Error:', error)
