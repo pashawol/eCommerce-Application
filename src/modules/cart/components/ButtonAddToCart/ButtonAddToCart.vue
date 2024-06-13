@@ -5,8 +5,6 @@
     icon="pi pi-cart-plus"
     @click="cartStore.addLineItem(productData)"
   />
-  <Button label="my Cart" severity="danger" @click="cartStore.fetchCart" />
-  <Button label="  CartS" severity="warning" @click="cartStore.queryCarts" />
 </template>
 
 <script setup lang="ts">
