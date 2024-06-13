@@ -4,16 +4,28 @@ const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 const responseData = ref()
 import { useGlobalStore } from '@/store/GlobalStore'
+import type { ToastProps } from '@interfaces/index'
 
 import type { productDataInterface } from '../interface'
 import type { Cart } from '@commercetools/platform-sdk'
+
 interface State {
   myCart: Cart | null
+  loadingAddLineItem: boolean
+  toast: ToastProps
+  currentProduct: string | null
 }
 
 export const useCartStore = defineStore('cartStore', {
   state: (): State => ({
-    myCart: null
+    myCart: null,
+    loadingAddLineItem: false,
+    currentProduct: null,
+    toast: {
+      severity: undefined,
+      summary: undefined,
+      detail: ''
+    }
   }),
   actions: {
     getRequestOptions(method = 'GET') {
@@ -44,6 +56,7 @@ export const useCartStore = defineStore('cartStore', {
     },
     async addLineItem(productData: productDataInterface) {
       try {
+        this.loadingAddLineItem = true
         if (!this.myCart) {
           await this.createCart()
         }
@@ -67,7 +80,16 @@ export const useCartStore = defineStore('cartStore', {
           })
         })
         const data = await response.json()
-        console.log('Line item added:', data)
+        this.currentProduct = productData.sku
+        this.toast = {
+          summary: 'Success',
+          detail: 'Product added to cart',
+          severity: 'success'
+        }
+        setTimeout(() => {
+          this.loadingAddLineItem = false
+          this.currentProduct = null
+        }, 500)
       } catch (error) {
         console.error('Error:', error)
       }

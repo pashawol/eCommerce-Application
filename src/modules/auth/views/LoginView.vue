@@ -36,13 +36,13 @@
 <script setup lang="ts">
   import { useGlobalStore } from '@/store/GlobalStore'
   import { useAuthStore } from '../store/AuthStore'
-  import { useToast } from 'primevue/usetoast'
   import { useRouter } from 'vue-router'
   import InputText from 'primevue/inputtext'
   import Password from 'primevue/password'
   import FormPage from '../components/FormPage/FormPage.vue'
 
   const globalStore = useGlobalStore()
+  import { useToast } from 'primevue/usetoast'
   const toast = useToast()
   const authStore = useAuthStore()
   const router = useRouter()

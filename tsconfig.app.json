@@ -20,7 +20,8 @@
       "@assets/*": ["./src/assets/*"],
       "@img/*": ["./src/img/*"],
       "@services/*": ["./src/services/*"],
-      "@modules/*": ["./src/modules/*"]
+      "@modules/*": ["./src/modules/*"],
+      "@interfaces/*": ["./src/interfaces/*"]
     }
   }
 }
