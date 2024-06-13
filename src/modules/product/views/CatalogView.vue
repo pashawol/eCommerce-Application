@@ -119,7 +119,12 @@
             <p>
               {{ product.description['en-US'] }}
             </p>
-            <ButtonAddToCart :product="product" />
+            <ButtonAddToCart
+              :productData="{
+                sku: product.masterVariant.sku,
+                quantity: 1
+              }"
+            />
           </template>
         </Card>
       </li>
