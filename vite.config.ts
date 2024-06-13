@@ -37,6 +37,7 @@ export default defineConfig({
       '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
       '@img': fileURLToPath(new URL('./src/img', import.meta.url)),
       '@modules': fileURLToPath(new URL('./src/modules', import.meta.url)),
+      '@interfaces': fileURLToPath(new URL('./src/interfaces', import.meta.url)),
       'node-fetch': 'isomorphic-fetch'
     }
   },
