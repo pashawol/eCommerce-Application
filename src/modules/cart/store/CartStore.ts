@@ -137,7 +137,6 @@ export const useCartStore = defineStore('cartStore', {
           )
           const data = await response.json()
           this.myCart = data
-          console.log('Cart data:', data)
         } else {
           await this.createCart()
         }
