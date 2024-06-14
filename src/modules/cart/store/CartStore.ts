@@ -80,7 +80,7 @@ export const useCartStore = defineStore('cartStore', {
           severity: 'success'
         }
 
-        // await this.fetchCart()
+        await this.fetchCart()
 
         setTimeout(() => {
           this.currentProduct = null
@@ -111,8 +111,6 @@ export const useCartStore = defineStore('cartStore', {
           detail: 'Product removed from cart',
           severity: 'success'
         }
-
-        await this.fetchCart()
       } catch (error) {
         console.error('Error:', error)
       }

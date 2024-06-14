@@ -15,7 +15,7 @@
           ? false
           : true
       "
-      @click="submit"
+      @click="submit()"
       v-else
     >
     </Button>

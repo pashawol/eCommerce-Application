@@ -7,16 +7,18 @@
     ></Skeleton>
     <Button
       :label="
-        myCart?.lineItems.some((item) => item.variant.sku === productData.sku)
+        myCart && myCart?.lineItems.some((item) => item.variant.sku === productData.sku)
           ? 'Already in cart'
           : 'Add to Cart'
       "
       severity="success"
       icon="pi pi-cart-plus"
       :disabled="
-        myCart?.lineItems.some((item) => item.variant.sku === productData.sku) ? true : false
+        myCart && myCart?.lineItems.some((item) => item.variant.sku === productData.sku)
+          ? true
+          : false
       "
-      @click="submit"
+      @click="submit()"
       v-else
     >
     </Button>
@@ -24,13 +26,13 @@
 </template>
 
 <script setup lang="ts">
+  import { storeToRefs } from 'pinia'
   import Skeleton from 'primevue/skeleton'
   import Button from 'primevue/button'
   import { useCartStore } from '@/modules/cart/store/CartStore'
   const cartStore = useCartStore()
   const { loadingAddLineItem, myCart } = storeToRefs(cartStore)
   import type { productDataInterface } from '@modules/cart/interface'
-  import { storeToRefs } from 'pinia'
 
   import { useToast } from 'primevue/usetoast'
   const toast = useToast()
