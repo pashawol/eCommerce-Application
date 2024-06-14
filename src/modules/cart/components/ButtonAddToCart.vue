@@ -2,21 +2,19 @@
   <div class="btn-wrap">
     <Skeleton
       class="skeleton-btn"
-      v-if="loadingAddLineItem && cartStore.currentProduct === props.productData.sku"
+      v-if="loadingAddLineItem && cartStore.currentProduct === productData.sku"
       height="2.75rem"
     ></Skeleton>
     <Button
       :label="
-        myCart && myCart.lineItems.some((item) => item.variant.sku === props.productData.sku)
+        myCart?.lineItems.some((item) => item.variant.sku === productData.sku)
           ? 'Already in cart'
           : 'Add to Cart'
       "
       severity="success"
       icon="pi pi-cart-plus"
       :disabled="
-        myCart && myCart.lineItems.some((item) => item.variant.sku === props.productData.sku)
-          ? true
-          : false
+        myCart?.lineItems.some((item) => item.variant.sku === productData.sku) ? true : false
       "
       @click="submit"
       v-else

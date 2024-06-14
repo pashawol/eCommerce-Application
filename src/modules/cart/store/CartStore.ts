@@ -59,39 +59,28 @@ export const useCartStore = defineStore('cartStore', {
         this.loadingAddLineItem = true
         this.currentProduct = productData.sku
 
-        await this.fetchCart()
-        if (
-          this.currentProduct !== null &&
-          this.myCart?.lineItems.some((item) => item.variant.sku === this.currentProduct)
-        ) {
-          this.toast = {
-            summary: 'Error',
-            detail: 'Product already in cart',
-            severity: 'error'
-          }
-        } else {
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
-            ...this.getRequestOptions('POST'),
-            body: JSON.stringify({
-              version: this.myCart?.version,
-              currency: 'USD',
-              actions: [
-                {
-                  action: 'addLineItem',
-                  ...productData
-                }
-              ]
-            })
+        // await this.fetchCart()
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
+          ...this.getRequestOptions('POST'),
+          body: JSON.stringify({
+            version: this.myCart?.version,
+            currency: 'USD',
+            actions: [
+              {
+                action: 'addLineItem',
+                ...productData
+              }
+            ]
           })
+        })
 
-          this.toast = {
-            summary: 'Success',
-            detail: 'Product added to cart',
-            severity: 'success'
-          }
-
-          await this.fetchCart()
+        this.toast = {
+          summary: 'Success',
+          detail: 'Product added to cart',
+          severity: 'success'
         }
+
+        // await this.fetchCart()
 
         setTimeout(() => {
           this.currentProduct = null
