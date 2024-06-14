@@ -92,11 +92,27 @@
             <div class="description">
               <p>{{ productData.description['en-US'] }}</p>
             </div>
+
             <!-- <h2>Price: {{ productData.masterVariant.prices[0].value.centAmount }}</h2> -->
             <!-- 
               <p>
                 <Button label="Add to Cart" icon="pi pi-shopping-cart" />
               </p> -->
+            <!-- <div class="d-flex gap-3"> -->
+            <ButtonAddToCart
+              :productData="{
+                sku: productData.masterVariant.sku,
+                quantity: 1
+              }"
+            />
+
+            <ButtonRemoveFromCart
+              :productData="{
+                sku: productData.masterVariant.sku,
+                quantity: 1
+              }"
+            />
+            <!-- </div> -->
           </div>
         </div>
       </Panel>
@@ -115,6 +131,8 @@
   const route = useRoute()
   const { id } = route.params as { id: string }
   // const router = useRouter()
+  import ButtonAddToCart from '@modules/cart/components/ButtonAddToCart.vue'
+  import ButtonRemoveFromCart from '@modules/cart/components/ButtonRemoveFromCart.vue'
 
   import { useCatalogStore } from '../store/CatalogStore'
   import { useGlobalStore } from '@/store/GlobalStore'
