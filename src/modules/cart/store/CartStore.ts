@@ -59,15 +59,10 @@ export const useCartStore = defineStore('cartStore', {
         this.loadingAddLineItem = true
         this.currentProduct = productData.sku
 
-        if (!this.myCart) {
-          await this.createCart()
-        }
-
-        if (!this.myCart) return
-
+        await this.fetchCart()
         if (
           this.currentProduct !== null &&
-          this.myCart.lineItems.some((item) => item.variant.sku === this.currentProduct)
+          this.myCart?.lineItems.some((item) => item.variant.sku === this.currentProduct)
         ) {
           this.toast = {
             summary: 'Error',
@@ -75,10 +70,10 @@ export const useCartStore = defineStore('cartStore', {
             severity: 'error'
           }
         } else {
-          const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart.id}`, {
+          const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
             ...this.getRequestOptions('POST'),
             body: JSON.stringify({
-              version: this.myCart.version,
+              version: this.myCart?.version,
               currency: 'USD',
               actions: [
                 {
@@ -94,6 +89,7 @@ export const useCartStore = defineStore('cartStore', {
             detail: 'Product added to cart',
             severity: 'success'
           }
+
           await this.fetchCart()
         }
 
@@ -101,6 +97,33 @@ export const useCartStore = defineStore('cartStore', {
           this.currentProduct = null
           this.loadingAddLineItem = false
         }, 500)
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
+    async removeLineItem(lineItemSku: string) {
+      const lineItemId = this.myCart?.lineItems.find((item) => item.variant.sku === lineItemSku)?.id
+      try {
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
+          ...this.getRequestOptions('POST'),
+          body: JSON.stringify({
+            version: this.myCart?.version,
+            actions: [
+              {
+                action: 'removeLineItem',
+                lineItemId
+              }
+            ]
+          })
+        })
+        await this.fetchCart()
+        this.toast = {
+          summary: 'Success',
+          detail: 'Product removed from cart',
+          severity: 'success'
+        }
+
+        await this.fetchCart()
       } catch (error) {
         console.error('Error:', error)
       }
@@ -116,7 +139,7 @@ export const useCartStore = defineStore('cartStore', {
           this.myCart = data
           console.log('Cart data:', data)
         } else {
-          console.error('Error: Cart or createdBy is null')
+          await this.createCart()
         }
       } catch (error) {
         console.error('Error:', error)

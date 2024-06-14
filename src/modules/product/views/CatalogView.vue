@@ -141,7 +141,7 @@
   import type { MenuItem } from 'primevue/menuitem'
   import { useCatalogStore } from '../store/CatalogStore'
   import { useGlobalStore } from '@/store/GlobalStore'
-  import ButtonAddToCart from '@modules/cart/components/ButtonAddToCart/ButtonAddToCart.vue'
+  import ButtonAddToCart from '@modules/cart/components/ButtonAddToCart.vue'
 
   const catalogStore = useCatalogStore()
   const globalStore = useGlobalStore()
@@ -149,6 +149,9 @@
   const breadcrumbItems = ref([
     { label: 'Catalog', command: async () => await catalogStore.fetchProducts() }
   ])
+
+  import { useCartStore } from '@/modules/cart/store/CartStore'
+  const CartStore = useCartStore()
 
   const isSubcategoriesVisible = (category: Category) => {
     return openCategories.value.has(category.id)
@@ -207,6 +210,7 @@
     if (globalStore.token) {
       catalogStore.fetchCategories()
       catalogStore.fetchProducts()
+      CartStore.fetchCart()
     }
   })
 </script>
