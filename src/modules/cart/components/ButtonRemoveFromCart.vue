@@ -6,9 +6,10 @@
       height="2.75rem"
     ></Skeleton>
     <Button
-      label="Remove from Cart"
+      :label="label || 'Remove from Cart'"
       severity="danger"
       outlined
+      icon="pi pi-trash"
       :disabled="
         myCart && myCart.lineItems.some((item) => item.variant.sku === props.productData.sku)
           ? false
@@ -39,6 +40,7 @@
 
   const props = defineProps<{
     productData: productDataInterface
+    label?: string
   }>()
 
   const submit = () => {

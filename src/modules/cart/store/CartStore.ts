@@ -152,6 +152,23 @@ export const useCartStore = defineStore('cartStore', {
       } catch (error) {
         console.error('Error:', error)
       }
+    },
+    async removeCart() {
+      try {
+        const response = await fetch(
+          `${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}?version=${this.myCart?.version}`,
+          this.getRequestOptions('DELETE')
+        )
+        this.myCart = null
+        console.log('Cart removed:', response)
+        this.toast = {
+          summary: 'Success',
+          detail: 'Cart removed',
+          severity: 'success'
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      }
     }
   },
   persist: { storage: localStorage }

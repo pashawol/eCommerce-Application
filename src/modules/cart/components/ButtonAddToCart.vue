@@ -8,7 +8,7 @@
     <Button
       :label="
         myCart && myCart.lineItems.some((item) => item.variant.sku === props.productData.sku)
-          ? 'Product already in cart'
+          ? 'Already in cart'
           : 'Add to Cart'
       "
       severity="success"
