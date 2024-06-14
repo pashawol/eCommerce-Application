@@ -11626,7 +11626,7 @@ a {
       color: var(--color-heading);
     }
   }
-  * {
+  *:not(.p-badge) {
     background: none !important;
   }
 }
