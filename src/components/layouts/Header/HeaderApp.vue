@@ -7,10 +7,10 @@
 
   const globalStore = useGlobalStore()
 
-  import { useCartStore } from '@/modules/cart/store/CartStore'
+  import { useCartStore } from '@modules/cart/store/CartStore'
   import { storeToRefs } from 'pinia'
-  const cartStore = useCartStore()
-  const { myCart } = storeToRefs(cartStore)
+  const CartStore = useCartStore()
+  const { myCart } = storeToRefs(CartStore)
   const router = useRouter()
   const menuItems = [
     {

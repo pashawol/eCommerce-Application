@@ -150,8 +150,9 @@
     { label: 'Catalog', command: async () => await catalogStore.fetchProducts() }
   ])
 
-  import { useCartStore } from '@/modules/cart/store/CartStore'
-  const CartStore = useCartStore()
+  // import { useCartStore } from '@/modules/cart/store/CartStore'
+  // const CartStore = useCartStore()
+  // CartStore.fetchCart()
 
   const isSubcategoriesVisible = (category: Category) => {
     return openCategories.value.has(category.id)
@@ -210,7 +211,6 @@
     if (globalStore.token) {
       catalogStore.fetchCategories()
       catalogStore.fetchProducts()
-      CartStore.fetchCart()
     }
   })
 </script>

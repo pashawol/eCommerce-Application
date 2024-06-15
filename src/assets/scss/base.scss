@@ -179,3 +179,22 @@ body {
   }
   max-width: 20rem;
 }
+
+.basket {
+  --body-bg: var(--dark-color-5);
+  .btn-wrap {
+    margin-top: 0;
+    padding-top: 0;
+    button {
+      text-align: center;
+      justify-content: center;
+      padding: 0.5rem 0.5rem;
+      .p-button-label {
+        display: none;
+      }
+      .p-button-icon {
+        margin-right: 0;
+      }
+    }
+  }
+}
