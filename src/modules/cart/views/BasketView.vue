@@ -1,7 +1,11 @@
 <template>
   <div class="basket container">
     <div class="card">
-      <DataTable v-if="myCart?.lineItems" :value="myCart?.lineItems" tableStyle="min-width: 50rem">
+      <DataTable
+        v-if="myCart?.lineItems.length"
+        :value="myCart?.lineItems"
+        tableStyle="min-width: 50rem"
+      >
         <template #header>
           <div class="flex flex-wrap align-items-center justify-content-between gap-2">
             <span class="text-xl text-900 font-bold">My Cart</span>
@@ -28,19 +32,37 @@
         </Column>
         <Column header="Individual price">
           <template #body="slotProps">
-            $ {{ (slotProps.data.price.value.centAmount / 100).toFixed(2) }}
+            <!-- $ {{ (slotProps.data.price.value.centAmount / 100).toFixed(2) }} -->
+
+            <div class="prices-wrap">
+              <Badge
+                v-if="slotProps.data.price.discounted"
+                :value="'$' + (slotProps.data.price.discounted.value.centAmount / 100).toFixed(2)"
+              >
+              </Badge>
+              <Badge
+                :class="{
+                  'original-price': slotProps.data.price.discounted
+                }"
+                :value="'$' + (slotProps.data.price.value.centAmount / 100).toFixed(2)"
+              >
+              </Badge>
+            </div>
           </template>
         </Column>
 
         <Column header="Quantity">
           <template #body="slotProps">
-            {{ slotProps.data.quantity }}
+            <ModifyQuantity
+              :quantity="slotProps.data.quantity"
+              :productData="slotProps.data.variant"
+            />
           </template>
         </Column>
 
         <Column header="Total Price">
           <template #body="slotProps">
-            $ {{ (slotProps.data.totalPrice.centAmount / 100).toFixed(2) }}
+            <span>$ {{ (slotProps.data.totalPrice.centAmount / 100).toFixed(2) }}</span>
           </template>
         </Column>
         <Column header=" ">
@@ -53,12 +75,12 @@
           <div class="text-right">
             <div>
               In total there are
-              <strong class="text-lg font-medium">{{ myCart?.lineItems.length || 0 }}</strong>
+              <strong class="text-xl font-bold">{{ myCart?.lineItems.length || 0 }}</strong>
               products.
             </div>
             Total price:
-            <strong class="text-lg font-medium"
-              >$ {{ ((myCart?.totalPrice.centAmount || 0) / 100).toFixed(2) }}</strong
+            <strong class="text-xl font-bold"
+              >💲 {{ ((myCart?.totalPrice.centAmount || 0) / 100).toFixed(2) }}</strong
             >.
           </div>
         </template>
@@ -73,9 +95,11 @@
   </div>
 </template>
 <script setup lang="ts">
+  import ModifyQuantity from '../components/ModifyQuantity.vue'
   import ButtonRemoveFromCart from '../components/ButtonRemoveFromCart.vue'
   import DataTable from 'primevue/datatable'
   import Column from 'primevue/column' // optional
+  import Badge from 'primevue/badge'
 
   import { useCartStore } from '../store/CartStore'
 
@@ -97,7 +121,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .basket {
     padding-top: 2rem;
   }
@@ -121,5 +145,10 @@
     .p-button {
       margin-top: 1rem;
     }
+  }
+  .original-price {
+    text-decoration: line-through;
+    background: transparent;
+    color: var(--gray-400);
   }
 </style>

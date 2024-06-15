@@ -185,10 +185,14 @@ body {
   .btn-wrap {
     margin-top: 0;
     padding-top: 0;
+    text-align: right;
     button {
       text-align: center;
       justify-content: center;
-      padding: 0.5rem 0.5rem;
+      // padding: 0.5rem 0.5rem;
+      padding: 0;
+      width: 2.4rem;
+      height: 2.4rem;
       .p-button-label {
         display: none;
       }

@@ -90,6 +90,28 @@ export const useCartStore = defineStore('cartStore', {
         console.error('Error:', error)
       }
     },
+    async changeLineItemQuantity(lineItemSku: string, quantity: number) {
+      const lineItemId = this.myCart?.lineItems.find((item) => item.variant.sku === lineItemSku)?.id
+
+      try {
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
+          ...this.getRequestOptions('POST'),
+          body: JSON.stringify({
+            version: this.myCart?.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId,
+                quantity
+              }
+            ]
+          })
+        })
+        await this.fetchCart()
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
     async removeLineItem(lineItemSku: string) {
       const lineItemId = this.myCart?.lineItems.find((item) => item.variant.sku === lineItemSku)?.id
       try {
