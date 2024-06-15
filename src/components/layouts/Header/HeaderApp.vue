@@ -64,7 +64,7 @@
             <i v-if="item.icon" :class="item.icon" style="margin-left: 0.5em"></i>
             <Badge
               v-if="item.badge"
-              :value="myCart?.totalLineItemQuantity"
+              :value="myCart?.lineItems.length"
               severity="info"
               style="margin-left: 0.5em"
             />
