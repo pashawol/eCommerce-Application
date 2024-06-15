@@ -20,6 +20,10 @@ interface State {
   sort: string
   productData?: Product | null
   serverAnswer: string
+  currentPage: number
+  total: number
+  isCategory: boolean
+  categoryId: string | null
 }
 
 export const useCatalogStore = defineStore('catalogStore', {
@@ -36,14 +40,18 @@ export const useCatalogStore = defineStore('catalogStore', {
     },
     sort: 'price asc',
     productData: null,
-    serverAnswer: ''
+    serverAnswer: '',
+    currentPage: 0,
+    total: 0,
+    isCategory: false,
+    categoryId: null
   }),
 
   actions: {
-    getRequestOptions() {
+    getRequestOptions(method: string = 'GET') {
       const globalStore = useGlobalStore()
       return {
-        method: 'GET',
+        method: method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${globalStore.token}`
@@ -74,34 +82,25 @@ export const useCatalogStore = defineStore('catalogStore', {
         }
       }
     },
+    searchFilter() {
+      const filters = getFiltersQuery(this.filters)
+      const searchQuery = this.searchQuery
+        ? `&fuzzy=true&text.en-US=${encodeURIComponent(this.searchQuery)}`
+        : ''
+      const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
+      const sortQuery = this.sort.length ? `sort=${encodeURIComponent(this.sort)}` : ''
 
+      return `${filterQuery}${searchQuery}&${sortQuery}`
+    },
+    categoriesFilter(categoryId: string) {
+      return `filter=categories.id:subtree("${categoryId}")`
+    },
     async fetchProducts() {
       try {
         this.isLoadingProducts = true
 
-        const filters = getFiltersQuery(this.filters)
-        const searchQuery = this.searchQuery
-          ? `&fuzzy=true&text.en-US=${encodeURIComponent(this.searchQuery)}`
-          : ''
-        const filterQuery = filters.length ? `filter.query=${filters.join('&filter=')}` : ''
-        const sortQuery = this.sort.length ? `sort=${encodeURIComponent(this.sort)}` : ''
-
         const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/product-projections/search?${filterQuery}${searchQuery}&${sortQuery}`,
-          this.getRequestOptions()
-        )
-        responseData.value = await response.json()
-        this.products = responseData.value.results
-      } catch (err) {
-        console.error('Error fetching products:', err)
-        throw err
-      }
-    },
-
-    async fetchCategoryProducts(categoryId: string): Promise<void> {
-      try {
-        const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/product-projections/search?filter=categories.id:subtree("${categoryId}")`,
+          `${API_URL}/${PROJECT_KEY}/product-projections/search?${this.isCategory === true ? this.categoriesFilter(this.categoryId!) : this.searchFilter()}&offset=${this.currentPage}&limit=4`,
           this.getRequestOptions()
         )
 
@@ -111,19 +110,22 @@ export const useCatalogStore = defineStore('catalogStore', {
 
         responseData.value = await response.json()
         this.products = responseData.value.results
+        this.total = responseData.value.total
       } catch (err) {
-        console.error('Error fetching data:', err)
+        console.error('Error fetching products:', err)
         throw err
       }
     },
 
     setFilters(filters: filters) {
       this.filters = { ...this.filters, ...filters }
+      this.isCategory = false
       this.fetchProducts()
     },
 
     setSort(sort: string) {
       this.sort = sort
+      this.isCategory = false
       this.fetchProducts()
     },
 
@@ -134,6 +136,7 @@ export const useCatalogStore = defineStore('catalogStore', {
         size: '',
         price: ''
       }
+      this.isCategory = false
       this.fetchProducts()
     },
 

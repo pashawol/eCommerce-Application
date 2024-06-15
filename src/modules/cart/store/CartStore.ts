@@ -117,7 +117,7 @@ export const useCartStore = defineStore('cartStore', {
     },
     async fetchCart() {
       try {
-        if (this.myCart) {
+        if (this.myCart?.id) {
           const response = await fetch(
             `${API_URL}/${PROJECT_KEY}/carts/${this.myCart.id}`,
             this.getRequestOptions()
