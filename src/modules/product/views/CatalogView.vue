@@ -91,7 +91,12 @@
         <Card>
           <template #header>
             <RouterLink :to="`/catalog/${product.id}`">
-              <img class="card-img" alt="card-img" :src="product.masterVariant.images[0].url" />
+              <img
+                v-if="product.masterVariant.images[0]"
+                class="card-img"
+                alt="card-img"
+                :src="product.masterVariant.images[0].url"
+              />
             </RouterLink>
             <div class="catalog__prices-wrap">
               <Badge
@@ -129,6 +134,12 @@
         </Card>
       </li>
     </ul>
+    <Paginator
+      v-model:first="first"
+      :rows="4"
+      :totalRecords="catalogStore.total"
+      @page="setPage()"
+    ></Paginator>
   </div>
 </template>
 
@@ -136,23 +147,33 @@
   import Card from 'primevue/card'
   import Badge from 'primevue/badge'
   import Breadcrumb from 'primevue/breadcrumb'
+  import Paginator from 'primevue/paginator'
   import { ref, watchEffect } from 'vue'
   import { type Category } from '../interfaces/category'
   import type { MenuItem } from 'primevue/menuitem'
   import { useCatalogStore } from '../store/CatalogStore'
   import { useGlobalStore } from '@/store/GlobalStore'
   import ButtonAddToCart from '@modules/cart/components/ButtonAddToCart.vue'
+  import { useRoute, useRouter } from 'vue-router'
 
+  const route = useRoute()
+  const router = useRouter()
   const catalogStore = useCatalogStore()
   const globalStore = useGlobalStore()
   const openCategories = ref(new Set())
   const breadcrumbItems = ref([
     { label: 'Catalog', command: async () => await catalogStore.fetchProducts() }
   ])
-
-  // import { useCartStore } from '@/modules/cart/store/CartStore'
-  // const CartStore = useCartStore()
-  // CartStore.fetchCart()
+  const first = ref(route.query.offset ? Number(route.query.offset) : 0)
+  if (route.query.offset) {
+    catalogStore.currentPage = Number(route.query.offset)
+  }
+  const setPage = () => {
+    catalogStore.currentPage = first.value
+    router.push({
+      query: { ...route.query, offset: first.value }
+    })
+  }
 
   const isSubcategoriesVisible = (category: Category) => {
     return openCategories.value.has(category.id)
@@ -167,8 +188,9 @@
   }
 
   const selectCategory = (category: Category): void => {
+    catalogStore.isCategory = true
+    catalogStore.categoryId = category.id
     openCategories.value.clear()
-
     if (category.subcategories.length > 0) {
       toggleSubcategories(category)
     }
@@ -177,27 +199,30 @@
       { label: 'Catalog', command: () => catalogStore.fetchProducts() },
       {
         label: category.name['en-US'],
-        command: async () => await catalogStore.fetchCategoryProducts(category.id)
+        command: async () => await catalogStore.fetchProducts()
       }
     ]
-    catalogStore.fetchCategoryProducts(category.id)
+
+    catalogStore.fetchProducts()
   }
 
   const selectSubcategory = (category: Category, subcategory: Category) => {
+    catalogStore.isCategory = true
+    catalogStore.categoryId = subcategory.id
     openCategories.value.clear()
-
     breadcrumbItems.value = [
       { label: 'Catalog', command: async () => await catalogStore.fetchProducts() },
       {
         label: category.name['en-US'],
-        command: async () => await catalogStore.fetchCategoryProducts(category.id)
+        command: async () => await catalogStore.fetchProducts()
       },
       {
         label: subcategory.name['en-US'],
-        command: async () => await catalogStore.fetchCategoryProducts(subcategory.id)
+        command: async () => await catalogStore.fetchProducts()
       }
     ]
-    catalogStore.fetchCategoryProducts(subcategory.id)
+
+    catalogStore.fetchProducts()
   }
 
   const handleBreadcrumbClick = (item: MenuItem): void => {
