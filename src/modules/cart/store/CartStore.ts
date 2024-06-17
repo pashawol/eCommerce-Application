@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
+import { defineStore, type StoreDefinition } from 'pinia'
 import { ref } from 'vue'
 const API_URL = import.meta.env.VITE_CTP_API_URL
 const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
-const responseData = ref()
+
 import { useGlobalStore } from '@/store/GlobalStore'
 import type { ToastProps } from '@interfaces/index'
 
@@ -17,7 +17,7 @@ interface State {
   permyriad: number
 }
 
-export const useCartStore = defineStore('cartStore', {
+export const useCartStore: StoreDefinition<'cartStore', State> = defineStore('cartStore', {
   state: (): State => ({
     myCart: null,
     loadingAddLineItem: false,
@@ -29,6 +29,28 @@ export const useCartStore = defineStore('cartStore', {
       detail: ''
     }
   }),
+  getters: {
+    totalPrice: (state: State) => {
+      if (state.myCart) {
+        return (state.myCart.totalPrice.centAmount / 100).toFixed(2)
+      }
+      return 0
+    },
+    totalPriceWithDiscount: (state: State) => {
+      if (state.myCart && state.permyriad) {
+        return ((state.myCart.totalPrice.centAmount * (1 - state.permyriad / 10000)) / 100).toFixed(
+          2
+        )
+      }
+      return 0
+    },
+    totalItems: (state: State): number => {
+      if (state.myCart) {
+        return state.myCart.lineItems.reduce((acc, item) => acc + item.quantity, 0)
+      }
+      return 0
+    }
+  },
   actions: {
     getRequestOptions(method = 'GET') {
       const globalStore = useGlobalStore()
@@ -61,7 +83,6 @@ export const useCartStore = defineStore('cartStore', {
         this.loadingAddLineItem = true
         this.currentProduct = productData.sku
 
-        // await this.fetchCart()
         const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
           ...this.getRequestOptions('POST'),
           body: JSON.stringify({
@@ -263,28 +284,6 @@ export const useCartStore = defineStore('cartStore', {
       } catch (error) {
         console.error('Error:', error)
       }
-    }
-  },
-  getters: {
-    totalPrice: (state) => {
-      if (state.myCart) {
-        return (state.myCart.totalPrice.centAmount / 100).toFixed(2)
-      }
-      return 0
-    },
-    totalPriceWithDiscount: (state) => {
-      if (state.myCart && state.permyriad) {
-        return ((state.myCart.totalPrice.centAmount * (1 - state.permyriad / 10000)) / 100).toFixed(
-          2
-        )
-      }
-      return 0
-    },
-    totalItems: (state) => {
-      if (state.myCart) {
-        return state.myCart.lineItems.reduce((acc, item) => acc + item.quantity, 0)
-      }
-      return 0
     }
   },
   persist: { storage: localStorage }
