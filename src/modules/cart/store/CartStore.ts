@@ -7,13 +7,14 @@ import { useGlobalStore } from '@/store/GlobalStore'
 import type { ToastProps } from '@interfaces/index'
 
 import type { productDataInterface } from '../interface'
-import type { Cart } from '@commercetools/platform-sdk'
+import type { Cart, CartDiscount } from '@commercetools/platform-sdk'
 
 interface State {
   myCart: Cart | null
   loadingAddLineItem: boolean
   toast: ToastProps
   currentProduct: string | null
+  cartDiscount: CartDiscount
 }
 
 export const useCartStore = defineStore('cartStore', {
@@ -21,6 +22,7 @@ export const useCartStore = defineStore('cartStore', {
     myCart: null,
     loadingAddLineItem: false,
     currentProduct: null,
+    cartDiscount: {} as CartDiscount,
     toast: {
       severity: undefined,
       summary: undefined,
@@ -178,6 +180,113 @@ export const useCartStore = defineStore('cartStore', {
       } catch (error) {
         console.error('Error:', error)
       }
+    },
+    async fetchDiscountCodes() {
+      try {
+        const response = await fetch(
+          `${API_URL}/${PROJECT_KEY}/cart-discounts`,
+          this.getRequestOptions()
+        )
+        const data = await response.json()
+        console.log('Discount codes:', data)
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
+    async getDiscountCodeByKey(discountCodeKey: string) {
+      try {
+        const response = await fetch(
+          `${API_URL}/${PROJECT_KEY}/cart-discounts/key=${discountCodeKey}`,
+          this.getRequestOptions()
+        )
+        const data = await response.json()
+
+        console.log('Discount code:', data)
+        this.cartDiscount = data
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
+    async removeDiscountCode() {
+      try {
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
+          ...this.getRequestOptions('POST'),
+          body: JSON.stringify({
+            version: this.myCart?.version,
+            actions: [
+              {
+                action: 'removeDiscountCode',
+                discountCode: {
+                  typeId: 'discount-code',
+                  id: this.myCart?.discountCodes[0].discountCode.id
+                }
+              }
+            ]
+          })
+        })
+        this.cartDiscount = {} as CartDiscount
+        await this.fetchCart()
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
+    async addDiscountCode(discountCode: string) {
+      await this.getDiscountCodeByKey(discountCode)
+
+      try {
+        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
+          ...this.getRequestOptions('POST'),
+          body: JSON.stringify({
+            version: this.myCart?.version,
+            actions: [
+              {
+                action: 'addDiscountCode',
+                code: discountCode
+              }
+            ]
+          })
+        })
+        if (response.status === 400) {
+          this.toast = {
+            summary: 'Error',
+            detail: 'Invalid discount code',
+            severity: 'error'
+          }
+          return
+        } else {
+          await this.fetchCart()
+          this.toast = {
+            summary: 'Success',
+            detail: 'Discount code applied',
+            severity: 'success'
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+  },
+  getters: {
+    totalPrice: (state) => {
+      if (state.myCart) {
+        return (state.myCart.totalPrice.centAmount / 100).toFixed(2)
+      }
+      return 0
+    },
+    totalPriceWithDiscount: (state) => {
+      if (state.myCart && state.cartDiscount.value) {
+        return (
+          (state.myCart.totalPrice.centAmount * (1 - state.cartDiscount.value.permyriad / 10000)) /
+          100
+        ).toFixed(2)
+      }
+      return 0
+    },
+    totalItems: (state) => {
+      if (state.myCart) {
+        return state.myCart.lineItems.reduce((acc, item) => acc + item.quantity, 0)
+      }
+      return 0
     }
   },
   persist: { storage: localStorage }
