@@ -11,6 +11,8 @@
           Our curated collections cater to every style and occasion, ensuring you always look your
           best.
         </p>
+        <p>Use promo code <strong class="text-xl">FIRST15</strong> for your first purchase</p>
+        <br />
         <router-link to="/catalog">
           <Button>Catalog</Button>
         </router-link>
