@@ -7,14 +7,14 @@ import { useGlobalStore } from '@/store/GlobalStore'
 import type { ToastProps } from '@interfaces/index'
 
 import type { productDataInterface } from '../interface'
-import type { Cart, CartDiscount } from '@commercetools/platform-sdk'
+import type { Cart } from '@commercetools/platform-sdk'
 
 interface State {
   myCart: Cart | null
   loadingAddLineItem: boolean
   toast: ToastProps
   currentProduct: string | null
-  cartDiscount: CartDiscount
+  permyriad: number
 }
 
 export const useCartStore = defineStore('cartStore', {
@@ -22,7 +22,7 @@ export const useCartStore = defineStore('cartStore', {
     myCart: null,
     loadingAddLineItem: false,
     currentProduct: null,
-    cartDiscount: {} as CartDiscount,
+    permyriad: 0,
     toast: {
       severity: undefined,
       summary: undefined,
@@ -202,7 +202,7 @@ export const useCartStore = defineStore('cartStore', {
         const data = await response.json()
 
         console.log('Discount code:', data)
-        this.cartDiscount = data
+        this.permyriad = data.value.permyriad
       } catch (error) {
         console.error('Error:', error)
       }
@@ -224,7 +224,6 @@ export const useCartStore = defineStore('cartStore', {
             ]
           })
         })
-        this.cartDiscount = {} as CartDiscount
         await this.fetchCart()
       } catch (error) {
         console.error('Error:', error)
@@ -274,11 +273,10 @@ export const useCartStore = defineStore('cartStore', {
       return 0
     },
     totalPriceWithDiscount: (state) => {
-      if (state.myCart && state.cartDiscount.value) {
-        return (
-          (state.myCart.totalPrice.centAmount * (1 - state.cartDiscount.value.permyriad / 10000)) /
-          100
-        ).toFixed(2)
+      if (state.myCart && state.permyriad) {
+        return ((state.myCart.totalPrice.centAmount * (1 - state.permyriad / 10000)) / 100).toFixed(
+          2
+        )
       }
       return 0
     },
