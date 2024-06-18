@@ -33,7 +33,7 @@ const router = createRouter({
     {
       path: '/basket',
       name: 'basket',
-      component: () => import('../views/BasketView.vue')
+      component: () => import('../modules/cart/views/BasketView.vue')
     },
     {
       path: '/registration',

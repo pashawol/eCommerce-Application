@@ -5,11 +5,15 @@
   import { useGlobalStore } from './store/GlobalStore'
   import { onMounted } from 'vue'
 
+  import { useCartStore } from '@modules/cart/store/CartStore'
+  const CartStore = useCartStore()
+
   const globalStore = useGlobalStore()
 
   onMounted(async () => {
     await globalStore.getToken()
     globalStore.checkAuth()
+    await CartStore.fetchCart()
     if (globalStore.isAuth) await globalStore.getUserData()
   })
 </script>
