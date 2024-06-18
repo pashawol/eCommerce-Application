@@ -3,8 +3,14 @@
   import { onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { useGlobalStore } from '@/store/GlobalStore'
+  import Badge from 'primevue/badge'
 
   const globalStore = useGlobalStore()
+
+  import { useCartStore } from '@modules/cart/store/CartStore'
+  import { storeToRefs } from 'pinia'
+  const CartStore = useCartStore()
+  const { myCart } = storeToRefs(CartStore)
   const router = useRouter()
   const menuItems = [
     {
@@ -25,7 +31,9 @@
     // },
     {
       label: 'Basket',
-      route: '/basket'
+      route: '/basket',
+      icon: 'pi pi-shopping-cart',
+      badge: true
     }
     // {
     //   label: 'Product',
@@ -53,6 +61,13 @@
         <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
           <a :href="href" v-bind="props.action" @click="navigate">
             <span>{{ item.label }}</span>
+            <i v-if="item.icon" :class="item.icon" style="margin-left: 0.5em"></i>
+            <Badge
+              v-if="item.badge"
+              :value="myCart?.totalLineItemQuantity"
+              severity="info"
+              style="margin-left: 0.5em"
+            />
           </a>
         </router-link>
         <a v-else :href="item.url" :target="item.target" v-bind="props.action">

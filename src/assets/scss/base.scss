@@ -163,3 +163,42 @@ body {
   flex: 1 0 0%;
   padding: 0;
 }
+
+.btn-wrap {
+  margin-top: auto;
+  // margin-top: 1rem;
+  padding-top: 1rem;
+  .pi {
+    margin-right: 0.5rem;
+  }
+
+  .skeleton-btn,
+  .p-button {
+    margin-top: auto;
+    width: 100%;
+  }
+  max-width: 20rem;
+}
+
+.basket {
+  --body-bg: var(--dark-color-5);
+  .btn-wrap {
+    margin-top: 0;
+    padding-top: 0;
+    text-align: right;
+    button {
+      text-align: center;
+      justify-content: center;
+      // padding: 0.5rem 0.5rem;
+      padding: 0;
+      width: 2.4rem;
+      height: 2.4rem;
+      .p-button-label {
+        display: none;
+      }
+      .p-button-icon {
+        margin-right: 0;
+      }
+    }
+  }
+}
