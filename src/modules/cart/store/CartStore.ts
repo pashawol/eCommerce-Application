@@ -1,13 +1,11 @@
 import { defineStore, type StoreDefinition } from 'pinia'
-import { ref } from 'vue'
-const API_URL = import.meta.env.VITE_CTP_API_URL
-const PROJECT_KEY = import.meta.env.VITE_CTP_PROJECT_KEY
 
-import { useGlobalStore } from '@/store/GlobalStore'
 import type { ToastProps } from '@interfaces/index'
 
 import type { productDataInterface } from '../interface'
 import type { Cart } from '@commercetools/platform-sdk'
+
+import server from '../services/server'
 
 interface State {
   myCart: Cart | null
@@ -52,50 +50,25 @@ export const useCartStore: StoreDefinition<'cartStore', State> = defineStore('ca
     }
   },
   actions: {
-    getRequestOptions(method = 'GET') {
-      const globalStore = useGlobalStore()
-      return {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${globalStore.token}`
-        }
+    async fetchCart() {
+      if (this.myCart) {
+        this.myCart = await server.fetchCart(this.myCart.id)
+      } else {
+        await this.createCart()
       }
     },
     async createCart() {
-      const datas = {
-        currency: 'USD'
-      }
-      try {
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify(datas)
-        })
-        const data = await response.json()
-        this.myCart = data
-        console.log('Cart created:', data)
-      } catch (error) {
-        console.error('Error:', error)
-      }
+      const data = await server.createCart()
+      this.myCart = data
     },
     async addLineItem(productData: productDataInterface) {
-      try {
-        this.loadingAddLineItem = true
-        this.currentProduct = productData.sku
-
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify({
-            version: this.myCart?.version,
-            currency: 'USD',
-            actions: [
-              {
-                action: 'addLineItem',
-                ...productData
-              }
-            ]
-          })
-        })
+      this.loadingAddLineItem = true
+      this.currentProduct = productData.sku
+      if (!this.myCart) {
+        await this.createCart()
+      }
+      if (this.myCart) {
+        await server.addLineItem(this.myCart?.id, productData, this.myCart?.version)
 
         this.toast = {
           summary: 'Success',
@@ -104,168 +77,67 @@ export const useCartStore: StoreDefinition<'cartStore', State> = defineStore('ca
         }
 
         await this.fetchCart()
-
-        setTimeout(() => {
-          this.currentProduct = null
-          this.loadingAddLineItem = false
-        }, 500)
-      } catch (error) {
-        console.error('Error:', error)
       }
-    },
-    async changeLineItemQuantity(lineItemSku: string, quantity: number) {
-      const lineItemId = this.myCart?.lineItems.find((item) => item.variant.sku === lineItemSku)?.id
 
-      try {
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify({
-            version: this.myCart?.version,
-            actions: [
-              {
-                action: 'changeLineItemQuantity',
-                lineItemId,
-                quantity
-              }
-            ]
-          })
-        })
-        await this.fetchCart()
-      } catch (error) {
-        console.error('Error:', error)
-      }
+      setTimeout(() => {
+        this.currentProduct = null
+        this.loadingAddLineItem = false
+      }, 500)
     },
     async removeLineItem(lineItemSku: string) {
       const lineItemId = this.myCart?.lineItems.find((item) => item.variant.sku === lineItemSku)?.id
-      try {
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify({
-            version: this.myCart?.version,
-            actions: [
-              {
-                action: 'removeLineItem',
-                lineItemId
-              }
-            ]
-          })
-        })
+
+      if (this.myCart && lineItemId) {
+        await server.removeLineItemById(this.myCart?.id, lineItemId, this.myCart?.version)
         await this.fetchCart()
         this.toast = {
           summary: 'Success',
           detail: 'Product removed from cart',
           severity: 'success'
         }
-      } catch (error) {
-        console.error('Error:', error)
       }
     },
-    async fetchCart() {
-      try {
-        if (this.myCart?.id) {
-          const response = await fetch(
-            `${API_URL}/${PROJECT_KEY}/carts/${this.myCart.id}`,
-            this.getRequestOptions()
-          )
-          const data = await response.json()
-          this.myCart = data
-        } else {
-          await this.createCart()
-        }
-      } catch (error) {
-        console.error('Error:', error)
-      }
-    },
-    async queryCarts() {
-      try {
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts`, this.getRequestOptions())
-        const data = await response.json()
-        console.log('Carts:', data)
-      } catch (error) {
-        console.error('Error:', error)
+    async changeLineItemQuantity(lineItemSku: string, quantity: number) {
+      const lineItemId = this.myCart?.lineItems.find((item) => item.variant.sku === lineItemSku)?.id
+      if (this.myCart && lineItemId) {
+        await server.changeLineItemQuantity(
+          this.myCart?.id,
+          lineItemId,
+          quantity,
+          this.myCart?.version
+        )
+        await this.fetchCart()
       }
     },
     async removeCart() {
-      try {
-        const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}?version=${this.myCart?.version}`,
-          this.getRequestOptions('DELETE')
-        )
+      if (this.myCart) {
+        server.removeCart(this.myCart.id, this.myCart.version)
         this.myCart = null
-        console.log('Cart removed:', response)
         this.toast = {
           summary: 'Success',
           detail: 'Cart removed',
           severity: 'success'
         }
-      } catch (error) {
-        console.error('Error:', error)
-      }
-    },
-    async fetchDiscountCodes() {
-      try {
-        const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/cart-discounts`,
-          this.getRequestOptions()
-        )
-        const data = await response.json()
-        console.log('Discount codes:', data)
-      } catch (error) {
-        console.error('Error:', error)
       }
     },
     async getDiscountCodeByKey(discountCodeKey: string) {
-      try {
-        const response = await fetch(
-          `${API_URL}/${PROJECT_KEY}/cart-discounts/key=${discountCodeKey}`,
-          this.getRequestOptions()
-        )
-        const data = await response.json()
-
-        console.log('Discount code:', data)
-        this.permyriad = data.value.permyriad
-      } catch (error) {
-        console.error('Error:', error)
-      }
+      const data = await server.getDiscountCodeByKey(discountCodeKey)
+      this.permyriad = data.value.permyriad
     },
     async removeDiscountCode() {
-      try {
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify({
-            version: this.myCart?.version,
-            actions: [
-              {
-                action: 'removeDiscountCode',
-                discountCode: {
-                  typeId: 'discount-code',
-                  id: this.myCart?.discountCodes[0].discountCode.id
-                }
-              }
-            ]
-          })
-        })
+      if (this.myCart?.id) {
+        server.removeDiscountCode(this.myCart?.id, this.myCart?.version)
         await this.fetchCart()
-      } catch (error) {
-        console.error('Error:', error)
       }
     },
     async addDiscountCode(discountCode: string) {
       await this.getDiscountCodeByKey(discountCode)
-
-      try {
-        const response = await fetch(`${API_URL}/${PROJECT_KEY}/carts/${this.myCart?.id}`, {
-          ...this.getRequestOptions('POST'),
-          body: JSON.stringify({
-            version: this.myCart?.version,
-            actions: [
-              {
-                action: 'addDiscountCode',
-                code: discountCode
-              }
-            ]
-          })
-        })
+      if (this.myCart) {
+        const response = await server.addDiscountCode(
+          this.myCart?.id,
+          discountCode,
+          this.myCart?.version
+        )
         if (response.status === 400) {
           this.toast = {
             summary: 'Error',
@@ -281,8 +153,6 @@ export const useCartStore: StoreDefinition<'cartStore', State> = defineStore('ca
             severity: 'success'
           }
         }
-      } catch (error) {
-        console.error('Error:', error)
       }
     }
   },

@@ -1,4 +1,4 @@
-import { useGlobalStore } from './../../../store/GlobalStore'
+import { useGlobalStore } from '@/store/GlobalStore'
 import { defineStore } from 'pinia'
 import type { BodyRawProps, LoginProps, PasswordformProps, ToastProps } from '../interfaces'
 import Validation from '../services/validation'
