@@ -1,0 +1,68 @@
+:root {
+  --animate-delay: 1.2s;
+  --bs-body-font-size: #{$em-base};
+
+  --primary-black: #091a32;
+
+  --primary-gray: #8e95a4;
+  --primary-white: #fff;
+  --primary-white-60: rgba(255, 255, 255, 0.6);
+  --primary-cover: rgba(20, 21, 22, 0.48);
+  --additional-blue: #3c82f6;
+  --additional-blue-84: rgba(60, 130, 246, 0.84);
+  --additional-blue-48: rgba(60, 130, 246, 0.48);
+  --additional-blue-15: rgba(60, 130, 246, 0.15);
+  --additional-blue-10: rgba(60, 130, 246, 0.1);
+  --additional-green: #1da750;
+  --additional-green-84: rgba(29, 167, 80, 0.84);
+  --additional-green-48: rgba(29, 167, 80, 0.48);
+  --additional-green-15: rgba(29, 167, 80, 0.15);
+  --additional-green-10: rgba(29, 167, 80, 0.1);
+  --additional-red: #d9342b;
+  --additional-red-84: rgba(217, 52, 43, 0.84);
+  --additional-red-48: rgba(217, 52, 43, 0.48);
+  --additional-red-15: rgba(217, 52, 43, 0.15);
+  --additional-red-10: rgba(217, 52, 43, 0.1);
+  --additional-yellow: #eab308;
+  --additional-yellow-84: rgba(234, 179, 8, 0.84);
+  --additional-yellow-48: rgba(234, 179, 8, 0.48);
+  --additional-yellow-15: rgba(234, 179, 8, 0.15);
+  --additional-yellow-10: rgba(234, 179, 8, 0.1);
+  --light-color-1: #091a32;
+  --light-color-1-84: rgba(9, 26, 50, 0.84);
+  --light-color-1-24: rgba(9, 26, 50, 0.24);
+  --light-color-2: #8e95a4;
+  --light-color-3: #d2d6e1;
+  --light-color-4: #e2e6ef;
+  --light-color-5: #f4f5f8;
+  --light-color-6: #fafafc;
+  --light-color-7: #fff;
+  --light-gareen-pale: #d2eddc;
+  --light-blue-pale: #d8e6fd;
+  --light-red-pale: #f7d6d5;
+  --light-yellow-pale: #fbf0ce;
+  --dark-color-1: #dde7f1;
+  --dark-color-1-84: rgba(221, 231, 241, 0.84);
+  --dark-color-1-24: rgba(221, 231, 241, 0.24);
+  --dark-color-2: #657487;
+  --dark-color-3: #415166;
+  --dark-color-4: #2e3b4d;
+  --dark-color-5: #222c38;
+  --dark-color-6: #1f2833;
+  --dark-color-7: #1a222c;
+  --dark-green-pale: #1b3d33;
+  --dark-blue-pale: #213554;
+  --dark-red-pale: #40262c;
+  --dark-yellow-pale: #443f25;
+
+  --font-family: 'Bai Jamjuree', sans-serif;
+
+  --body-color: var(--primary-black);
+  --body-bg: var(--primary-white);
+
+  --panel-header-height: #{rem(45px)};
+  --header-height: #{rem(62px)};
+
+  --aside-width: #{rem(264)};
+  --spacing: #{rem(24)};
+}

@@ -1,0 +1,120 @@
+.catalog {
+  .p-card {
+    cursor: pointer;
+    height: 100%;
+    border: 1px solid var(--gray-500);
+    transition: all 0.3s;
+    background: var(--gray-800);
+    overflow: hidden;
+    img {
+      transition: all 0.3s;
+    }
+    &:hover {
+      box-shadow: 0 -9px 20px -3px var(--blue-500);
+      img {
+        transform: scale(1.12);
+      }
+    }
+  }
+
+  .p-card-header {
+    display: flex;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+    justify-content: center;
+    background: var(--color-background);
+  }
+
+  .p-card-body {
+    color: var(--gray-200);
+    padding: 10px 20px 0px 20px;
+  }
+
+  .p-card-content {
+    padding-top: 10px;
+    p {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  &__prices-wrap {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .original-price {
+    text-decoration: line-through;
+    background: transparent;
+    color: var(--gray-400);
+  }
+
+  &__list {
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    .card-img {
+      height: auto;
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__filters-navigation {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 1rem;
+  }
+
+  &__search {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 1rem;
+    .pi-search {
+      cursor: pointer;
+    }
+    input {
+      border-radius: 10px;
+      margin-left: 5px;
+      padding: 3px 6px;
+    }
+  }
+
+  &__wrap {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    select {
+      cursor: pointer;
+      border-radius: 10px;
+      margin-left: 5px;
+      padding-left: 5px;
+    }
+    button {
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 3px 6px;
+      font-size: 15px;
+    }
+  }
+
+  &__wrap {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
